@@ -10,7 +10,7 @@ window.renderRail = function(active){
     ${sub('progress','My Academic Progress','academics.html#progress')}
     <button class="wd-rail-item ${['saved','find','builder','plan','classes'].includes(active)?'is-active':''}">${icon('calendar')}<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Planning and Registration</span><span class="chev">${icon('chevron-up-small')}</span></button>
     ${sub('plan','My Academic Plan','#')}
-    ${sub('classes','Current Classes','#')}
+    ${sub('classes','Current Classes','academics.html#courses')}
     ${sub('builder','Schedule Builder','builder.html',true)}
     ${sub('saved','Saved Schedules','saved-schedules.html')}
     ${sub('find','Find Course Sections','#')}

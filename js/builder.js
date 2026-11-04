@@ -45,12 +45,12 @@
     const cols=S.DAY_ORDER.map(d=>{
       let evs='';
       (state.prefs.blocks||[]).forEach(b=>{ if(b.days.includes(d)) evs+=ev({start:b.start,end:b.end},'block',`<b>${b.label}</b>`); });
-      (secs||[]).forEach(s=>{ if(S.splitDays(s.days).includes(d)){ const cls=(COLORS[s.course]||'c1')+(opts.hl===s.id?' hl':''); evs+=ev(s,cls,`<b>${s.course}</b><i>${s.room}</i>`,s.id); } });
+      (secs||[]).forEach(s=>{ if(S.splitDays(s.days).includes(d)){ const cls=(opts.grey?'grey':(COLORS[s.course]||'c1'))+(opts.hl===s.id?' hl':''); evs+=ev(s,cls,`<b>${s.course}-${s.section}</b><i>${s.room}</i>`,s.id); } });
       if(opts.editable){ for(let i=0;i<hours;i++){ const h=start+i; const blk=(state.prefs.blocks||[]).some(b=>b.days.includes(d)&&S.mins(b.start)<=h*60&&S.mins(b.end)>h*60); evs+=`<span class="cell ${blk?'blk':''}" data-day="${d}" data-hour="${h}" style="top:${i*100/hours}%;height:${100/hours}%"></span>`; } }
       return `<div class="col ${off.includes(d)?'off':''}">${evs}</div>`;
     }).join('');
     function ev(s,cls,inner,id){ const top=(S.mins(s.start)-start*60)/(hours*60)*100, h=(S.mins(s.end)-S.mins(s.start))/(hours*60)*100; return `<div class="ev ${cls}" ${id?`data-sec="${id}"`:''} style="top:${top}%;height:${h}%">${inner}</div>`; }
-    return `<div class="sb-week ${mini?'mini':''}" style="--hours:${hours}"><div></div>${S.DAY_ORDER.map(d=>`<div class="dh ${off.includes(d)?'off':''}">${S.DAY[d]}</div>`).join('')}<div class="times">${times}</div>${cols}</div>`;
+    return `<div class="sb-week ${mini?'mini':''} ${opts.grey?'grey':''}" style="--hours:${hours}"><div></div>${S.DAY_ORDER.map(d=>`<div class="dh ${off.includes(d)?'off':''}">${S.DAY[d]}</div>`).join('')}<div class="times">${times}</div>${cols}</div>`;
   }
   const seatsText=s=> s.seats===0?'Full, waitlist open': s.seats===1?'1 seat left': s.seats+' seats left';
   function classRow(s){
@@ -102,8 +102,9 @@
         <p class="sub">We only drop sections that break these. Everything else stays on the table.</p>
         ${state.ai?`<div class="sb-ai-box"><label class="sb-label" for="sentence">${icon('sparkle')}Describe it <small>plain English, optional</small></label><div class="row"><textarea class="sb-textarea" id="sentence" placeholder="e.g. No classes before 10, done by 4, Fridays off, I work Tuesday and Thursday afternoons, 16 hours">${p.sentence||''}</textarea><button class="wd-btn secondary sm" id="applySentence">Apply</button></div><div class="sb-parsed" id="parsed"></div></div>`:''}
         <div class="sb-field"><label class="sb-label" for="creditsNum">Credit hours this term</label>
-          <div class="sb-credits"><button class="step" data-cred="-1" aria-label="One fewer credit">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}"><button class="step" data-cred="1" aria-label="One more credit">${icon('plus')}</button><span class="quick">${[12,15,18].map(c=>`<button class="${p.credits===c?'on':''}" data-credits="${c}">${c}</button>`).join('')}</span></div>
-          <p class="sb-muted" style="font-size:13px;margin:6px 0 0">Full time is 12 or more. Your open requirements include 1- and 2-hour classes, so any number works.</p></div>
+          <div class="sb-seg" id="credits">${[12,15,18].map(c=>`<button class="${p.credits===c?'on':''}" data-credits="${c}">${c}</button>`).join('')}<button class="${![12,15,18].includes(p.credits)?'on':''}" data-other="1">${![12,15,18].includes(p.credits)?p.credits:'Other'}</button></div>
+          <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Other amount</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">1 to 21. Your open requirements include 1- and 2-hour classes.</span></div>
+          <p class="sb-muted" style="font-size:13px;margin:8px 0 0">Full time is 12 or more.</p></div>
         <div class="sb-two">
           <div class="sb-field"><label class="sb-label" for="earliest">Earliest class</label><select class="sb-select" id="earliest">${hours.map(t=>`<option value="${t}" ${p.earliest===t?'selected':''}>${S.fmt(t)}</option>`).join('')}</select></div>
           <div class="sb-field"><label class="sb-label" for="latest">Latest class ends</label><select class="sb-select" id="latest">${lates.map(t=>`<option value="${t}" ${(p.latest||'')===t?'selected':''}>${t?S.fmt(t):'No limit'}</option>`).join('')}</select></div>
@@ -159,37 +160,52 @@
       const must=state.prefs.mustTake||[];
       return `${stepsBar('options')}<div class="sb"><div class="sb-card"><h2>Nothing fits all of these yet</h2><p class="sub">${must.length>1?`${must.join(' and ')} can't be taken together with your times.`:'Your must-take courses and your times rule each other out.'}</p>${g.hints.map(h=>`<div class="sb-chk">${icon('info')}<span>${h}</span></div>`).join('')}<div class="sb-actions"><a class="wd-btn primary" href="#prefs">Change preferences</a><a class="wd-btn secondary" href="#errors">See what was ruled out</a></div></div></div>`;
     }
-    if(state.chosen==null){ state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); }
+    if(state.chosen==null||state.chosen<0||!g.options[state.chosen]){ if(state.chosen==null||!state.schedule){ state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); } }
     const banner = g.relaxed ? `<div class="sb-relaxed">${icon('info')}<div><b>No schedule reaches ${g.target} credit hours with these limits.</b> ${g.hints.join(' ')||'Loosen a preference to open more sections.'} <a href="#prefs">Change preferences</a></div></div>` : '';
-    const cards=g.options.map((o,i)=>{
+    const rows=g.options.map((o,i)=>{
       const mine=g.catches.filter(c=>o.sections.some(s=>s.course===c.sec.course));
       const sel=state.chosen===i;
-      return `
-      <div class="sb-opt ${sel?'chosen':''}" data-opt="${i}">
-        <div class="lbl">
-          <span class="radio ${sel?'on':''}" aria-hidden="true"></span>
-          <div class="ttl"><h3>${o.label}</h3><span class="cr">${o.credits} credit hours · ${o.sections.length} classes</span></div>
-          ${mine.length?`<button class="sb-hazard" data-flag="${i}" aria-expanded="false" aria-label="${mine.length} sections ruled out">${icon('exclamation-triangle-fill')}<b>${mine.length}</b></button>`:''}
-        </div>
-        ${mine.length?`<div class="sb-flag-list" id="flag${i}" hidden><div class="hd">Ruled out for this schedule</div>${mine.map(c=>`<div class="sb-flag-row"><b>${c.sec.course}-${c.sec.section}</b> ${c.problems.map(x=>x.text).join(' ')} <i>${c.problems[0].fix}</i></div>`).join('')}</div>`:''}
-        <p class="note">${o.note}</p>
-        ${week(o.sections,{mini:true})}
-        <div style="margin-top:12px">${o.sections.map(s=>classRow(s)).join('')}</div>
-        <button class="wd-btn ${sel?'primary':'secondary'}" data-choose="${i}">${sel?icon('check-small')+' Selected':'Select this schedule'}</button>
-      </div>`;}).join('');
+      return `<tr class="${sel?'is-sel':''}" data-row="${i}">
+        <td class="c"><input type="radio" name="opt" id="opt${i}" ${sel?'checked':''} data-choose="${i}" aria-label="Select ${o.label}"></td>
+        <td><label for="opt${i}"><b>${o.label}</b></label><div class="sb-muted">${o.note}</div></td>
+        <td class="num">${o.credits}</td>
+        <td>${o.sections.map(s=>`<a href="#" data-detail="${s.id}">${s.course}-${s.section} - ${s.title}</a>`).join('')}</td>
+        <td class="c">${mine.length?`<button class="sb-hazard" data-flag="${i}" aria-expanded="false" aria-label="${mine.length} sections ruled out">${icon('exclamation-triangle-fill')}<b>${mine.length}</b></button>`:'<span class="sb-muted">0</span>'}</td>
+        <td><button class="wd-select" data-cal="${i}">${icon('calendar')} View Calendar</button></td>
+      </tr>
+      <tr class="flagrow" id="flag${i}" hidden><td></td><td colspan="5"><div class="sb-flag-list" style="margin:0"><div class="hd">Ruled out for this option</div>${mine.map(c=>`<div class="sb-flag-row"><b>${c.sec.course}-${c.sec.section}</b> ${c.problems.map(x=>x.text).join(' ')} <i>${c.problems[0].fix}</i></div>`).join('')}</div></td></tr>`;
+    }).join('');
+    const cur=schedule(); const curOpt=g.options[state.chosen]||null; const credits=cur.reduce((a,s)=>a+s.credits,0);
     return `
     ${stepsBar('options')}
     <div class="sb-wide">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px">
-        <div><h2 class="wd-section-title">${g.relaxed?(g.options.length===1?'The closest fit':g.options.length+' closest fits'):g.options.length+' schedules that fit'}</h2><p class="sb-muted" style="margin:4px 0 0;font-size:14px">Nothing before ${S.fmt(state.prefs.earliest)}${state.prefs.latest?`, nothing after ${S.fmt(state.prefs.latest)}`:''}, ${state.prefs.daysOff.map(d=>S.DAY[d]).join('/')||'no days'} off, nothing during ${(state.prefs.blocks||[]).map(b=>b.label.toLowerCase()).join(', ')||'blocked time'}. Tap a class to see why it's there.</p></div>
-        <a class="wd-btn secondary sm" href="#prefs">Change preferences</a>
-      </div>
+      <h2 class="wd-page-title">${g.relaxed?'Closest Schedule Options':'Schedule Options'}</h2>
+      <div class="wd-kvrow" style="margin:16px 0 8px;max-width:760px"><b>Academic Period</b><span>${state.term||D.term}</span><b>Preferences</b><span>Nothing before ${S.fmt(state.prefs.earliest)}${state.prefs.latest?`, nothing after ${S.fmt(state.prefs.latest)}`:''} · ${state.prefs.daysOff.map(d=>S.DAY[d]).join('/')||'No days'} off · ${(state.prefs.blocks||[]).map(b=>b.label).join(', ')||'No blocked time'} · ${state.prefs.credits} credit hours &nbsp;<a href="#prefs">Edit</a></span></div>
       ${banner}
-      <div class="sb-options">${cards}</div>
-      <p class="sb-muted" style="font-size:13px;margin:16px 0 0">${g.catches.length} sections were ruled out across your options. <a href="#errors">See every one in plain words</a>.</p>
-      ${foot('needs','review','Review and confirm',null,`<button class="wd-btn secondary" data-go="swap" id="swapBtn">Swap a class</button>`)}
+      <div class="wd-toolbar"><span class="count">Options <small>${g.options.length} items</small></span>${icon('export')}${icon('filter')}${icon('expand-table')}<span class="seg"><span class="on">${icon('grid-view')}</span><span>${icon('list-view')}</span></span></div>
+      <table class="wd-table sb-opt-table">
+        <thead><tr><th style="width:44px"></th><th style="width:26%">Option</th><th class="num" style="width:80px">Credit Hours</th><th>Course Sections</th><th style="width:90px">Ruled Out</th><th style="width:170px">Calendar</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p class="sb-muted" style="font-size:13px;margin:10px 0 0">Select an option, open a section to see why it's there, or View Calendar for the full week. ${g.catches.length} sections were ruled out in total; <a href="#errors">see every one in plain words</a>.</p>
+
+      <h3 class="wd-section-h" style="margin-top:32px">Selected: ${curOpt?curOpt.label:'Custom'} · ${credits} credit hours</h3>
+      <div class="wd-btn-row" style="margin:0 0 16px"><button class="wd-btn secondary sm" data-cal="cur">${icon('calendar')} Calendar View</button><button class="wd-btn secondary sm" data-go="swap-list">Swap a class</button></div>
+      <div class="wd-toolbar"><span class="count">Courses <small>${cur.length} items</small></span>${icon('export')}${icon('filter')}${icon('expand-table')}</div>
+      <div style="overflow-x:auto"><table class="wd-table sb-courses">
+        <thead><tr><th>Course</th><th class="num" style="width:60px">Units</th><th>Section</th><th style="width:90px">Section Status</th><th>Instructor</th><th>Meeting Patterns</th><th>Fills</th></tr></thead>
+        <tbody>${cur.map(s=>`<tr><td><a href="#" data-detail="${s.id}">${s.course} - ${s.title}</a></td><td class="num">${s.credits}</td><td><a href="#" data-detail="${s.id}">${s.course}-${s.section} - ${s.title}</a></td><td>${s.seats===0?'Closed':'Open'}${s.seats>0&&s.seats<=3?`<div class="sb-muted">${s.seats} seats</div>`:''}</td><td><a href="#">${s.instructor}</a></td><td>${S.dayList(s.days)} | ${S.fmt(s.start)} - ${S.fmt(s.end)} | ${s.room}</td><td>${s.fills}</td></tr>`).join('')}</tbody>
+      </table></div>
+      ${foot('needs','review','Review and confirm')}
     </div>`;
   };
+
+  // Clone of Workday's "View as Course Calendar" dialog
+  function openCalendar(secs, title){
+    const sc=document.getElementById('scrim');
+    sc.innerHTML=`<div class="wd-dialog" role="dialog" aria-modal="true" aria-label="View as Course Calendar"><div class="wd-dialog-head">View as Course Calendar<button class="x" id="calClose" aria-label="Close">${icon('x')}</button></div><div class="wd-dialog-body"><a href="#" class="wd-cal-name">${D.student.name} (${DEMO_STUDENT.id})</a><div class="wd-cal-sub">${title||''} · ${D.term}</div><div class="wd-cal-today"><span class="wd-chip">Today</span></div><div class="wd-cal-scroll">${week(secs,{grey:true})}</div></div></div>`;
+    sc.classList.add('open');
+  }
 
   V.swap=()=>{
     const cur=schedule();
@@ -282,25 +298,25 @@
     </div>`;
   };
 
-  // Workday's own pattern after a submitted task: "Success! …", Up Next, Details.
+  // Workday's own pattern after a submitted task: "Success! …", details, Up Next.
   V.done=()=>{
     const cur=schedule(); const credits=cur.reduce((a,s)=>a+s.credits,0);
     return `
     ${stepsBar('done')}
     <div class="sb">
       <div class="sb-card sb-success">
-        <div class="hd">${icon('check-circle-fill')}<div><h2>Success! Registration submitted.</h2><p class="sub">${D.termShort} · ${cur.length} sections · ${credits} credit hours · Confirmation WD-${String(Date.now()).slice(-6)}</p></div></div>
-        <div class="sb-kv"><b>Student</b><span>${D.student.name} (${DEMO_STUDENT.id}) · ${D.student.program}</span><b>Academic Period</b><span>${D.term}</span><b>Submitted</b><span>${new Date().toLocaleString('en-US',{month:'2-digit',day:'2-digit',year:'numeric',hour:'numeric',minute:'2-digit'})}</span></div>
+        <div class="hd">${icon('check-circle-fill')}<div><h2>Success! You're registered for ${D.termShort}.</h2><p class="sub">All ${cur.length} sections went through. ${credits} credit hours. Seats are held in your name. There's nothing else you need to do today.</p></div></div>
+        <div class="sb-kv"><b>Confirmation</b><span>WD-${String(Date.now()).slice(-6)} · a copy is in your Workday inbox and ${D.student.name.split(' ')[0].toLowerCase()}@uark.edu</span><b>Student</b><span>${D.student.name} (${DEMO_STUDENT.id}) · ${D.student.program}</span><b>Academic Period</b><span>${D.term}</span><b>Submitted</b><span>${new Date().toLocaleString('en-US',{month:'2-digit',day:'2-digit',year:'numeric',hour:'numeric',minute:'2-digit'})}</span><b>Add/Drop until</b><span>01/26/2027 · swap or drop anything before then with no record</span></div>
+        <div class="sb-actions" style="margin-top:20px"><a class="wd-btn primary" href="academics.html#courses">View My Registered Classes</a><a class="wd-btn secondary" href="saved-schedules.html?saved=1">View My Saved Schedules</a><a class="wd-btn secondary" href="builder.html#start" data-newplan="1">Build Another Schedule</a></div>
         <h3 class="wd-section-h">Registered Sections</h3>
         <div class="sb-done-list">${cur.map(s=>`<div class="r"><span class="sw ${COLORS[s.course]}"></span><b>${s.course}-${s.section}</b><span>${s.title}</span><em>${S.dayList(s.days)} ${S.fmt(s.start)}–${S.fmt(s.end)} · ${s.room}</em></div>`).join('')}</div>
+        <div class="wd-btn-row" style="margin:0 0 8px"><button class="wd-btn secondary sm" data-cal="cur">${icon('calendar')} Calendar View</button><button class="wd-btn secondary sm" id="calBtn">${icon('export')} Add to Google, Outlook or Apple Calendar</button></div>
         <h3 class="wd-section-h">Up Next</h3>
         <div class="sb-upnext">
-          <div class="r"><b>Add these classes to your calendar</b><span>Keep them in Google, Outlook or Apple Calendar, repeating for the whole term.</span><button class="wd-btn secondary sm" id="calBtn">${icon('calendar')} Add to calendar</button></div>
-          <div class="r"><b>Tuition statement</b><span>Posts to Financials Hub about 01/05/2027. Due 01/19/2027.</span></div>
-          <div class="r"><b>Textbooks and materials</b><span>Listed on each section in View My Courses once instructors post them.</span></div>
+          <div class="r"><b>Tuition statement</b><span>Posts to Financials Hub about 01/05/2027, due 01/19/2027. Financial aid is applied first.</span><a class="wd-btn secondary sm" href="index.html">Financials Hub</a></div>
+          <div class="r"><b>Tell your advisor</b><span>Send ${D.student.advisor} your registered schedule and the reasons behind each pick.</span><button class="wd-btn secondary sm" id="advisorBtn">Send to my advisor</button></div>
+          <div class="r"><b>Textbooks and materials</b><span>Listed on each section in View My Registered Classes once instructors post them, usually two weeks before the term.</span><a class="wd-btn secondary sm" href="academics.html#courses">View My Registered Classes</a></div>
         </div>
-        <div class="sb-actions"><a class="wd-btn primary" href="saved-schedules.html?saved=1">View in Saved Schedules</a><a class="wd-btn secondary" href="academics.html">Academics Hub</a></div>
-        ${week(cur)}
       </div>
     </div>`;
   };
@@ -322,7 +338,7 @@
   }
   function googleUrl(s){ const f=firstMeeting(s); const u=new URL('https://calendar.google.com/calendar/render'); u.searchParams.set('action','TEMPLATE'); u.searchParams.set('text',`${s.course}-${s.section} ${s.title}`); u.searchParams.set('dates',`${stamp(f,s.start)}/${stamp(f,s.end)}`); u.searchParams.set('ctz','America/Chicago'); u.searchParams.set('location',s.room); u.searchParams.set('details',`${s.instructor} · ${s.credits} credit hours`); u.searchParams.set('recur',`RRULE:FREQ=WEEKLY;BYDAY=${S.splitDays(s.days).map(d=>ICS_DAY[d]).join(',')};UNTIL=${D.termEnd.replace(/-/g,'')}`); return u.toString(); }
   function outlookUrl(s){ const f=firstMeeting(s); const iso=(d,hm)=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${hm}:00`; const u=new URL('https://outlook.office.com/calendar/0/deeplink/compose'); u.searchParams.set('subject',`${s.course}-${s.section} ${s.title}`); u.searchParams.set('startdt',iso(f,s.start)); u.searchParams.set('enddt',iso(f,s.end)); u.searchParams.set('location',s.room); u.searchParams.set('body',`${s.instructor} · repeats ${S.dayList(s.days)} through ${D.termEnd}`); u.searchParams.set('path','/calendar/action/compose'); return u.toString(); }
-  function openCalendar(){
+  function openCalendarExport(){
     const cur=schedule(); const sc=document.getElementById('scrim');
     const ics='data:text/calendar;charset=utf-8,'+encodeURIComponent(icsFor(cur));
     sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><button class="x" id="closeSheet" aria-label="Close">${icon('x')}</button><h3>Add to calendar</h3><p class="sub">Each class repeats on its days from 01/19/2027 to 05/14/2027, Central time.</p>
@@ -335,15 +351,18 @@
 
   // ---------- render + events ----------
   const body=document.getElementById('body');
-  function render(){
+  let lastRoute=null;
+  function render(keep){
     let r=route();
+    const y=window.scrollY;
     if(r==='swap-list'){ state.swapping=null; save(); r='swap'; }
     if(['swap','review','done'].includes(r) && !state.schedule){ const g=gen(); if(!g.options.length){ r='options'; } else { state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); } }
     body.innerHTML=(V[r]||V.start)();
     document.getElementById('aiToggle').classList.toggle('on',!!state.ai);
     document.getElementById('aiState').textContent=state.ai?'On':'Off';
     if(r==='prefs'&&state.ai) showParsed();
-    window.scrollTo(0,0);
+    if(keep===true || (keep===undefined && r===lastRoute)) window.scrollTo(0,y); else window.scrollTo(0,0);
+    lastRoute=r;
   }
   function showParsed(){
     const p=state.prefs; const box=document.getElementById('parsed'); if(!box) return;
@@ -357,30 +376,34 @@
     scrim.classList.add('open');
   }
   function closeSheet(){ const sc=document.getElementById('scrim'); sc.classList.remove('open'); sc.innerHTML=''; }
-  function setCredits(n){ n=Math.max(1,Math.min(21,n|0)); if(n===state.prefs.credits) return; state.prefs.credits=n; resetPicks(); save(); render(); }
+  function setCredits(n){ n=Math.max(1,Math.min(21,n|0)); if(n===state.prefs.credits){ render(true); return; } state.prefs.credits=n; resetPicks(); save(); render(true); }
 
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-flag],[data-go],[data-credits],[data-cred],[data-day],[data-must],.cell,[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
+    const t=e.target.closest('[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-cal],#calClose,[data-newplan],[data-day],[data-must],.cell,[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
     if(!t) { if(e.target.id==='scrim') closeSheet(); return; }
     const p=state.prefs;
+    if(t.dataset.cal!==undefined){ e.preventDefault(); const g=gen(); if(t.dataset.cal==='cur'){ openCalendar(schedule(),'Selected schedule'); } else { const o=g.options[+t.dataset.cal]; openCalendar(o.sections,o.label); } return; }
+    if(t.id==='calClose'){ closeSheet(); return; }
     if(t.dataset.flag!==undefined){ const l=document.getElementById('flag'+t.dataset.flag); l.hidden=!l.hidden; t.setAttribute('aria-expanded',String(!l.hidden)); t.classList.toggle('open',!l.hidden); return; }
+    if(t.dataset.newplan){ try{ sessionStorage.removeItem('sb-state'); }catch(e){} return; }
     if(t.dataset.go!==undefined){ go(t.dataset.go); return; }
-    if(t.id==='aiToggle'){ state.ai=!state.ai; try{localStorage.setItem('sb-ai',state.ai?'on':'off');}catch(e){} save(); render(); return; }
-    if(t.dataset.credits){ setCredits(+t.dataset.credits); return; }
+    if(t.id==='aiToggle'){ state.ai=!state.ai; try{localStorage.setItem('sb-ai',state.ai?'on':'off');}catch(e){} save(); render(true); return; }
+    if(t.dataset.credits){ state.otherOpen=false; setCredits(+t.dataset.credits); return; }
+    if(t.dataset.other){ state.otherOpen=true; save(); render(true); setTimeout(()=>document.getElementById('creditsNum')?.focus(),50); return; }
     if(t.dataset.cred){ setCredits(p.credits+(+t.dataset.cred)); return; }
-    if(t.dataset.day){ const d=t.dataset.day; p.daysOff=p.daysOff.includes(d)?p.daysOff.filter(x=>x!==d):[...p.daysOff,d]; resetPicks(); save(); render(); return; }
-    if(t.dataset.must){ const c=t.dataset.must; p.mustTake=p.mustTake.includes(c)?p.mustTake.filter(x=>x!==c):[...p.mustTake,c]; resetPicks(); save(); render(); if(t.dataset.title){ toast(c+' will be in every option.'); } return; }
+    if(t.dataset.day){ const d=t.dataset.day; p.daysOff=p.daysOff.includes(d)?p.daysOff.filter(x=>x!==d):[...p.daysOff,d]; resetPicks(); save(); render(true); return; }
+    if(t.dataset.must){ const c=t.dataset.must; p.mustTake=p.mustTake.includes(c)?p.mustTake.filter(x=>x!==c):[...p.mustTake,c]; resetPicks(); save(); render(true); if(t.dataset.title){ toast(c+' will be in every option.'); } return; }
     if(t.classList.contains('cell')){ toggleBlock(t.dataset.day,+t.dataset.hour); return; }
-    if(t.id==='applySentence'){ const txt=document.getElementById('sentence').value; state.prefs=S.parseSentence(txt,p); state.prefs.sentence=txt; resetPicks(); save(); render(); toast('Read your preferences. Check the form below.'); return; }
-    if(t.dataset.choose!==undefined){ const g=gen(); state.chosen=+t.dataset.choose; state.schedule=g.options[state.chosen].sections.map(s=>s.id); save(); render(); return; }
-    if(t.dataset.detail||t.dataset.sec){ openSheet(t.dataset.detail||t.dataset.sec); return; }
+    if(t.id==='applySentence'){ const txt=document.getElementById('sentence').value; state.prefs=S.parseSentence(txt,p); state.prefs.sentence=txt; resetPicks(); save(); render(true); toast('Read your preferences. Check the form below.'); return; }
+    if(t.dataset.choose!==undefined){ const g=gen(); state.chosen=+t.dataset.choose; state.schedule=g.options[state.chosen].sections.map(s=>s.id); save(); render(true); return; }
+    if(t.dataset.detail||t.dataset.sec){ e.preventDefault(); openSheet(t.dataset.detail||t.dataset.sec); return; }
     if(t.dataset.swapfor){ closeSheet(); state.swapping=t.dataset.swapfor; save(); go('swap'); render(); return; }
     if(t.dataset.swapto){ const from=state.swapping; state.schedule=state.schedule.map(id=>id===from?t.dataset.swapto:id); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Swapped to ${t.dataset.swapto}. The other ${state.schedule.length-1} classes stay put.`); return; }
     if(t.dataset.drop){ state.schedule=state.schedule.filter(id=>id!==t.dataset.drop); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Dropped ${t.dataset.drop} from the plan.`); return; }
     if(t.dataset.waitlist){ toast(`Added to the waitlist for ${t.dataset.waitlist}. We'll text you when a seat opens.`); return; }
     if(t.dataset.use){ const s=secById(t.dataset.use); if(!state.schedule.includes(s.id)){ const same=state.schedule.find(id=>secById(id).course===s.course); state.schedule= same? state.schedule.map(id=>id===same?s.id:id) : [...state.schedule,s.id]; state.chosen=-1; save(); } go('review'); toast(`${s.course}-${s.section} is in the plan.`); return; }
     if(t.id==='closeSheet'||t.id==='closeSheet2'||t.id==='cancelDlg'){ closeSheet(); return; }
-    if(t.id==='calBtn'){ openCalendar(); return; }
+    if(t.id==='calBtn'){ openCalendarExport(); return; }
     if(t.id==='saveBtn'){ let saved=[]; try{ saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); }catch(e){} const cur=schedule(); saved.unshift({name:`${D.termShort} · Builder`, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); try{localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3)));}catch(e){} t.textContent='Saving…'; t.disabled=true; setTimeout(()=>{ location.href='saved-schedules.html?saved=1'; },350); return; }
     if(t.id==='advisorBtn'){ const cur=schedule(); const sc=document.getElementById('scrim'); sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><button class="x" id="closeSheet" aria-label="Close">${icon('x')}</button><h3>Send to ${D.student.advisor}</h3><p class="sub">UAF Advisor · Your draft and the reasons go with it. They can comment or approve.</p><label class="sb-label" for="advNote">Note</label><textarea class="sb-textarea" id="advNote">Hi ${D.student.advisor.split(' ')[0]}, here's my ${D.termShort} draft: ${cur.map(s=>s.course+'-'+s.section).join(', ')} (${cur.reduce((a,s)=>a+s.credits,0)} cr). It fills ${[...new Set(cur.map(s=>s.fills))].join(', ')}. Does this look right before I register on ${D.registrationOpens.split(',')[0]}?</textarea><div class="wd-btn-row" style="margin-top:16px"><button class="wd-btn primary" id="sendAdvisor">Send</button><button class="wd-btn secondary" id="cancelDlg">Cancel</button></div></div>`; sc.classList.add('open'); return; }
     if(t.id==='sendAdvisor'){ closeSheet(); toast(`Sent to ${D.student.advisor}. You'll get a notification when they reply.`); return; }
@@ -391,8 +414,8 @@
   document.addEventListener('input',e=>{ if(e.target.id==='mustInput'){ const q=e.target.value.toLowerCase(); const m=document.getElementById('mustMenu'); if(!m) return; m.hidden=false; m.querySelectorAll('button').forEach(b=>{ b.hidden=!(b.textContent.toLowerCase().includes(q)); }); } });
   document.addEventListener('click',e=>{ const m=document.getElementById('mustMenu'); if(m && !e.target.closest('.sb-prompt')) m.hidden=true; });
   document.addEventListener('change',e=>{
-    if(e.target.id==='earliest'){ state.prefs.earliest=e.target.value; resetPicks(); save(); render(); }
-    if(e.target.id==='latest'){ state.prefs.latest=e.target.value; resetPicks(); save(); render(); }
+    if(e.target.id==='earliest'){ state.prefs.earliest=e.target.value; resetPicks(); save(); render(true); }
+    if(e.target.id==='latest'){ state.prefs.latest=e.target.value; resetPicks(); save(); render(true); }
     if(e.target.id==='creditsNum'){ setCredits(+e.target.value); }
   });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); if(e.key==='Enter'&&e.target.id==='creditsNum'){ setCredits(+e.target.value); } });
@@ -407,7 +430,7 @@
       const adj=p.blocks.find(b=>b.days.length===1&&b.days[0]===day&&(b.end===h0||b.start===h1));
       if(adj){ if(adj.end===h0) adj.end=h1; else adj.start=h0; } else p.blocks.push({label:'Blocked',days:[day],start:h0,end:h1});
     }
-    resetPicks(); save(); render();
+    resetPicks(); save(); render(true);
   }
 
   // ---------- boot ----------

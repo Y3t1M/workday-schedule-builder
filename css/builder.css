@@ -407,3 +407,55 @@ body.has-bottombar{padding-bottom:0}
 .sb-relaxed{display:flex;gap:10px;align-items:flex-start;background:#eef4fb;border:1px solid #c7dcf6;border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:13px;line-height:18px;color:var(--wd-text)}
 .sb-relaxed .wd-icon{width:18px;height:18px;color:#0875e1;flex:none;margin-top:1px}
 .sb-relaxed b{color:var(--wd-text-strong)}
+
+/* ================= round 4 ================= */
+.is-hidden{display:none !important}
+.sb-seg button[data-other]{min-width:72px}
+.sb-other{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px 12px;border:1px solid var(--wd-border-strong);border-radius:4px;background:#f6f7f8;font-size:13px}
+.sb-other > span:first-child{font-weight:500;color:var(--wd-text-strong);margin-right:4px}
+.sb-other .step{width:32px;height:32px;border-radius:50%;box-shadow:inset 0 0 0 1px #333;display:flex;align-items:center;justify-content:center;color:#333;background:#fff}
+.sb-other .step .wd-icon{width:18px;height:18px}
+.sb-other input{width:56px;height:32px;border:1px solid var(--wd-input-border);border-radius:4px;text-align:center;font:700 15px var(--wd-font);color:#333;-moz-appearance:textfield;background:#fff}
+.sb-other input::-webkit-outer-spin-button,.sb-other input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sb-other .sb-muted{flex-basis:100%;margin-top:2px}
+.sb-credits{display:none}
+
+/* options as a Workday table */
+.sb-opt-table td{vertical-align:top;padding:12px 10px}
+.sb-opt-table td.c{text-align:center}
+.sb-opt-table input[type=radio]{width:18px;height:18px;accent-color:var(--wd-brand);margin:2px 0 0;cursor:pointer}
+.sb-opt-table label{cursor:pointer;font-size:14px;line-height:20px;color:var(--wd-text-strong)}
+.sb-opt-table tr.is-sel td{background:#fff7f8}
+.sb-opt-table td .sb-muted{font-size:12px;line-height:16px;margin-top:2px}
+.sb-opt-table a{display:block;margin-bottom:6px;font-size:12px;line-height:16px}
+.sb-opt-table .wd-select{height:32px;padding:0 14px 0 12px;font-size:12px;gap:8px}
+.sb-opt-table .wd-select .wd-icon{width:18px;height:18px}
+.sb-opt-table tr.flagrow td{padding:0 10px 12px;background:#fff}
+.sb-opt-table .sb-hazard{height:26px}
+.sb-courses td{font-size:12px;line-height:16px;padding:10px 8px}
+.sb-courses a{display:inline}
+@media (max-width:1000px){.sb-opt-table th:nth-child(4),.sb-opt-table td:nth-child(4){display:none}.sb-opt-table td{padding:10px 6px}}
+@media (max-width:720px){.wd-toolbar > .wd-icon,.wd-toolbar .seg{display:none}.sb-opt-table th:nth-child(6),.sb-opt-table td:nth-child(6){display:none}.sb-opt-table tr.is-sel td:nth-child(2)::after{content:"";display:block}}
+@media (max-width:720px){.sb-opt-table td:nth-child(2)::after{content:""}.sb-opt-table tr:not(.flagrow) td:nth-child(2) .sb-muted::after{content:""}}
+.sb-options,.sb-opt{display:none}
+
+/* Workday's course calendar: grey blocks, no colour */
+.wd-dialog .wd-dialog-body{padding:0 32px 24px}
+.wd-cal-name{display:inline-block;margin:20px 0 2px;font-size:16px;font-weight:500}
+.wd-cal-sub{font-size:12px;color:var(--wd-text-muted);padding-bottom:16px;border-bottom:1px solid var(--wd-border);margin-bottom:16px}
+.wd-cal-today{margin-bottom:12px}
+.wd-cal-today .wd-chip{height:32px;font-size:13px;color:#8a949e;box-shadow:inset 0 0 0 1px #c9ced4;font-weight:500}
+.wd-cal-scroll{max-height:calc(100vh - 290px);overflow:auto;padding-right:4px}
+.sb-week.grey .ev{background:#ebedf0;border-left:0;color:#333;padding:4px 6px;border-radius:3px}
+.sb-week.grey .ev b{font-weight:700}
+.sb-week.grey .ev.block{background:repeating-linear-gradient(135deg,#e8ebed 0 5px,#f6f7f8 5px 10px);color:#5e6a75}
+.sb-week.grey .dh{font-weight:400}
+.sb-week.grey .col{border-color:#dcdfe3}
+.sb-week.grey{--h:48px}
+@media (max-width:720px){.wd-dialog .wd-dialog-body{padding:0 16px 16px}.wd-dialog-head{padding:0 16px}.sb-week.grey{--h:40px}}
+
+/* success */
+.sb-success .hd h2{font-size:24px;line-height:30px}
+.sb-success .hd .sub{font-size:14px;line-height:20px;color:var(--wd-text)}
+.sb-success .sb-kv{grid-template-columns:150px 1fr}
+.sb-upnext .r .wd-btn{white-space:nowrap}
