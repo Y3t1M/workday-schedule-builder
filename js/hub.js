@@ -15,5 +15,9 @@ window.renderRail = function(active){
     ${sub('saved','Saved Schedules','saved-schedules.html')}
     ${sub('find','Find Course Sections','#')}
     ${sub('notes','Note History','#')}
-  </aside>`;
+  </aside>
+  <nav class="wd-rail-mobile" aria-label="Academics">
+    <span class="hd">${icon('grad-cap')}Academics</span>
+    ${[['overview','Overview','academics.html'],['progress','Academic Progress','academics.html#progress'],['classes','My Courses','academics.html#courses'],['builder','Schedule Builder','builder.html'],['saved','Saved Schedules','saved-schedules.html'],['find','Find Course Sections','#'],['plan','Academic Plan','#']].map(([k,l,href])=>`<a class="${active===k?'is-active':''}" href="${href}">${l}${k==='builder'?'<span class="new">NEW</span>':''}</a>`).join('')}
+  </nav>`;
 };

@@ -434,9 +434,31 @@ body.has-bottombar{padding-bottom:0}
 .sb-opt-table .sb-hazard{height:26px}
 .sb-courses td{font-size:12px;line-height:16px;padding:10px 8px}
 .sb-courses a{display:inline}
-@media (max-width:1000px){.sb-opt-table th:nth-child(4),.sb-opt-table td:nth-child(4){display:none}.sb-opt-table td{padding:10px 6px}}
-@media (max-width:720px){.wd-toolbar > .wd-icon,.wd-toolbar .seg{display:none}.sb-opt-table th:nth-child(6),.sb-opt-table td:nth-child(6){display:none}.sb-opt-table tr.is-sel td:nth-child(2)::after{content:"";display:block}}
-@media (max-width:720px){.sb-opt-table td:nth-child(2)::after{content:""}.sb-opt-table tr:not(.flagrow) td:nth-child(2) .sb-muted::after{content:""}}
+@media (max-width:1000px){.sb-opt-table td{padding:10px 8px}}
+@media (max-width:720px){
+  .wd-toolbar > .wd-icon,.wd-toolbar .seg{display:none}
+  /* each option becomes a card */
+  .sb-opt-table,.sb-opt-table tbody,.sb-opt-table tr,.sb-opt-table td{display:block;min-width:0 !important;width:auto}
+  .sb-opt-table thead{display:none}
+  .sb-opt-table{border:0;background:transparent;overflow:visible}
+  .sb-opt-table tr:not(.flagrow){background:#fff;border:1px solid var(--wd-border-strong);border-radius:12px;margin-bottom:12px;padding:12px 14px 14px;position:relative}
+  .sb-opt-table tr.is-sel{border-color:var(--wd-brand);box-shadow:0 0 0 1px var(--wd-brand)}
+  .sb-opt-table tr.is-sel td{background:transparent}
+  .sb-opt-table td{border:0 !important;padding:4px 0 !important;text-align:left !important}
+  .sb-opt-table td.c:first-child{position:absolute;left:14px;top:14px;padding:0 !important}
+  .sb-opt-table td:nth-child(2){padding-left:30px !important}
+  .sb-opt-table td:nth-child(3)::before{content:"Credit hours: ";color:var(--wd-text-muted)}
+  .sb-opt-table td:nth-child(3){font-size:13px;font-weight:500}
+  .sb-opt-table td:nth-child(4){padding-top:8px !important}
+  .sb-opt-table td:nth-child(4) a{display:block;margin-bottom:6px}
+  .sb-opt-table td:nth-child(5){display:flex;align-items:center;gap:8px;padding-top:8px !important}
+  .sb-opt-table td:nth-child(5)::before{content:"Ruled out";font-size:13px;color:var(--wd-text-muted)}
+  .sb-opt-table td:nth-child(6){padding-top:10px !important}
+  .sb-opt-table td:nth-child(6) .wd-select{width:100%;justify-content:center;height:40px}
+  .sb-opt-table tr.flagrow{margin:-6px 0 12px;padding:0}
+  .sb-opt-table tr.flagrow td{padding:0 !important}
+  .sb-opt-table tr.flagrow td:first-child{display:none}
+}
 .sb-options,.sb-opt{display:none}
 
 /* Workday's course calendar: grey blocks, no colour */

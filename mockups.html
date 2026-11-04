@@ -34,6 +34,15 @@
   .desk .cap{margin:12px 2px 0}
   .desk .cap b{display:block}
   .desk .cap span{color:var(--muted);font-size:13px}
+  @media (max-width:720px){
+    header{padding:16px}
+    section{padding:20px 16px}
+    .phone{width:min(390px,calc(100vw - 32px))}
+    .phone .frame{width:100%;height:auto;aspect-ratio:390/760;padding:8px;border-radius:30px}
+    .phone iframe{width:100%;height:100%;border-radius:24px}
+    .desk{grid-template-columns:1fr}
+    .desk .vp{padding-bottom:80%}
+  }
 </style>
 </head>
 <body>
