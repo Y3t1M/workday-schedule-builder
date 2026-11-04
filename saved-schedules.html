@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>View My Saved Schedules - Workday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/workday.css">
+</head>
+<body>
+<main class="wd-main">
+  <div class="wd-hub">
+    <div id="rail"></div>
+    <div class="wd-hub-body">
+      <div id="banner"></div>
+      <h1 class="wd-page-title">View My Saved Schedules</h1>
+      <div class="wd-toolbar" style="margin:12px 0 24px"><span data-ic-inline="export"></span><span data-ic-inline="pdf"></span><span data-ic-inline="bookmark"></span></div>
+      <div class="wd-btn-row">
+        <a class="wd-btn primary" href="#">Create Saved Schedule</a>
+        <a class="wd-btn secondary" href="builder.html">Build My Schedule</a>
+      </div>
+      <div class="wd-tabs"><a class="wd-tab is-active" href="#">Upcoming Saved Schedules</a><a class="wd-tab" href="#">Past Saved Schedules</a></div>
+      <div class="wd-prog-h"><span data-ic-inline="chevron-down-small"></span><span>University of Arkansas, Fayetteville - Finance Bachelor of Science in Business Administration (BSBA)</span></div>
+
+      <h3 class="wd-section-h">UAF Fall 2026 (08/17/2026-12/11/2026)</h3>
+      <div class="wd-toolbar"><span class="count">Saved Schedules <small>1 item</small></span><span data-ic-inline="export"></span><span data-ic-inline="filter"></span><span data-ic-inline="expand-table"></span><span class="seg"><span class="on" data-ic-inline="grid-view"></span><span data-ic-inline="list-view"></span></span></div>
+      <table class="wd-table">
+        <thead><tr><th style="width:22%">Saved Schedule</th><th>Course Sections</th><th style="width:70px">Alerts</th><th style="width:170px">Actions</th></tr></thead>
+        <tbody><tr>
+          <td><a href="#">Fall 2026</a></td>
+          <td><a href="#">ACCT 2013-008 - ACCT PRINCIPLES I</a><a href="#">ECON 2013-002 - PRIN OF MACROECONOMICS</a><a href="#">ENGL 1023-058 - COMPOSITION II</a><a href="#">ISYS 2103-015 - FOUNDATIONS OF BA</a></td>
+          <td><a href="#">2</a></td>
+          <td><button class="wd-select">Actions <span data-ic-inline="caret-down-small"></span></button></td>
+        </tr></tbody>
+      </table>
+
+      <h3 class="wd-section-h">UAF Spring 2027 (01/19/2027-05/14/2027)</h3>
+      <div class="wd-toolbar"><span class="count">Saved Schedules <small>1 item</small></span><span data-ic-inline="export"></span><span data-ic-inline="filter"></span><span data-ic-inline="expand-table"></span><span class="seg"><span class="on" data-ic-inline="grid-view"></span><span data-ic-inline="list-view"></span></span></div>
+      <table class="wd-table" id="springTable">
+        <thead><tr><th style="width:22%">Saved Schedule</th><th>Course Sections</th><th style="width:70px">Alerts</th><th style="width:170px">Actions</th></tr></thead>
+        <tbody id="springBody">
+          <tr><td colspan="4" style="padding:24px;color:var(--wd-text-muted);font-size:14px">No saved schedules yet. <a href="builder.html">Build one from your degree audit</a> in about two minutes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/hub.js"></script>
+<script>
+renderShell({active:'student'});
+document.getElementById('rail').outerHTML=renderRail('saved');
+document.querySelectorAll('[data-ic-inline]').forEach(el=>el.outerHTML=icon(el.dataset.icInline));
+// If the builder saved or registered a schedule, show it here like Workday would.
+try{
+  const q=new URLSearchParams(location.search);
+  const saved=JSON.parse(localStorage.getItem('sb-saved')||'[]');
+  if(saved.length){
+    document.getElementById('springBody').innerHTML=saved.map((s,i)=>`<tr class="${q.get('saved')&&i===0?'is-new':''}"><td><a href="builder.html#review">${s.name}</a>${s.registered?'<span class="wd-reg">REGISTERED</span>':''}</td><td>${s.sections.map(x=>`<a href="#">${x}</a>`).join('')}</td><td>${s.alerts||0}</td><td><button class="wd-select">Actions ${icon('caret-down-small')}</button></td></tr>`).join('');
+    document.querySelector('#springTable').previousElementSibling.querySelector('small').textContent=saved.length+' item'+(saved.length>1?'s':'');
+  }
+  if(q.get('saved')&&saved.length){
+    const s0=saved[0];
+    document.getElementById('banner').innerHTML=`<div class="wd-success" role="status">${icon('check-circle-fill')}<div><b>${s0.registered?'Registered.':'Saved.'} ${s0.name} is in your Upcoming Saved Schedules.</b>${s0.sections.length} sections · ${s0.credits||s0.sections.length*3} credits · UAF Spring 2027. ${s0.registered?'A confirmation is in your Workday inbox.':'Register from here when your appointment opens on 11/10/2026 at 8:00 AM.'}</div></div>`;
+    setTimeout(()=>document.querySelector('#springTable')?.scrollIntoView({behavior:'smooth',block:'center'}),400);
+    history.replaceState(null,'',location.pathname);
+  }
+}catch(e){}
+</script>
+</body>
+</html>

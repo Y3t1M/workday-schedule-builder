@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schedule Builder — Mockups</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<style>
+  :root{--ink:#333;--muted:#5e6a75;--line:#dfe2e6;--brand:#9d2235}
+  body{margin:0;background:#e9ebee;font:400 14px/20px Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
+  header{background:#fff;border-bottom:1px solid var(--line);padding:20px 32px;display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+  header h1{margin:0;font-size:20px}
+  header p{margin:0;color:var(--muted)}
+  header nav{margin-left:auto;display:flex;gap:16px;font-weight:500}
+  header a{color:#0875e1;text-decoration:none}
+  section{padding:32px}
+  h2{font-size:16px;margin:0 0 4px}
+  .sub{margin:0 0 20px;color:var(--muted)}
+  .phones{display:flex;gap:28px;overflow-x:auto;padding:8px 0 24px;scroll-snap-type:x proximity}
+  .phone{flex:none;scroll-snap-align:start;width:390px}
+  .phone .frame{width:390px;height:760px;border-radius:38px;background:#111;padding:10px;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+  .phone iframe{width:370px;height:740px;border:0;border-radius:30px;background:#fff;display:block}
+  .phone .cap{margin:14px 4px 0}
+  .phone .cap b{display:block;font-size:14px}
+  .phone .cap span{color:var(--muted);font-size:13px}
+  .phone .cap .n{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:12px;text-align:center;line-height:22px;margin-right:8px}
+  .desk{display:grid;grid-template-columns:repeat(auto-fit,minmax(560px,1fr));gap:28px}
+  .desk .frame{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  .desk .bar{height:30px;background:#f0f1f2;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px}
+  .desk .bar i{width:10px;height:10px;border-radius:50%;background:#d5d9de}
+  .desk .bar span{margin-left:10px;font-size:11px;color:var(--muted);background:#fff;border-radius:4px;padding:2px 8px;flex:1}
+  .desk .vp{width:100%;height:0;padding-bottom:62%;position:relative}
+  .desk iframe{position:absolute;inset:0;width:1280px;height:794px;border:0;transform-origin:0 0}
+  .desk .cap{margin:12px 2px 0}
+  .desk .cap b{display:block}
+  .desk .cap span{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Schedule Builder inside Workday Student</h1>
+  <p>Seven screens from the demo brief, rendered live at phone width. Every frame is the real prototype, not a picture.</p>
+  <nav><a href="builder.html">Open the builder</a><a href="index.html">Workday home clone</a><a href="academics.html">Academics Hub clone</a></nav>
+</header>
+
+<section>
+  <h2>Demo flow, phone first</h2>
+  <p class="sub">Scroll sideways. Each phone is interactive; the AI-assist toggle in the red bar switches the preferences screen to the plain-English box.</p>
+  <div class="phones" id="phones"></div>
+</section>
+
+<section>
+  <h2>Same screens on a laptop</h2>
+  <p class="sub">The clone of Workday's shell carries the builder as another Planning and Registration item, next to Saved Schedules and Find Course Sections.</p>
+  <div class="desk" id="desk"></div>
+</section>
+
+<script>
+const SCREENS=[
+  ['1','Registration home','Term already set to Spring 2027. One button.','builder.html?demo=1#start'],
+  ['2','Preferences','Credits, earliest class, days off, blocked hours on the week grid, must-take.','builder.html?demo=1#prefs'],
+  ['2b','Preferences, AI on','Same form with the optional "Describe it" box; one sentence fills the form.','builder.html?demo=1&ai=on#prefs'],
+  ['3','What you still need','Six requirements from the degree audit, prerequisites met or missing, five fit this term.','builder.html?demo=1#needs'],
+  ['4','Schedule options','Three schedules side by side with a week grid, credits, a why tag on each class, seats left.','builder.html?demo=1#options'],
+  ['5','Swap a class','Other sections of FINN 3043 and other Finance courses; the rest of the schedule stays put.','builder.html?demo=1&swap=FINN%203043-002#swap'],
+  ['6','Preview and confirm','What will change, the checks, then Register, Send to my advisor, or Save.','builder.html?demo=1#review'],
+  ['7','Plain-words errors','A full section offers the waitlist and the next open section; a missing prerequisite names what to take first.','builder.html?demo=1#errors'],
+];
+document.getElementById('phones').innerHTML=SCREENS.map(s=>`<div class="phone"><div class="frame"><iframe src="${s[3]}" title="${s[1]}" loading="lazy"></iframe></div><div class="cap"><b><span class="n">${s[0]}</span>${s[1]}</b><span>${s[2]}</span></div></div>`).join('');
+const DESK=[
+  ['Workday home (clone)','index.html'],
+  ['Academics Hub overview (clone), with the Build My Schedule entry','academics.html'],
+  ['Schedule options','builder.html?demo=1#options'],
+  ['Preview and confirm','builder.html?demo=1#review'],
+];
+document.getElementById('desk').innerHTML=DESK.map(d=>`<div><div class="frame"><div class="bar"><i></i><i></i><i></i><span>wd5.myworkday.com/uasys/d/${d[1].split('?')[0]}</span></div><div class="vp"><iframe src="${d[1]}" title="${d[0]}" loading="lazy"></iframe></div></div><div class="cap"><b>${d[0]}</b></div></div>`).join('');
+function fit(){document.querySelectorAll('.desk .vp').forEach(v=>{const f=v.querySelector('iframe');f.style.transform='scale('+(v.clientWidth/1280)+')';});}
+addEventListener('resize',fit);fit();setTimeout(fit,300);
+</script>
+</body>
+</html>

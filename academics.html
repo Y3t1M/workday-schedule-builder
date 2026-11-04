@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview - Workday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/workday.css">
+</head>
+<body>
+<main class="wd-main">
+  <div class="wd-hub">
+    <div id="rail"></div>
+    <div class="wd-hub-body">
+      <h2 class="wd-section-title">Academics Quick Actions</h2>
+      <div class="wd-chips">
+        <a class="wd-chip" href="#">View My Grades</a>
+        <a class="wd-chip" href="#">View My Interim Grades</a>
+        <a class="wd-chip" href="#">View My Registration Appointments</a>
+        <a class="wd-chip" href="builder.html">Build My Schedule</a>
+      </div>
+      <h2 class="wd-section-title" style="margin-bottom:16px">Academics Overview</h2>
+      <div class="wd-two">
+        <section class="wd-tile">
+          <div class="wd-tile-head" data-ic="grad-cap"><div><h3>My Holds</h3><p>Review your active holds</p></div></div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:200px;color:#c9ced4">
+            <svg width="200" height="150" viewBox="0 0 200 150" aria-hidden="true"><path d="M30 120 C 60 60, 70 40, 95 30" stroke="#0875e1" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M85 22 l 28 18 -14 22 -28 -18z" fill="#0875e1"/><path d="M100 45 L 190 130 L 70 135 Z" fill="#fff3b0" opacity=".9"/><ellipse cx="30" cy="122" rx="16" ry="6" fill="#0875e1"/></svg>
+          </div>
+          <div class="wd-tile-foot"><a href="#">View Holds</a></div>
+        </section>
+        <section class="wd-tile">
+          <div class="wd-tile-head" data-ic="users"><div><h3>Important Contacts</h3><p>Request an appointment with contacts in your network</p></div></div>
+          <p class="wd-kv"><b>Taylor Brooks</b><span>UAF Advisor</span></p>
+          <p class="wd-kv"><b>Morgan Lee</b><span>UAF Advisor</span></p>
+          <p class="wd-kv"><b>Jordan Patel</b><span>UAF Advisor</span></p>
+          <p class="wd-kv"><b>Casey Nguyen</b><span>UAF Advisor</span></p>
+        </section>
+      </div>
+      <div class="wd-two">
+        <section class="wd-tile">
+          <div class="wd-tile-head" data-ic="grad-cap"><div><h3>Current Classes</h3><p>Currently Enrolled Courses</p></div></div>
+          <div class="wd-class"><div><b>ISYS 2103-020 - FOUNDATIONS OF BA</b>WCOB 250 | Monday/Wednesday | 4:35 PM - 5:50 PM Jacob W Yates</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ACCT 2013-009 - ACCT PRINCIPLES I</b>WCOB 202 | Monday/Wednesday | 6:20 PM - 7:35 PM Nate Nantze</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ECON 2013-002 - PRIN OF MACROECONOMICS</b>KIMP 209 | Tuesday/Thursday | 2:00 PM - 3:15 PM Robert Stapp</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ENGL 1023-058 - COMPOSITION II</b>KIMP 102 | Tuesday/Thursday | 12:30 PM - 1:45 PM Julie Gall</div><span class="u">3</span></div>
+          <button class="wd-outline-btn"><span data-ic-inline="list"></span> More (1)</button>
+          <div class="wd-tile-foot"><a href="#">View Details</a></div>
+        </section>
+        <section class="wd-tile">
+          <div class="wd-tile-head" data-ic="grad-cap"><div><h3>Registration Appointments</h3><p>The start date of your registration appointment</p></div></div>
+          <div class="big">11/10/2026<br>8:00AM<small>UAF Spring 2027 (01/19/2027-05/14/2027)</small></div>
+          <p class="wd-kv" style="margin-top:12px"><b>11/10/2026, 8:00 AM</b><span>UAF Spring 12 Weeks 2027 (01/19/2027-04/16/2027)</span></p>
+          <p class="wd-kv"><b>11/10/2026, 8:00 AM</b><span>UAF Spring II 2027 (03/10/2027-05/14/2027)</span></p>
+          <a class="wd-btn primary" href="builder.html" style="margin-top:8px;align-self:flex-start">Build My Schedule</a>
+          <div class="wd-tile-foot"><a href="saved-schedules.html">View Saved Schedules</a></div>
+        </section>
+      </div>
+
+      <!-- Degree audit (View My Academic Progress), rendered below the overview so the builder can link to it -->
+      <section id="progress" style="margin-top:40px">
+        <h2 class="wd-page-title">View My Academic Progress</h2>
+        <div class="wd-toolbar" style="margin:8px 0 20px"><span data-ic-inline="export"></span><span data-ic-inline="pdf"></span></div>
+        <div class="wd-prog-h"><span data-ic-inline="chevron-down-small"></span><span>University of Arkansas, Fayetteville - UAF | FINN | Department of Finance/Undergraduate (Finance Bachelor of Science in Business Administration/Pre-Business Pending)</span></div>
+        <div class="wd-kvrow" style="max-width:420px"><b>Cumulative GPA</b><span>3.600</span><b>Unused Registrations</b><span>0</span></div>
+        <div class="wd-toolbar"><span class="count">Overall Academic Progress <small>1 item</small></span></div>
+        <table class="wd-table">
+          <thead><tr><th class="num">Units Defined</th><th class="num">Units in Progress</th><th class="num">Units Satisfying</th><th>Remaining</th><th>Status</th></tr></thead>
+          <tbody><tr><td class="num">120</td><td class="num"><a href="#">15</a></td><td class="num"><a href="#">45</a></td><td>Minimum 75 Unit(s)</td><td>Not Satisfied</td></tr></tbody>
+        </table>
+        <div class="wd-toolbar" style="margin-top:28px"><span class="count">Requirements <small>14 items</small></span></div>
+        <table class="wd-table" id="reqtable">
+          <thead><tr><th>Requirement</th><th>Status</th><th>Remaining</th><th>Registrations Used</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#">Minimum 2.00 Cumulative GPA</a></td><td>Satisfied</td><td></td><td></td></tr>
+            <tr><td><a href="#">University Core in English Composition II</a></td><td>In Progress</td><td></td><td><a href="#">ENGL 10203 - COMPOSITION II (In Progress)</a></td></tr>
+            <tr><td><a href="#">Business Core: Accounting Principles</a></td><td>Satisfied</td><td></td><td><a href="#">ACCT 20103 - ACCT PRINCIPLES I</a><a href="#">ACCT 20203 - ACCT PRINCIPLES II</a></td></tr>
+            <tr><td><a href="#">Finance Core: Principles of Finance</a></td><td>Not Satisfied</td><td>FINN 20403</td><td></td></tr>
+            <tr><td><a href="#">Business Core: Business Statistics</a></td><td>Not Satisfied</td><td>STAT 20203</td><td></td></tr>
+            <tr><td><a href="#">Business Core: Information Systems</a></td><td>Not Satisfied</td><td>ISYS 21003</td><td></td></tr>
+            <tr><td><a href="#">Business Core: Microeconomics</a></td><td>Not Satisfied</td><td>ECON 20203</td><td></td></tr>
+            <tr><td><a href="#">Business Core: Business Writing</a></td><td>Not Satisfied</td><td>BUSW 20103</td><td></td></tr>
+            <tr><td><a href="#">University Core in Humanities</a></td><td>Not Satisfied</td><td>Minimum 1 Course(s)</td><td></td></tr>
+            <tr><td><a href="#">Professional Development</a></td><td>Not Satisfied</td><td>WCOB 30101</td><td></td></tr>
+            <tr><td><a href="#">Business Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Unit(s)</td><td></td></tr>
+            <tr><td><a href="#">Finance Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Course(s)</td><td></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/hub.js"></script>
+<script>
+renderShell({active:'student'});
+document.getElementById('rail').outerHTML=renderRail(location.hash==='#progress'?'progress':'overview');
+document.querySelectorAll('[data-ic]').forEach(el=>el.insertAdjacentHTML('afterbegin',icon(el.dataset.ic)));
+document.querySelectorAll('[data-ic-inline]').forEach(el=>el.outerHTML=icon(el.dataset.icInline));
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+.DS_Store
+.wrangler/
+node_modules/
+# real-tenant captures: local only, never publish
+reference/

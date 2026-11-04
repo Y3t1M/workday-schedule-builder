@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home - Workday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/workday.css">
+</head>
+<body>
+<main class="wd-main" id="main">
+  <div class="wd-hero" role="img" aria-label="University of Arkansas campus"></div>
+  <div class="wd-content">
+    <div class="wd-greet">
+      <h1 class="wd-h1" id="greet">Good Afternoon, Hudson Tinch</h1>
+      <div class="wd-date" id="today"></div>
+    </div>
+    <div class="wd-chips">
+      <a class="wd-chip" href="#">My Payslips</a>
+      <a class="wd-chip" href="#">Required Learning</a>
+      <a class="wd-chip" href="#">View My Grades</a>
+      <a class="wd-chip" href="#">View My Interim Grades</a>
+      <a class="wd-chip" href="academics.html#progress">View My Academic Progress</a>
+      <a class="wd-chip" href="builder.html">Build My Schedule</a>
+      <button class="wd-chip round" aria-label="More actions">⋮</button>
+    </div>
+
+    <div class="wd-grid">
+      <div class="col">
+        <section class="wd-card">
+          <div class="wd-card-head"><h2>Awaiting Your Action</h2><button class="more" aria-label="More">⋯</button></div>
+          <div class="wd-row">
+            <span class="wd-roundicon blue" id="ic-journey"></span>
+            <div><h4>You Have 2 Assigned Journeys</h4><p>Prepare for Registration, Complete Student Onboarding Tasks</p></div>
+          </div>
+          <div class="wd-row">
+            <span class="wd-roundicon" id="ic-learn"></span>
+            <div><h4>Required Learning Due</h4><span class="wd-tag">DUE 11/09/2026</span></div>
+          </div>
+          <div class="wd-row">
+            <span class="wd-roundicon" id="ic-cal"></span>
+            <div><h4>Registration opens 11/10/2026 at 8:00 AM</h4><p>UAF Spring 2027 &middot; <a href="builder.html">Build a schedule now</a> so you can register in one tap.</p></div>
+          </div>
+        </section>
+
+        <section class="wd-card">
+          <div class="wd-card-head"><h2>Timely Suggestions</h2></div>
+          <div class="wd-inner">
+            <span class="wd-ill" id="ic-time"></span>
+            <div><h4>You Have Unsubmitted Time</h4><p>Make sure to submit your time entries</p></div>
+            <a class="act" href="#">My Time</a>
+          </div>
+          <div class="wd-inner">
+            <span class="wd-ill" id="ic-pay"></span>
+            <div><h4>You Have a New Payslip</h4><p>Review your payslip information to ensure accuracy</p></div>
+            <a class="act" href="#">View Payslips</a>
+          </div>
+        </section>
+
+        <section class="wd-card">
+          <div class="wd-card-head"><h2>Recommended for You</h2></div>
+          <div class="wd-two">
+            <div class="wd-inner" style="flex-direction:column;align-items:flex-start;gap:8px">
+              <h4>Understand Your People Network</h4><p>Based on your role</p>
+              <a class="act" style="margin:16px 0 0" href="#">View Org Chart</a>
+            </div>
+            <div class="wd-inner" style="flex-direction:column;align-items:flex-start;gap:8px">
+              <h4>Showcase Your Best Self with Your Profile</h4><p>Based on your most popular actions</p>
+              <a class="act" style="margin:16px 0 0" href="#">Manage Profile</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="wd-card">
+          <div class="wd-card-head"><h2>Announcements</h2>
+            <div class="wd-pager"><span>1 of 2</span><button disabled aria-label="Previous" id="pg-l"></button><button aria-label="Next" id="pg-r"></button></div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start">
+            <div style="width:144px;height:110px;flex:none;border:1px solid var(--wd-border);border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font:900 18px/1 var(--wd-font);color:#9d2235;letter-spacing:-.3px">WORKDAY<br>RESOURCES</div>
+            <div><h4 style="font-size:16px;line-height:24px;font-weight:700">Workday Student Resources</h4><p style="margin:6px 0 0;font-size:14px;line-height:20px">Welcome to Workday! Here you will be able to find class registration guides, how-to videos and&hellip;</p></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script>
+renderShell({active:'home'});
+document.getElementById('today').textContent=todayLine();
+const h=new Date().getHours();document.getElementById('greet').textContent=(h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening')+', '+DEMO_STUDENT.name;
+document.getElementById('ic-journey').innerHTML=icon('location');
+document.getElementById('ic-learn').innerHTML=icon('book-open');
+document.getElementById('ic-cal').innerHTML=icon('calendar');
+document.getElementById('ic-time').innerHTML=icon('clock').replace('width="24" height="24"','width="48" height="48"');
+document.getElementById('ic-pay').innerHTML=icon('document').replace('width="24" height="24"','width="48" height="48"');
+document.getElementById('pg-l').innerHTML=icon('chevron-left-small');
+document.getElementById('pg-r').innerHTML=icon('chevron-right-small');
+</script>
+</body>
+</html>

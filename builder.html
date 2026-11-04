@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build My Schedule - Workday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/workday.css">
+<link rel="stylesheet" href="css/builder.css">
+</head>
+<body>
+<main class="wd-main">
+  <div class="wd-hub">
+    <div id="rail"></div>
+    <div style="flex:1;min-width:0">
+      <div class="wd-task-head">
+        <h1>Build My Schedule</h1>
+        <div class="sb-head">
+          <span class="sb-term" id="termPill"></span>
+          <label class="sb-ai" id="aiToggle" title="Optional. The rules engine builds the schedule either way; AI only reads plain-English preferences and writes the explanations."><span class="sw"></span><span>AI assist <b id="aiState">Off</b></span></label>
+        </div>
+      </div>
+      <div class="wd-hub-body" id="body"></div>
+    </div>
+  </div>
+</main>
+<div class="wd-scrim" id="scrim"></div>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/hub.js"></script>
+<script src="data/sections.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/builder.js"></script>
+</body>
+</html>
