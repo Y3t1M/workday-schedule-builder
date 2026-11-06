@@ -575,3 +575,34 @@ body.has-bottombar{padding-bottom:0}
 .sb-day{box-shadow:inset 0 0 0 1px #c9ced4;color:#8a949e;text-decoration:line-through}
 .sb-day.on{background:#333;color:#fff;box-shadow:inset 0 0 0 1px #333;text-decoration:none}
 .sb-day.off{background:#fff;color:#8a949e}
+
+/* step 4: how picks are spread */
+.sb-spread{margin:16px 0 0;border:1px solid var(--wd-border-strong);border-radius:12px;background:#fff;padding:16px 18px}
+.sb-spread .hd{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.sb-spread .hd .wd-icon{color:var(--wd-brand);flex:none}
+.sb-spread .hd b{display:block;font-size:15px;line-height:20px;color:var(--wd-text-strong)}
+.sb-spread .hd span{display:block;font-size:13px;line-height:18px;color:var(--wd-text)}
+.sb-spread ol{margin:0 0 12px;padding-left:20px;font-size:13px;line-height:18px;color:var(--wd-text)}
+.sb-spread ol li{margin-bottom:4px}
+.sb-spread ol b{color:var(--wd-text-strong)}
+.sb-spread .seats{display:flex;flex-wrap:wrap;gap:6px}
+.sb-spread .seats span{font-size:12px;line-height:16px;padding:4px 8px;border-radius:4px;background:#f6f7f8;border:1px solid var(--wd-border);color:var(--wd-text)}
+.sb-spread .seats span.low{background:var(--wd-warn-soft);border-color:#f3c58f;color:#8a4b00}
+.sb-spread .seats span b{color:var(--wd-text-strong)}
+.sb-spread .seats span i{font-style:normal;color:var(--wd-text-muted)}
+/* audit: tap targets + clipped text */
+.sb-prog-steps li button{min-height:28px;padding:4px 8px;margin:-4px -4px}
+.sb-prog-steps li span{display:inline-block;padding:4px 0}
+.sb-sync .sw{width:44px;height:24px}
+.sb-sync .sw::after{width:20px;height:20px}
+.sb-sync .sw.on::after{left:22px}
+.sb-opt-table input[type=radio]{width:20px;height:20px}
+.sb-opt-table td.c{padding-top:10px}
+.sb-ws li .c,.sb-ptable li .c{white-space:normal}
+.sb-opt-table a{padding:4px 0;margin:0 0 2px}
+/* audit round 2: tap targets */
+.sb-token button{width:24px;height:24px}
+.sb-opt-table input[type=radio]{width:22px;height:22px;margin:1px}
+.sb-opt-table td a,.sb-courses td a{padding:4px 0;margin:0 0 2px;line-height:16px}
+.sb-wide p.sb-muted a,.sb-card p a,.sb-spread a{display:inline-block;padding:4px 0;margin:-4px 0}
+@media (max-width:720px){.sb-prog-steps li button{min-width:28px;justify-content:center}}

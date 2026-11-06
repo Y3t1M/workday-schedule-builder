@@ -235,7 +235,16 @@
         <thead><tr><th style="width:44px"></th><th style="width:26%">Option</th><th class="num" style="width:80px">Credit Hours</th><th>Course Sections</th><th style="width:90px">Ruled Out</th><th style="width:170px">Calendar</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <p class="sb-muted" style="font-size:13px;margin:10px 0 0">Recommendations are spread across open sections, so students with the same requirements don't all land on one section and fill it first. ${g.catches.length} sections were ruled out in total; <a href="#errors">see every one in plain words</a>.</p>
+      <section class="sb-spread" aria-label="How picks are spread">
+        <div class="hd">${icon('users')}<div><b>Not everyone gets the same schedule</b><span>Students with the same requirements would all be pushed into one section and fill it in minutes. The builder prevents that three ways.</span></div></div>
+        <ol>
+          <li><b>Seats left decide the section.</b> When two sections of a course both fit, the one with more open seats ranks higher.</li>
+          <li><b>Ties break per student.</b> Equal options are ordered by a per-student draw, so two Finance sophomores with identical records see different first picks.</li>
+          <li><b>Seat counts are live on every row.</b> You see them before you choose, and tight sections are flagged.</li>
+        </ol>
+        <div class="seats">${(curOpt?curOpt.sections:[]).map(s=>{const alts=D.sections.filter(x=>x.course===s.course&&x.id!==s.id);return `<span class="${s.seats<=3?'low':''}"><b>${s.course}-${s.section}</b> ${s.seats===0?'full':s.seats+' seats'}${alts.length?` <i>· ${alts.map(a=>'§'+a.section+' '+(a.seats===0?'full':a.seats)).join(', ')}</i>`:''}</span>`}).join('')}</div>
+      </section>
+      <p class="sb-muted" style="font-size:13px;margin:10px 0 0">${g.catches.length} sections were ruled out in total; <a href="#errors">see every one in plain words</a>.</p>
 
       <h3 class="wd-section-h" style="margin-top:32px">Selected: ${curOpt?curOpt.label:'Custom'} · ${credits} credit hours</h3>
       <div class="wd-btn-row" style="margin:0 0 16px"><button class="wd-btn secondary sm" data-cal="cur">${icon('calendar')} Calendar View</button><button class="wd-btn secondary sm" data-go="swap-list">Swap a class</button></div>
@@ -464,10 +473,10 @@
     if(t.dataset.choose!==undefined){ const g=gen(); state.chosen=+t.dataset.choose; state.schedule=g.options[state.chosen].sections.map(s=>s.id); save(); render(true); return; }
     if(t.dataset.detail||t.dataset.sec){ e.preventDefault(); openSheet(t.dataset.detail||t.dataset.sec); return; }
     if(t.dataset.swapfor){ closeSheet(); state.swapping=t.dataset.swapfor; save(); go('swap'); render(); return; }
-    if(t.dataset.swapto){ const from=state.swapping; state.schedule=state.schedule.map(id=>id===from?t.dataset.swapto:id); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Swapped to ${t.dataset.swapto}. The other ${state.schedule.length-1} classes stay put.`); return; }
-    if(t.dataset.drop){ state.schedule=state.schedule.filter(id=>id!==t.dataset.drop); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Dropped ${t.dataset.drop} from the plan.`); return; }
+    if(t.dataset.swapto){ const from=state.swapping; state.schedule=(state.schedule||[]).map(id=>id===from?t.dataset.swapto:id); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Swapped to ${t.dataset.swapto}. The other ${state.schedule.length-1} classes stay put.`); return; }
+    if(t.dataset.drop){ state.schedule=(state.schedule||[]).filter(id=>id!==t.dataset.drop); state.chosen=-1; state.swapping=null; save(); go('review'); toast(`Dropped ${t.dataset.drop} from the plan.`); return; }
     if(t.dataset.waitlist){ toast(`Added to the waitlist for ${t.dataset.waitlist}. We'll text you when a seat opens.`); return; }
-    if(t.dataset.use){ const s=secById(t.dataset.use); if(!state.schedule.includes(s.id)){ const same=state.schedule.find(id=>secById(id).course===s.course); state.schedule= same? state.schedule.map(id=>id===same?s.id:id) : [...state.schedule,s.id]; state.chosen=-1; save(); } go('review'); toast(`${s.course}-${s.section} is in the plan.`); return; }
+    if(t.dataset.use){ const s=secById(t.dataset.use); const cur=state.schedule||[]; if(!cur.includes(s.id)){ const same=cur.find(id=>(secById(id)||{}).course===s.course); state.schedule= same? cur.map(id=>id===same?s.id:id) : [...cur,s.id]; state.chosen=-1; save(); } go('review'); toast(`${s.course}-${s.section} is in the plan.`); return; }
     if(t.id==='closeSheet'||t.id==='closeSheet2'||t.id==='cancelDlg'){ closeSheet(); return; }
     if(t.id==='calBtn'){ openCalendarExport(); return; }
     if(t.id==='saveBtn'){ let saved=[]; try{ saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); }catch(e){} const cur=schedule(); saved.unshift({name:`${D.termShort} · Builder`, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); try{localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3)));}catch(e){} t.textContent='Saving…'; t.disabled=true; setTimeout(()=>{ location.href='saved-schedules.html?saved=1'; },350); return; }
