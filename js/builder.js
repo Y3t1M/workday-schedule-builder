@@ -37,8 +37,16 @@
   const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
     const at=stepIndex(cur); const max=Math.max(state.maxStep||0,at);
-    const pct=Math.round((at/(STEPS.length-1))*100);
-    return `<div class="sb-prog" role="group" aria-label="Progress"><div class="sb-prog-meta"><span>Step ${at+1} of ${STEPS.length}</span><b>${STEPS[at][1]}</b></div><div class="sb-prog-track"><div class="sb-prog-fill" style="width:${pct}%"></div></div><ol class="sb-prog-steps">${STEPS.map((s,i)=>`<li class="${i<at?'done':i===at?'now':''} ${i<=max?'can':''}">${i<=max?`<button data-go="${s[0]}" ${i===at?'aria-current="step"':''}>${i<at?icon('check-small'):''}<span>${s[1]}</span></button>`:`<span>${s[1]}</span>`}</li>`).join('')}</ol></div>`;
+    return `<ol class="sb-steps2" aria-label="Progress">${STEPS.map((s,i)=>{
+      const k=i<at?'done':i===at?'now':'todo'; const can=i<=max&&i!==at;
+      const mark=i<at?icon('check-small'):`<span>${i+1}</span>`;
+      const inner=`<span class="dot">${mark}</span><span class="lbl">${s[1]}</span>`;
+      return `<li class="${k}">${can?`<button data-go="${s[0]}">${inner}</button>`:`<span class="st" ${i===at?'aria-current="step"':''}>${inner}</span>`}</li>`;
+    }).join('')}</ol>`;
+  }
+  // page title above the steps, then the steps, then the content
+  function pageHead(title, sub, cur){
+    return `<div class="sb-pagehead"><h1 class="wd-page-title">${title}</h1>${sub?`<p class="sb-pagesub">${sub}</p>`:''}</div>${stepsBar(cur)}`;
   }
   function foot(back,next,nextLabel,hint,extra){
     return `<div class="sb-foot">${back?`<button class="wd-btn secondary" data-go="${back}">Back</button>`:''}${hint?`<span class="hint">${hint}</span>`:''}<div class="right">${extra||''}${next?`<button class="wd-btn primary" data-go="${next}" id="nextBtn">${nextLabel||'Next'}</button>`:''}</div></div>`;
@@ -93,12 +101,10 @@
     const st=D.student; const tot=D.totalHours; const done=st.creditsDone, ip=st.creditsInProgress, left=tot-done-ip;
     const rows=D.requirements.map((g,gi)=>{const s=groupStats(g);return `<details class="r"><summary><span class="n">${g.group}</span><span class="v">${s.done}</span><span class="v">${s.ip||'–'}</span><span class="v ${s.left?'left':''}">${s.left||icon('check-small')}</span>${icon('chevron-down-small','chev')}</summary><ul>${g.items.map(i=>`<li class="${i.status}"><span class="ck">${i.status==='done'?icon('check-small'):i.status==='inprogress'?icon('clock'):''}</span><span class="c">${i.course}</span><span class="t">${i.title}</span><span class="h">${i.h}</span></li>`).join('')}</ul></details>`}).join('');
     return `
-    ${stepsBar('start')}
+    ${pageHead('Registration for '+D.termShort,'Set from your registration appointment. Opens '+D.registrationOpens+'.','start')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Registration for ${D.termShort}</h2>
-        <p class="sub">Set from your registration appointment. Opens ${D.registrationOpens}.</p>
-        <p class="sb-lead">Reads your degree audit, takes the times you want, and gives you three schedules that fit. Nothing registers until you confirm.</p>
+        <p class="sb-lead" style="margin-top:0">Reads your degree audit, takes the times you want, and gives you three schedules that fit. Nothing registers until you confirm.</p>
         <div class="sb-two-cards">
           <section class="sb-pcard">
             <h3>Academic Progress</h3>
@@ -131,11 +137,9 @@
     const earlyPresets=['08:00','09:00','10:00','11:00'], latePresets=['14:00','15:00','16:00','17:00','18:00'];
     const parsed=p.parsed||{};
     return `
-    ${stepsBar('prefs')}
+    ${pageHead('Preferences','Only sections that break these get dropped.','prefs')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Preferences</h2>
-        <p class="sub">Only sections that break these get dropped.</p>
         ${state.ai?`<div class="sb-ai-box"><label class="sb-label" for="sentence">${icon('sparkle')}Describe it <small>optional · spelling doesn't matter</small></label><div class="row"><textarea class="sb-textarea" id="sentence" placeholder="e.g. nothing before 10, fridays off, I work tues and thurs 1 to 5, 16 hours">${p.sentence||''}</textarea><button class="wd-btn secondary sm" id="applySentence">Apply</button></div><div class="sb-parsed" id="parsed"></div></div>`:''}
         <div class="sb-field"><label class="sb-label">Credit hours</label>
           <div class="sb-seg" id="credits">${[12,15,18].map(c=>`<button class="${p.credits===c?'on':''}" data-credits="${c}">${c}</button>`).join('')}<button class="${![12,15,18].includes(p.credits)?'on':''}" data-other="1">${![12,15,18].includes(p.credits)?p.credits:'Other'}</button></div>
@@ -178,11 +182,9 @@
     const row=(i)=>`<div class="sb-req"><div><b>${i.course} · ${i.title}</b><div class="d">${i.group} · ${i.h} cr${i.pathway?` · <span class="sb-tag">Pathway ${i.pathway}</span>`:''}${i.prereq?` · ${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}`:''}</div></div>${st(i)}</div>`;
     const reqHrs=sum(required,i=>i.h);
     return `
-    ${stepsBar('needs')}
+    ${pageHead('Your '+D.termShort+' Plan','From your degree audit (evaluated 10/21/2026) and the Walton eight-semester pathway. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Your ${D.termShort} plan</h2>
-        <p class="sub">From your degree audit (evaluated 10/21/2026) and the Walton eight-semester pathway. <a href="academics.html#progress">View My Academic Progress</a></p>
         <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${required.length}</b><span>required next · ${reqHrs} hrs</span></div><div class="sb-fact"><b>${fill.length}</b><span>electives you could add</span></div><div class="sb-fact"><b>${unlockSoon.length}</b><span>unlock after this term</span></div><div class="sb-fact"><b>${D.totalHours-D.student.creditsDone-D.student.creditsInProgress}</b><span>hours left of ${D.totalHours}</span></div></div>
         <h3 class="wd-section-h">Required next</h3>
         <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Core classes the pathway puts in this semester. All prerequisites met.</p>
@@ -205,7 +207,7 @@
     const g=gen();
     if(!g.options.length){
       const must=state.prefs.mustTake||[];
-      return `${stepsBar('options')}<div class="sb"><div class="sb-card"><h2>Nothing fits all of these yet</h2><p class="sub">${must.length>1?`${must.join(' and ')} can't be taken together with your times.`:'Your must-take courses and your times rule each other out.'}</p>${g.hints.map(h=>`<div class="sb-chk">${icon('info')}<span>${h}</span></div>`).join('')}<div class="sb-actions"><a class="wd-btn primary" href="#prefs">Change preferences</a><a class="wd-btn secondary" href="#errors">See what was ruled out</a></div></div></div>`;
+      return `${pageHead('Schedule Options',null,'options')}<div class="sb"><div class="sb-card"><h2>Nothing fits all of these yet</h2><p class="sub">${must.length>1?`${must.join(' and ')} can't be taken together with your times.`:'Your must-take courses and your times rule each other out.'}</p>${g.hints.map(h=>`<div class="sb-chk">${icon('info')}<span>${h}</span></div>`).join('')}<div class="sb-actions"><a class="wd-btn primary" href="#prefs">Change preferences</a><a class="wd-btn secondary" href="#errors">See what was ruled out</a></div></div></div>`;
     }
     if(state.chosen==null||!state.schedule){ state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); }
     const banner = g.relaxed ? `<div class="sb-relaxed">${icon('info')}<div><b>No schedule reaches ${g.target} credit hours with these limits.</b> ${g.hints.join(' ')||'Loosen a preference to open more sections.'} <a href="#prefs">Change preferences</a></div></div>` : '';
@@ -225,10 +227,9 @@
     const cur=schedule(); const curOpt=g.options[state.chosen]||null; const credits=cur.reduce((a,s)=>a+s.credits,0);
     const p=state.prefs; const blocks=S.allBlocks(p,D);
     return `
-    ${stepsBar('options')}
+    ${pageHead(g.relaxed?'Closest Schedule Options':'Schedule Options',null,'options')}
     <div class="sb-wide">
-      <h2 class="wd-page-title">${g.relaxed?'Closest Schedule Options':'Schedule Options'}</h2>
-      <div class="wd-kvrow" style="margin:16px 0 8px;max-width:760px"><b>Academic Period</b><span>${state.term||D.term}</span><b>Preferences</b><span>${p.earliest?`Nothing before ${S.fmt(p.earliest)}`:'Any start'}${p.latest?`, nothing after ${S.fmt(p.latest)}`:''} · ${p.daysOff.length?p.daysOff.map(d=>S.DAY[d]).join('/')+' unavailable':'All days'} · ${blocks.map(b=>b.label).join(', ')||'No blocked time'} · ${p.credits} credit hours &nbsp;<a href="#prefs">Edit</a></span></div>
+      <div class="wd-kvrow" style="margin:0 0 8px;max-width:760px"><b>Academic Period</b><span>${state.term||D.term}</span><b>Preferences</b><span>${p.earliest?`Nothing before ${S.fmt(p.earliest)}`:'Any start'}${p.latest?`, nothing after ${S.fmt(p.latest)}`:''} · ${p.daysOff.length?p.daysOff.map(d=>S.DAY[d]).join('/')+' unavailable':'All days'} · ${blocks.map(b=>b.label).join(', ')||'No blocked time'} · ${p.credits} credit hours &nbsp;<a href="#prefs">Edit</a></span></div>
       ${banner}
       <div class="wd-toolbar"><span class="count">Options <small>${g.options.length} items</small></span>${icon('export')}${icon('filter')}${icon('expand-table')}<span class="seg"><span class="on">${icon('grid-view')}</span><span>${icon('list-view')}</span></span></div>
       <table class="wd-table sb-opt-table">
@@ -267,7 +268,7 @@
     const cur=schedule();
     const target = state.swapping ? secById(state.swapping) : null;
     if(!target){
-      return `${stepsBar('swap')}<div class="sb"><div class="sb-card"><h2>Swap a class</h2><p class="sub">Pick the class to change. The other ${cur.length-1} stay put.</p>${cur.map(s=>classRow(s)).join('')}</div>${foot('options',null)}</div>`;
+      return `${pageHead('Swap a Class','Pick the class to change. The other '+(cur.length-1)+' stay put.','swap')}<div class="sb"><div class="sb-card">${cur.map(s=>classRow(s)).join('')}</div>${foot('options',null)}</div>`;
     }
     const others=cur.filter(s=>s.id!==target.id);
     const sameCourse=D.sections.filter(s=>s.course===target.course&&s.id!==target.id);
@@ -283,11 +284,9 @@
       return `<div class="sb-alt ${issues.length?'bad':''}"><div class="t"><b>${s.course}-${s.section} · ${s.title}</b><span>${S.dayList(s.days)} · ${S.fmt(s.start)}–${S.fmt(s.end)} · ${s.credits} cr · ${s.instructor} · ${seatsText(s)} · Fills ${s.fills}</span>${issues.length?`<span class="no ${crit?'crit':''}">${issues.join(' ')}</span>`:''}</div>${!issues.length?`<button class="wd-btn primary sm" data-swapto="${s.id}">Use this</button>`:canWait?`<button class="wd-btn secondary sm" data-waitlist="${s.id}">Waitlist</button>`:''}</div>`;
     };
     return `
-    ${stepsBar('swap')}
+    ${pageHead('Swap '+target.course+'-'+target.section, target.title+' · '+S.dayList(target.days)+' '+S.fmt(target.start)+'–'+S.fmt(target.end)+'. The other '+others.length+' classes stay put.','swap')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Swap ${target.course}-${target.section}</h2>
-        <p class="sub">${target.title} · ${S.dayList(target.days)} ${S.fmt(target.start)}–${S.fmt(target.end)}. The other ${others.length} classes stay put.</p>
         ${week(cur,{mini:true,hl:target.id})}
         <h3 class="wd-section-h">Other sections of ${target.course}</h3>
         ${sameCourse.length?sameCourse.map(alt).join(''):'<p class="sb-muted">No other sections this term.</p>'}
@@ -321,11 +320,9 @@
     const unlocks=D.flatReqs.filter(i=>i.status==='later'&&sched.includes(i.after)).map(i=>i.course);
     const rows=D.requirements.map(g=>{const s=groupStats(g,sched);return {g,s};}).filter(x=>x.s.left>0||x.s.planned>0);
     return `
-    ${stepsBar('review')}
+    ${pageHead('Review and Confirm', cur.length+' sections · '+credits+' credit hours · '+D.termShort+'. Nothing happens until you confirm.','review')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Review</h2>
-        <p class="sub">${cur.length} sections · ${credits} credit hours · ${D.termShort}. Nothing happens until you confirm.</p>
         ${week(cur)}
         <h3 class="wd-section-h">What's left after this term</h3>
         <div class="sb-left">
@@ -349,11 +346,9 @@
   V.errors=()=>{
     const g=gen();
     return `
-    ${stepsBar('errors')}
+    ${pageHead('Ruled Out, in Plain Words','Workday says "You are not eligible." The builder says what\'s wrong and what to do.','errors')}
     <div class="sb">
       <div class="sb-card">
-        <h2>Problems, in plain words</h2>
-        <p class="sub">Workday says "You are not eligible." The builder says what's wrong and what to do.</p>
         ${g.catches.map(c=>catchCard(c,true)).join('')}
       </div>
       ${foot('options',null,null,null,`<button class="wd-btn primary" data-go="options">Back to options</button>`)}
@@ -363,7 +358,7 @@
   V.done=()=>{
     const cur=schedule(); const credits=cur.reduce((a,s)=>a+s.credits,0);
     return `
-    ${stepsBar('done')}
+    ${pageHead('Registration Submitted',null,'done')}
     <div class="sb">
       <div class="sb-card sb-success">
         <div class="hd">${icon('check-circle-fill')}<div><h2>Success! You're registered for ${D.termShort}.</h2><p class="sub">All ${cur.length} sections went through. ${credits} credit hours. Seats are held in your name. Nothing else to do today.</p></div></div>

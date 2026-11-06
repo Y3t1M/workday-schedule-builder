@@ -606,3 +606,36 @@ body.has-bottombar{padding-bottom:0}
 .sb-opt-table td a,.sb-courses td a{padding:4px 0;margin:0 0 2px;line-height:16px}
 .sb-wide p.sb-muted a,.sb-card p a,.sb-spread a{display:inline-block;padding:4px 0;margin:-4px 0}
 @media (max-width:720px){.sb-prog-steps li button{min-width:28px;justify-content:center}}
+
+/* ================= progress: cardinal circles, title above ================= */
+.sb-prog{display:none}
+.sb-pagehead{margin:0 0 16px}
+.sb-pagehead .wd-page-title{font-size:24px;line-height:30px}
+.sb-pagesub{margin:4px 0 0;font-size:14px;line-height:20px;color:var(--wd-text-muted);max-width:760px}
+.sb-steps2{list-style:none;margin:0 0 24px;padding:0;display:flex;align-items:flex-start;max-width:760px}
+.sb-steps2 li{flex:1;position:relative;display:flex;justify-content:center;min-width:0}
+.sb-steps2 li::before,.sb-steps2 li::after{content:"";position:absolute;top:14px;height:2px;background:#dfe2e6;width:50%}
+.sb-steps2 li::before{left:0}
+.sb-steps2 li::after{right:0}
+.sb-steps2 li:first-child::before,.sb-steps2 li:last-child::after{display:none}
+.sb-steps2 li.done::before,.sb-steps2 li.done::after,.sb-steps2 li.now::before{background:#333}
+.sb-steps2 .st,.sb-steps2 button{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 4px;min-width:56px;color:inherit;font:inherit;background:transparent;border:0}
+.sb-steps2 button{cursor:pointer;border-radius:8px}
+.sb-steps2 button:hover .lbl{text-decoration:underline}
+.sb-steps2 button:focus-visible{outline:2px solid #0875e1}
+.sb-steps2 .dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:#fff;border:2px solid #c9ced4;color:#8a949e;box-sizing:border-box}
+.sb-steps2 .dot .wd-icon{width:18px;height:18px}
+.sb-steps2 li.done .dot{background:var(--wd-brand);border-color:var(--wd-brand);color:#fff}
+.sb-steps2 li.now .dot{border-color:var(--wd-brand);color:var(--wd-brand);box-shadow:0 0 0 4px #fce8ec}
+.sb-steps2 .lbl{font-size:12px;line-height:16px;color:#8a949e;text-align:center;white-space:nowrap}
+.sb-steps2 li.done .lbl{color:var(--wd-text-strong)}
+.sb-steps2 li.now .lbl{color:var(--wd-brand);font-weight:700}
+.sb-wide .sb-steps2{max-width:760px}
+@media (max-width:720px){
+  .sb-pagehead .wd-page-title{font-size:20px;line-height:26px}
+  .sb-steps2{margin-bottom:20px}
+  .sb-steps2 .dot{width:26px;height:26px;font-size:12px}
+  .sb-steps2 li::before,.sb-steps2 li::after{top:12px}
+  .sb-steps2 .lbl{font-size:10px;white-space:normal;line-height:12px;max-width:64px}
+  .sb-steps2 .st,.sb-steps2 button{min-width:44px;padding:0 2px}
+}
