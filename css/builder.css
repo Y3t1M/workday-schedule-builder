@@ -715,3 +715,6 @@ body.has-bottombar{padding-bottom:0}
 .sb-tile2 dl{gap:14px 16px;padding-top:4px}
 .sb-card > .sub{font-size:15px;line-height:22px;color:var(--wd-text);margin-bottom:18px}
 .sb-card > .sub b{color:var(--wd-text-strong);font-weight:700}
+
+.sb-steps2{max-width:760px}
+.sb-wide .sb-steps2,.sb-wide .sb-meta2{max-width:760px}
