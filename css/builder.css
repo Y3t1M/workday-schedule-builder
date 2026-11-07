@@ -681,3 +681,13 @@ body.has-bottombar{padding-bottom:0}
 .wd-rail.is-collapsed ~ div .sb-foot{left:calc(var(--wd-nav-w) + 64px)}
 .wd-hub-body{padding-bottom:104px}
 @media (max-width:1000px){.sb-foot{left:0;padding:12px 16px}}
+
+/* selection-style steps: no numbers; current = selected radio, done = check, upcoming = empty ring */
+.sb-steps2 .dot{width:24px;height:24px;border-width:2px;margin-top:3px;margin-bottom:3px}
+.sb-steps2 li::before,.sb-steps2 li::after{top:14px}
+.sb-steps2 .dot .sel{width:12px;height:12px;border-radius:50%;background:var(--wd-brand);display:block}
+.sb-steps2 li.now .dot{box-shadow:none}
+.sb-steps2 .dot .wd-icon{width:16px;height:16px}
+.sb-steps2 li:first-child::after{left:24px;width:calc(100% - 24px)}
+.sb-steps2 li:last-child::before{width:calc(100% - 24px)}
+@media (max-width:720px){.sb-steps2 .dot{width:22px;height:22px}.sb-steps2 li::before,.sb-steps2 li::after{top:13px}}

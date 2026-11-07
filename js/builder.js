@@ -40,7 +40,7 @@
     const at=stepIndex(cur); const max=Math.max(state.maxStep||0,at);
     return `<div class="sb-prog-meta sb-meta2"><b>Let's Build Your Schedule</b><span>step ${at+1} of ${STEPS.length}</span></div><ol class="sb-steps2" aria-label="Progress">${STEPS.map((s,i)=>{
       const k=i<at?'done':i===at?'now':'todo'; const can=i<=max&&i!==at;
-      const mark=i<at?icon('check-small'):`<span>${i+1}</span>`;
+      const mark=i<at?icon('check-small'):(i===at?'<span class="sel"></span>':'');
       const inner=`<span class="dot">${mark}</span><span class="lbl">${s[1]}</span>`;
       return `<li class="${k}">${can?`<button data-go="${s[0]}">${inner}</button>`:`<span class="st" ${i===at?'aria-current="step"':''}>${inner}</span>`}</li>`;
     }).join('')}</ol>`;
