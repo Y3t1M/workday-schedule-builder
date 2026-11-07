@@ -207,7 +207,7 @@
       return status('warn',"Doesn't fit your times");
     };
     const pre=i=>i.prereq?`<div class="d">${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}</div>`:'';
-    const row=i=>`<tr><td><b>${i.course}</b><div class="t">${i.title}</div></td><td class="num">${i.h}</td><td class="req">${i.group}${pre(i)}</td></tr>`;
+    const row=i=>`<tr><td><b>${i.course}</b><div class="t">${i.title}</div></td><td class="num">${i.h}</td><td class="req">${i.group}</td></tr>`;
     const table=rows=>`<table class="wd-table sb-wstable"><thead><tr><th>Course</th><th class="num">Hours</th><th class="req">Satisfies</th></tr></thead><tbody>${rows.map(row).join('')}</tbody></table>`;
     const FINN='https://catalog.uark.edu/plangrids/financebsbawithfinancialmanagementandinvestmentconcentration/', ISYS='https://catalog.uark.edu/plangrids/informationsystemsbsbawithenterpriseresourceplanningconcentration/';
     return `
