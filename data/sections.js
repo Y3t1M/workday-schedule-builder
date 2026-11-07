@@ -18,7 +18,7 @@ window.SB_DATA = {
     catalog: '2025-26', expectedGrad: 'May 2029', college: 'Sam M. Walton College of Business',
     advisor: {name:'Blaise M. Simecek', first:'Blaise', title:'Assistant Director, Walton Honors Program', office:'WCOB 335', email:'bsimecek@walton.uark.edu'},
     // Work schedule on file in Workday (Time Tracking) for the student job
-    work: {label:'Campus job', source:'Workday Time Tracking · Walton Dean’s Office student worker', days:['T','Th'], start:'13:00', end:'17:00'}
+    work: {label:'Campus job', job:'Walton Dean’s Office', source:'Workday Time Tracking · Walton Dean’s Office student worker', days:['T','Th'], start:'13:00', end:'17:00'}
   },
   // Degree worksheet. status: done | inprogress | open (eligible now) | later (prerequisite or standing not met)
   requirements: [

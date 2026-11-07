@@ -768,3 +768,30 @@ body.has-bottombar{padding-bottom:0}
 .sb-week .cell.blk:hover{background:repeating-linear-gradient(135deg,#d0d4d9 0 5px,#e8ebed 5px 10px)}
 /* rail collapsed: let the builder use the whole width */
 .wd-rail.is-collapsed ~ div .sb,.wd-rail.is-collapsed ~ div .sb-prog,.wd-rail.is-collapsed ~ div .sb-pagesub,.wd-rail.is-collapsed ~ div .sb-steps2{max-width:none}
+
+/* preferred start/end timeline */
+.sb-range{position:relative;height:50px;margin:10px 0 2px}
+.sb-range .track{position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:#dfe2e6}
+.sb-range .fill{position:absolute;top:12px;height:4px;border-radius:2px;background:var(--wd-brand);left:var(--a);right:calc(100% - var(--b))}
+.sb-range input[type=range]{position:absolute;left:0;top:0;width:100%;height:28px;margin:0;-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none;outline:0}
+.sb-range input[type=range]::-webkit-slider-runnable-track{background:transparent;height:28px}
+.sb-range input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:3px;border-radius:50%;background:#fff;border:2px solid var(--wd-brand);box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:auto;cursor:grab}
+.sb-range input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--wd-brand);box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:auto;cursor:grab}
+.sb-range input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px #fce8ec}
+.sb-range .ticks{position:absolute;left:0;right:0;top:30px;display:flex;justify-content:space-between;font-size:11px;line-height:14px;color:var(--wd-text-muted)}
+.sb-range-vals{display:flex;justify-content:space-between;font-size:13px;color:var(--wd-text-muted)}
+.sb-range-vals b{color:var(--wd-text-strong);font-size:14px}
+.sb-week .cell.out{background:#f0f1f2;cursor:not-allowed}
+.sb-week .cell.out:hover{background:#f0f1f2}
+.sb-sync{align-items:center}
+.sb-sync b{font-weight:500}
+/* degree audit */
+.sb-el{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin-bottom:8px}
+.sb-el-g b{display:block;font-size:12px;line-height:16px;color:var(--wd-text-muted);font-weight:500;margin:6px 0 2px}
+.sb-el-g ul{list-style:none;margin:0;padding:0}
+.sb-el-g li{display:grid;grid-template-columns:96px 1fr auto;gap:8px;font-size:13px;line-height:18px;padding:5px 0;border-bottom:1px solid #eef0f2}
+.sb-el-g li .c{font-weight:700;color:var(--wd-text-strong)}
+.sb-el-g li .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-el-g li .h{color:var(--wd-text-muted)}
+.sb-ws summary .el{font-style:normal;color:var(--wd-brand);font-weight:700}
+@media (max-width:720px){.sb-el{grid-template-columns:1fr}}
