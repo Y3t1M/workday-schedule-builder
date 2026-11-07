@@ -153,38 +153,76 @@
     </div>`;
   };
 
+  // ---------- course look-up (Degree Requirements) ----------
+  function lookupCatalog(){
+    const seen=new Set(); const out=[];
+    D.flatReqs.forEach(i=>{ if(/^[A-Z]{3,4} \d{5}$/.test(i.course)&&!seen.has(i.course)){ seen.add(i.course); out.push({course:i.course,title:i.title,h:i.h,req:i}); } });
+    D.sections.forEach(s=>{ if(!seen.has(s.course)){ seen.add(s.course); out.push({course:s.course,title:s.title,h:s.credits,req:null}); } });
+    return out.sort((a,b)=>a.course.localeCompare(b.course));
+  }
+  function lookup(){
+    const q=(state.lookup||'').trim(); const pick=state.lookupPick; const cat=lookupCatalog();
+    const ql=q.toLowerCase().replace(/\s+/g,' ');
+    const hits=q&&!pick?cat.filter(c=>(c.course+' '+c.title).toLowerCase().includes(ql)).slice(0,8):[];
+    return `<div class="sb-lookup">
+      <div class="sb-prompt"><div class="sb-prompt-box"><input id="lookupInput" type="text" placeholder="Search by course code or name, e.g. FINN 30603" autocomplete="off" value="${q.replace(/"/g,'&quot;')}">${pick?`<button class="clr" data-lookupclear aria-label="Clear">${icon('x-small')}</button>`:`<span class="pr">${icon('search')}</span>`}</div>
+      <div class="sb-prompt-menu" id="lookupMenu" ${hits.length?'':'hidden'}>${hits.map(c=>`<button data-lookup="${c.course}"><b>${c.course}</b> ${c.title}${c.req?` <span>· ${c.req.group}</span>`:''}</button>`).join('')}</div></div>
+      ${pick?lookupCard(pick):''}
+    </div>`;
+  }
+  function lookupCard(code){
+    const c=lookupCatalog().find(x=>x.course===code); if(!c) return '';
+    const i=c.req; const secs=D.sections.filter(s=>s.course===code);
+    const g=gen(); const inPlan=new Set((g.options[0]?g.options[0].sections:[]).map(s=>s.course));
+    const planned=D.flatReqs.filter(x=>x.status==='open'&&x.pathway).map(x=>x.course);
+    const rows=[];
+    rows.push(['Satisfies', i?`${i.group}${i.pathway?` · Pathway ${i.pathway}`:''}`:'Not a listed requirement on your worksheet']);
+    if(i&&i.prereq){ const d=S.done(D.student,i.prereq), ip=(D.student.inProgress||[]).includes(i.prereq), pl=planned.includes(i.prereq)||inPlan.has(i.prereq); rows.push(['Prerequisite', d?status('ok',`${i.prereq} · ${ip?'in progress':'complete'}`):pl?status('later',`${i.prereq} · in your ${D.termShort} plan, so this opens up next term`):status('warn',`${i.prereq} · not yet taken`)]); }
+    else if(i&&i.status==='later'&&i.after){ const pl=planned.includes(i.after)||D.requirements.some(gr=>gr.group===i.after); rows.push(['Prerequisite', status(pl?'later':'warn',`${i.after}${pl?` · in progress through your ${D.termShort} plan`:''}`)]); }
+    else if(i) rows.push(['Prerequisite', status('ok','None')]);
+    if(i&&i.coreq) rows.push(['Corequisite', status('warn',i.coreq)]);
+    let st; let cta='';
+    if(i&&i.status==='done') st=status('ok','Complete');
+    else if(i&&i.status==='inprogress') st=status('ip',`In progress · ${i.term}`);
+    else if(i&&i.status==='later'){ const need=i.prereq||i.after; const isGroup=need&&D.requirements.some(gr=>gr.group===need); st=status('later',need?(isGroup?`Not yet eligible · ${need} must be complete first`:`Not yet eligible · needs ${need} first`):'Not yet eligible · prerequisite not met'); }
+    else if(inPlan.has(code)) st=status('ok',`In your recommended ${D.termShort} schedule`);
+    else if(!secs.length) st=status('later',`No ${D.termShort} sections in this demo`);
+    else { const fits=secs.some(s=>!S.problems(s,state.prefs,D.student,D).length); st=fits?status('ok',`Eligible · fits your availability`):status('warn','Eligible · no section fits your availability'); cta=`<button class="wd-btn secondary sm" data-lookupadd="${code}">Build my schedule around it</button>`; }
+    rows.push(['Status', st]);
+    return `<div class="sb-lookup-card"><div class="head"><div><b>${c.course}</b><span>${c.title} · ${c.h} credit hours</span></div>${cta}</div><dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></div>`;
+  }
+
   V.needs=()=>{
     const g=gen(); const rec=new Set((g.options[0]?g.options[0].sections:[]).map(s=>s.course));
     const anyFit=c=>D.sections.filter(s=>s.course===c).some(s=>!S.problems(s,state.prefs,D.student,D).length);
     const open=D.flatReqs.filter(i=>i.status==='open');
     const required=open.filter(i=>i.pathway&&!i.nosections);
     const fill=open.filter(i=>!required.includes(i));
-    const later=D.flatReqs.filter(i=>i.status==='later'&&i.after&&(reqOf(i.after)||D.requirements.some(gr=>gr.group===i.after)));
-    const unlockSoon=later.filter(i=>open.some(o=>o.course===i.after)||i.after==='Pre-Business Core');
     const st=(i)=>{
-      if(i.nosections) return status('later','No sections loaded in this demo');
+      if(i.nosections) return status('later','Pick a section in Find Course Sections');
       const secs=D.sections.filter(s=>s.course===i.course);
       if(rec.has(i.course)) return status('ok','In your recommended schedule');
       if(anyFit(i.course)){ const s0=secs.find(x=>!S.problems(x,state.prefs,D.student,D).length); const o=g.options[0]&&g.options[0].sections.find(r=>S.overlap(r,s0)>0); return o?status('warn',`Overlaps ${o.course} by ${S.overlap(o,s0)} min`):status('ok','Fits your times'); }
       if(secs.length&&secs.every(s=>s.seats===0)) return status('warn','Full · waitlist');
       return status('warn',"Doesn't fit your times");
     };
-    const row=(i)=>`<div class="sb-req"><div><b>${i.course} · ${i.title}</b><div class="d">${i.group} · ${i.h} cr${i.pathway?` · <span class="sb-tag">Pathway ${i.pathway}</span>`:''}${i.prereq?` · ${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}`:''}</div></div>${st(i)}</div>`;
-    const reqHrs=sum(required,i=>i.h);
+    const pre=i=>i.prereq?`<div class="d">${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}</div>`:'';
+    const row=i=>`<tr><td><b>${i.course}</b><div class="t">${i.title}</div></td><td class="num">${i.h}</td><td class="req">${i.group}</td></tr>`;
+    const table=rows=>`<table class="wd-table sb-wstable"><thead><tr><th>Course</th><th class="num">Hours</th><th class="req">Satisfies</th></tr></thead><tbody>${rows.map(row).join('')}</tbody></table>`;
+    const FINN='https://catalog.uark.edu/plangrids/financebsbawithfinancialmanagementandinvestmentconcentration/', ISYS='https://catalog.uark.edu/plangrids/informationsystemsbsbawithenterpriseresourceplanningconcentration/';
     return `
-    ${pageHead('Your '+D.termShort+' Plan','From your degree audit (evaluated 10/21/2026) and the Walton eight-semester pathway. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
+    ${pageHead('Your '+D.termShort+' Plan','From your degree audit, evaluated 10/21/2026 at 2:00 AM. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
     <div class="sb">
       <div class="sb-card">
-        <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${required.length}</b><span>required next · ${reqHrs} credit hours</span></div><div class="sb-fact"><b>${fill.length}</b><span>electives you could add</span></div><div class="sb-fact"><b>${unlockSoon.length}</b><span>unlock after this term</span></div><div class="sb-fact"><b>${D.totalHours-D.student.creditsDone-D.student.creditsInProgress}</b><span>credit hours left of ${D.totalHours}</span></div></div>
-        <h3 class="wd-section-h">Required next</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">What the Walton pathway puts in Year 2 Spring. All prerequisites met.</p>
-        ${required.map(row).join('')}
-        <h3 class="wd-section-h">Fill in with</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Electives you can take now. Pick any to reach your credit hours.</p>
-        ${fill.map(row).join('')}
-        <h3 class="wd-section-h">After this term</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Blocked until a prerequisite is done. Finishing the list above unlocks them for Fall 2027.</p>
-        ${unlockSoon.slice(0,8).map(i=>`<div class="sb-req later"><div><b>${i.course} · ${i.title}</b><div class="d">${i.group} · ${i.h} cr</div></div>${status('later','After '+i.after)}</div>`).join('')}
+        <h3 class="wd-section-h">Upcoming required courses</h3>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Required courses for degree progression.</p>
+        ${table(required)}
+        <h3 class="wd-section-h">Recommended second year courses</h3>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Walton College of Business course recommendations for second-year students, based on the <a href="${FINN}" target="_blank" rel="noopener">Finance Degree Pathway</a> and the <a href="${ISYS}" target="_blank" rel="noopener">Information Systems Degree Pathway</a>.</p>
+        ${table(fill)}
+        <h3 class="wd-section-h">Look up a course</h3>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">See what a course satisfies, what it needs first, and how it fits your ${D.termShort} plan.</p>
+        ${lookup()}
         <h3 class="wd-section-h">Degree worksheet</h3>
         <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Every requirement by category. Anything unchecked still stands between you and graduation.</p>
         ${worksheet()}
@@ -436,7 +474,7 @@
   function setTime(which,val){ if(val&&!/^\d{2}:\d{2}$/.test(val)) return; state.prefs[which]=val||''; if(which==='latest'&&val&&state.prefs.earliest&&S.mins(val)<=S.mins(state.prefs.earliest)){ toast('Latest has to be after earliest.'); state.prefs[which]=''; } resetPicks(); save(); render(true); }
 
   document.addEventListener('click',e=>{
-    const t=e.target.closest('.cell,[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
+    const t=e.target.closest('.cell,[data-lookup],[data-lookupadd],[data-lookupclear],[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
     if(!t) { if(e.target.id==='scrim') closeSheet(); return; }
     const p=state.prefs;
     if(t.classList.contains('cell')){ return; } // handled by the drag painter
@@ -451,8 +489,11 @@
     if(t.dataset.cred){ setCredits(p.credits+(+t.dataset.cred)); return; }
     if(t.dataset.time){ setTime(t.dataset.time,t.dataset.val); return; }
     if(t.dataset.day){ const d=t.dataset.day; p.daysOff=p.daysOff.includes(d)?p.daysOff.filter(x=>x!==d):[...p.daysOff,d]; resetPicks(); save(); render(true); return; }
+    if(t.dataset.lookup){ state.lookupPick=t.dataset.lookup; state.lookup=t.dataset.lookup; save(); render(true); return; }
+    if(t.hasAttribute('data-lookupclear')){ state.lookupPick=null; state.lookup=''; save(); render(true); document.getElementById('lookupInput')?.focus(); return; }
+    if(t.dataset.lookupadd){ p.mustTake=[t.dataset.lookupadd]; resetPicks(); save(); location.hash='options'; toast(t.dataset.lookupadd+' will be in every option.'); return; }
     if(t.hasAttribute('data-resetblocks')){ p.blocks=[]; resetPicks(); save(); render(true); toast('Blocked times reset.'); return; }
-    if(t.id==='workSync'){ p.workSync=!(p.workSync!==false); resetPicks(); save(); render(true); toast(p.workSync?'Work hours blocked from Workday.':'Work hours no longer blocked. Options rebuilt.'); return; }
+    if(t.id==='workSync'){ p.workSync=!(p.workSync!==false); resetPicks(); save(); render(true); toast(p.workSync?'Work hours blocked from Workday.':'Work hours no longer blocked.'); return; }
     if(t.dataset.unblock!==undefined){ p.blocks.splice(+t.dataset.unblock,1); resetPicks(); save(); render(true); return; }
     if(t.dataset.must){ const c=t.dataset.must; p.mustTake=p.mustTake.includes(c)?p.mustTake.filter(x=>x!==c):[...p.mustTake,c]; resetPicks(); save(); render(true); if(t.dataset.title){ toast(c+' will be in every option.'); } return; }
     if(t.id==='applySentence'){ const txt=document.getElementById('sentence').value; state.prefs=S.parseSentence(txt,p); resetPicks(); save(); render(true); const f=state.prefs.parsed||{}; toast(Object.keys(f).length?'Got it. Check the form below.':'Nothing recognised. Try naming a time, a day, or a work shift.'); return; }
@@ -472,7 +513,8 @@
     if(t.id==='confirmReg'){ closeSheet(); const cur=schedule(); try{ let saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); saved=saved.filter(x=>!x.registered); saved.unshift({name:`${D.termShort}`, registered:true, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3))); }catch(e){} go('done'); return; }
   });
   document.addEventListener('focusin',e=>{ if(e.target.id==='mustInput'){ const m=document.getElementById('mustMenu'); if(m) m.hidden=false; } });
-  document.addEventListener('input',e=>{ if(e.target.id==='mustInput'){ const q=e.target.value.toLowerCase(); const m=document.getElementById('mustMenu'); if(!m) return; m.hidden=false; m.querySelectorAll('button').forEach(b=>{ b.hidden=!(b.textContent.toLowerCase().includes(q)); }); } });
+  document.addEventListener('input',e=>{ if(e.target.id==='lookupInput'){ state.lookup=e.target.value; state.lookupPick=null; const box=e.target.closest('.sb-lookup'); const menu=box.querySelector('#lookupMenu'); const card=box.querySelector('.sb-lookup-card'); if(card) card.remove(); const q=e.target.value.trim().toLowerCase().replace(/\s+/g,' '); const hits=q?lookupCatalog().filter(c=>(c.course+' '+c.title).toLowerCase().includes(q)).slice(0,8):[]; menu.innerHTML=hits.map(c=>`<button data-lookup="${c.course}"><b>${c.course}</b> ${c.title}${c.req?` <span>· ${c.req.group}</span>`:''}</button>`).join(''); menu.hidden=!hits.length; return; }
+    if(e.target.id==='mustInput'){ const q=e.target.value.toLowerCase(); const m=document.getElementById('mustMenu'); if(!m) return; m.hidden=false; m.querySelectorAll('button').forEach(b=>{ b.hidden=!(b.textContent.toLowerCase().includes(q)); }); } });
   document.addEventListener('click',e=>{ const m=document.getElementById('mustMenu'); if(m && !e.target.closest('.sb-prompt')) m.hidden=true; });
   function rangeLive(e){ const a=document.getElementById('rangeStart'), b=document.getElementById('rangeEnd'); if(!a||!b) return null; let x=+a.value, y=+b.value; if(y-x<60){ if(e&&e.target===a) x=y-60; else y=x+60; a.value=x; b.value=y; } const box=a.closest('.sb-range'); box.style.setProperty('--a',((x-480)/720*100)+'%'); box.style.setProperty('--b',((y-480)/720*100)+'%'); const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); document.getElementById('rangeStartVal').textContent=S.fmt(hm(x)); document.getElementById('rangeEndVal').textContent=S.fmt(hm(y)); document.querySelectorAll('.sb-week .cell').forEach(c=>c.classList.toggle('out',+c.dataset.min<x||+c.dataset.min>=y)); return {x,y,hm}; }
   document.addEventListener('input',e=>{ if(e.target.id==='rangeStart'||e.target.id==='rangeEnd') rangeLive(e); });
