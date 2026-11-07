@@ -2,7 +2,7 @@
    anything that breaks a rule, like UAConnect did. Every pick traces to a data row. */
 (function(){
   const DAY = {M:'Mon',T:'Tue',W:'Wed',Th:'Thu',F:'Fri',Sa:'Sat'};
-  const DAY_ORDER = ['M','T','W','Th','F','Sa'];
+  const DAY_ORDER = ['M','T','W','Th','F'];
   const mins = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
   const fmt = t => { let [h,m]=t.split(':').map(Number); const ap=h>=12?'PM':'AM'; h=h%12||12; return h+':'+String(m).padStart(2,'0')+' '+ap; };
   const splitDays = d => d==='TTh'?['T','Th']:d==='Sa'?['Sa']:d.replace('Th','H').replace('Sa','S').split('').map(c=>c==='H'?'Th':c==='S'?'Sa':c);

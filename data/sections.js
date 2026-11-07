@@ -120,7 +120,7 @@ window.SB_DATA = {
   ].map(r=>({course:r[0],title:r[1],section:r[2],days:r[3],start:r[4],end:r[5],credits:r[6],seats:r[7],prereq:r[8],fills:r[9],room:r[10],instructor:r[11],id:r[0]+'-'+r[2]})),
   defaultPrefs: {
     credits: 15,
-    earliest: '10:00',
+    earliest: '',
     latest: '',
     daysOff: [],
     workSync: true,

@@ -64,7 +64,7 @@
       let evs='';
       blocks.forEach(b=>{ if(b.days.includes(d)) evs+=ev({start:b.start,end:b.end},'block',`<b>${b.label}</b>`); });
       (secs||[]).forEach(s=>{ if(S.splitDays(s.days).includes(d)){ const cls=(opts.grey?'grey':(COLORS[s.course]||'c1'))+(opts.hl===s.id?' hl':''); evs+=ev(s,cls,`<b>${s.course}${opts.grey?'-'+s.section:''}</b><i>${s.room}</i>`,s.id); } });
-      if(opts.editable){ const slots=hours*2; const eM=state.prefs.earliest?S.mins(state.prefs.earliest):-1, lM=state.prefs.latest?S.mins(state.prefs.latest):1e9; const w=D.student.work; const wTitle=`${w.label} · ${w.days.map(x=>S.DAY[x]).join('/')} ${S.fmt(w.start)}–${S.fmt(w.end)} · from Workday Time Tracking`; for(let i=0;i<slots;i++){ const m=start*60+i*30; const own=(state.prefs.blocks||[]).some(b=>b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const work=blocks.some(b=>b.fromWorkday&&b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const out=m<eM||m>=lM; const title=work?wTitle:own?'Blocked · press and drag to clear':out?'Outside your preferred start and end time':''; evs+=`<span class="cell ${own?'blk':''} ${work?'wk':''} ${out?'out':''} ${i%2?'half':''}" data-cellday="${d}" data-min="${m}" style="top:${i*100/slots}%;height:${100/slots}%" role="button" ${title?`title="${title}"`:''} aria-label="${S.DAY[d]} ${S.fmt(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'))}"></span>`; } }
+      if(opts.editable){ const slots=hours*2; const eM=state.prefs.earliest?S.mins(state.prefs.earliest):-1, lM=state.prefs.latest?S.mins(state.prefs.latest):1e9; const w=D.student.work; const wTitle=`${w.label} · ${w.days.map(x=>S.DAY[x]).join('/')} ${S.fmt(w.start)}–${S.fmt(w.end)} · from Workday Time Tracking`; for(let i=0;i<slots;i++){ const m=start*60+i*30; const own=(state.prefs.blocks||[]).some(b=>b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const work=blocks.some(b=>b.fromWorkday&&b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const out=false; const title=work?wTitle:own?'Blocked · press and drag to clear':''; evs+=`<span class="cell ${own?'blk':''} ${work?'wk':''} ${out?'out':''} ${i%2?'half':''}" data-cellday="${d}" data-min="${m}" style="top:${i*100/slots}%;height:${100/slots}%" role="button" ${title?`title="${title}"`:''} aria-label="${S.DAY[d]} ${S.fmt(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'))}"></span>`; } }
       return `<div class="col ${off.includes(d)?'off':''}">${evs}</div>`;
     }).join('');
     function ev(s,cls,inner,id){ const top=(S.mins(s.start)-start*60)/(hours*60)*100, h=(S.mins(s.end)-S.mins(s.start))/(hours*60)*100; return `<div class="ev ${cls}" ${id?`data-sec="${id}"`:''} style="top:${top}%;height:${h}%">${inner}</div>`; }
@@ -153,8 +153,6 @@
     const courses=D.needs.filter(n=>!n.later);
     const earlyPresets=['08:00','09:00','10:00','11:00'], latePresets=['14:00','15:00','16:00','17:00','18:00'];
     const parsed=p.parsed||{};
-    const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-    const eMin=p.earliest?S.mins(p.earliest):480, lMin=p.latest?S.mins(p.latest):1200;
     return `
     ${pageHead('Preferences','Only sections that break these get dropped.','prefs')}
     <div class="sb">
@@ -163,20 +161,11 @@
         <div class="sb-field"><label class="sb-label">Credit hours</label>
           <div class="sb-seg" id="credits">${[12,15,18].map(c=>`<button class="${p.credits===c?'on':''}" data-credits="${c}">${c}</button>`).join('')}<button class="${![12,15,18].includes(p.credits)?'on':''}" data-other="1">${![12,15,18].includes(p.credits)?p.credits:'Other'}</button></div>
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Other amount</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">1 to 21. Full time is 12.</span></div></div>
-        <div class="sb-field"><label class="sb-label">Preferred start and end time <small>drag the nodes · times outside are greyed out below</small></label>
-          <div class="sb-range" style="--a:${(eMin-480)/720*100}%;--b:${(lMin-480)/720*100}%"><span class="track"></span><span class="fill"></span>
-            <input type="range" id="rangeStart" min="480" max="1200" step="30" value="${eMin}" aria-label="Preferred start time">
-            <input type="range" id="rangeEnd" min="480" max="1200" step="30" value="${lMin}" aria-label="Preferred end time">
-            <div class="ticks">${[8,10,12,14,16,18,20].map(h=>`<span>${h%12||12} ${h<12?'AM':'PM'}</span>`).join('')}</div>
-          </div>
-          <div class="sb-range-vals"><span>Start <b id="rangeStartVal">${S.fmt(hm(eMin))}</b></span><span>End <b id="rangeEndVal">${S.fmt(hm(lMin))}</b></span></div>
-        </div>
         <div class="sb-field"><label class="sb-label">Days available <small>tap a day to remove it</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div>
         <div class="sb-field">
           <label class="sb-label">Blocked times <small>press and drag over the times you can't take class · drag again to clear</small></label>
           ${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div>
-          ${(p.blocks||[]).length?`<div class="sb-blocks">${p.blocks.map((b,i)=>`<span class="sb-token">${b.label} · ${b.days.map(d=>S.DAY[d]).join('/')} ${S.fmt(b.start)}–${S.fmt(b.end)}<button data-unblock="${i}" aria-label="Remove">${icon('x-small')}</button></span>`).join('')}</div>`:''}
         </div>
       </div>
       ${foot('audit','needs','Next')}
