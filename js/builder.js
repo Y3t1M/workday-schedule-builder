@@ -68,7 +68,7 @@
       return `<div class="col ${off.includes(d)?'off':''}">${evs}</div>`;
     }).join('');
     function ev(s,cls,inner,id){ const top=(S.mins(s.start)-start*60)/(hours*60)*100, h=(S.mins(s.end)-S.mins(s.start))/(hours*60)*100; return `<div class="ev ${cls}" ${id?`data-sec="${id}"`:''} style="top:${top}%;height:${h}%">${inner}</div>`; }
-    return `<div class="sb-week ${mini?'mini':''} ${opts.grey?'grey':''}" style="--hours:${hours};--days:${S.DAY_ORDER.length}"><div></div>${S.DAY_ORDER.map(d=>`<div class="dh ${off.includes(d)?'off':''}">${S.DAY[d]}</div>`).join('')}<div class="times">${times}</div>${cols}</div>`;
+    return `<div class="sb-week ${mini?'mini':''} ${opts.grey?'grey':''} ${opts.editable?'edit':''}" style="--hours:${hours};--days:${S.DAY_ORDER.length}"><div></div>${S.DAY_ORDER.map(d=>`<div class="dh ${off.includes(d)?'off':''}">${S.DAY[d]}</div>`).join('')}<div class="times">${times}</div>${cols}</div>`;
   }
   const seatsText=s=> s.seats===0?'Full, waitlist open': s.seats===1?'1 seat left': s.seats+' seats left';
   function classRow(s){
