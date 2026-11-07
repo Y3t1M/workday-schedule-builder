@@ -159,32 +159,28 @@
     const open=D.flatReqs.filter(i=>i.status==='open');
     const required=open.filter(i=>i.pathway&&!i.nosections);
     const fill=open.filter(i=>!required.includes(i));
-    const later=D.flatReqs.filter(i=>i.status==='later'&&i.after&&(reqOf(i.after)||D.requirements.some(gr=>gr.group===i.after)));
-    const unlockSoon=later.filter(i=>open.some(o=>o.course===i.after)||i.after==='Pre-Business Core');
     const st=(i)=>{
-      if(i.nosections) return status('later','No sections loaded in this demo');
+      if(i.nosections) return status('later','Pick a section in Find Course Sections');
       const secs=D.sections.filter(s=>s.course===i.course);
       if(rec.has(i.course)) return status('ok','In your recommended schedule');
       if(anyFit(i.course)){ const s0=secs.find(x=>!S.problems(x,state.prefs,D.student,D).length); const o=g.options[0]&&g.options[0].sections.find(r=>S.overlap(r,s0)>0); return o?status('warn',`Overlaps ${o.course} by ${S.overlap(o,s0)} min`):status('ok','Fits your times'); }
       if(secs.length&&secs.every(s=>s.seats===0)) return status('warn','Full · waitlist');
       return status('warn',"Doesn't fit your times");
     };
-    const row=(i)=>`<div class="sb-req"><div><b>${i.course} · ${i.title}</b><div class="d">${i.group} · ${i.h} cr${i.pathway?` · <span class="sb-tag">Pathway ${i.pathway}</span>`:''}${i.prereq?` · ${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}`:''}</div></div>${st(i)}</div>`;
-    const reqHrs=sum(required,i=>i.h);
+    const pre=i=>i.prereq?`<div class="d">${S.done(D.student,i.prereq)?icon('check-circle-fill')+'<span>'+i.prereq+' '+((D.student.inProgress||[]).includes(i.prereq)?'in progress':'done')+'</span>':icon('exclamation-circle-fill','miss')+'<span>Needs '+i.prereq+'</span>'}</div>`:'';
+    const row=i=>`<tr><td><b>${i.course}</b><div class="t">${i.title}</div></td><td class="num">${i.h}</td><td class="req">${i.group}${pre(i)}</td><td class="note">${st(i)}</td></tr>`;
+    const table=rows=>`<table class="wd-table sb-wstable"><thead><tr><th>Course</th><th class="num">Hours</th><th class="req">Requirement</th><th>Notes</th></tr></thead><tbody>${rows.map(row).join('')}</tbody></table>`;
+    const FINN='https://catalog.uark.edu/plangrids/financebsbawithfinancialmanagementandinvestmentconcentration/', ISYS='https://catalog.uark.edu/plangrids/informationsystemsbsbawithenterpriseresourceplanningconcentration/';
     return `
-    ${pageHead('Your '+D.termShort+' Plan','From your degree audit (evaluated 10/21/2026) and the Walton eight-semester pathway. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
+    ${pageHead('Your '+D.termShort+' Plan','From your degree audit, evaluated 10/21/2026 at 2:00 AM. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
     <div class="sb">
       <div class="sb-card">
-        <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${required.length}</b><span>required next · ${reqHrs} credit hours</span></div><div class="sb-fact"><b>${fill.length}</b><span>electives you could add</span></div><div class="sb-fact"><b>${unlockSoon.length}</b><span>unlock after this term</span></div><div class="sb-fact"><b>${D.totalHours-D.student.creditsDone-D.student.creditsInProgress}</b><span>credit hours left of ${D.totalHours}</span></div></div>
-        <h3 class="wd-section-h">Required next</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">What the Walton pathway puts in Year 2 Spring. All prerequisites met.</p>
-        ${required.map(row).join('')}
-        <h3 class="wd-section-h">Fill in with</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Electives you can take now. Pick any to reach your credit hours.</p>
-        ${fill.map(row).join('')}
-        <h3 class="wd-section-h">After this term</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Blocked until a prerequisite is done. Finishing the list above unlocks them for Fall 2027.</p>
-        ${unlockSoon.slice(0,8).map(i=>`<div class="sb-req later"><div><b>${i.course} · ${i.title}</b><div class="d">${i.group} · ${i.h} cr</div></div>${status('later','After '+i.after)}</div>`).join('')}
+        <h3 class="wd-section-h">Upcoming required courses</h3>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">What the Walton pathway puts in Year 2 Spring. All prerequisites met.</p>
+        ${table(required)}
+        <h3 class="wd-section-h">Recommended second year courses</h3>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Walton College of Business course recommendations for second-year students, based on the <a href="${FINN}" target="_blank" rel="noopener">Finance Degree Pathway</a> and the <a href="${ISYS}" target="_blank" rel="noopener">Information Systems Degree Pathway</a>.</p>
+        ${table(fill)}
         <h3 class="wd-section-h">Degree worksheet</h3>
         <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Every requirement by category. Anything unchecked still stands between you and graduation.</p>
         ${worksheet()}

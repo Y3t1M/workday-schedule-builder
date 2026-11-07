@@ -801,3 +801,17 @@ body.has-bottombar{padding-bottom:0}
 .sb-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
 .sb-label-row .sb-label{margin-bottom:0}
 .sb-label-row .wd-btn[disabled]{opacity:.45;cursor:default}
+
+/* degree requirements: worksheet-style tables */
+.sb-wstable{margin:0 0 8px}
+.sb-wstable th.num,.sb-wstable td.num{width:56px;text-align:center}
+.sb-wstable td b{font-size:13px;line-height:18px;color:var(--wd-text-strong);font-weight:700;white-space:nowrap}
+.sb-wstable td .t{font-size:12px;line-height:16px;color:var(--wd-text)}
+.sb-wstable td.req{font-size:12px;line-height:16px;color:var(--wd-text)}
+.sb-wstable td.req .d{display:flex;align-items:center;gap:4px;margin-top:2px;color:var(--wd-text-muted)}
+.sb-wstable td.req .d .wd-icon{width:14px;height:14px;color:var(--wd-ok)}
+.sb-wstable td.req .d .wd-icon.miss{color:#c66a00}
+.sb-wstable td.note{white-space:nowrap}
+.sb-wstable td.note .sb-status{font-size:12px;font-weight:400}
+.sb-wstable td.note .sb-status .wd-icon{width:16px;height:16px}
+@media (max-width:720px){.sb-wstable th.req,.sb-wstable td.req{display:none}.sb-wstable td.note{white-space:normal}}
