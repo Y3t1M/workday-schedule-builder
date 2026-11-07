@@ -184,12 +184,11 @@
     let st; let cta='';
     if(i&&i.status==='done') st=status('ok','Complete');
     else if(i&&i.status==='inprogress') st=status('ip',`In progress · ${i.term}`);
-    else if(i&&i.status==='later') st=status('later','Not yet eligible');
+    else if(i&&i.status==='later'){ const need=i.prereq||i.after; const isGroup=need&&D.requirements.some(gr=>gr.group===need); st=status('later',need?(isGroup?`Not yet eligible · ${need} must be complete first`:`Not yet eligible · needs ${need} first`):'Not yet eligible · prerequisite not met'); }
     else if(inPlan.has(code)) st=status('ok',`In your recommended ${D.termShort} schedule`);
     else if(!secs.length) st=status('later',`No ${D.termShort} sections in this demo`);
     else { const fits=secs.some(s=>!S.problems(s,state.prefs,D.student,D).length); st=fits?status('ok',`Eligible · fits your availability`):status('warn','Eligible · no section fits your availability'); cta=`<button class="wd-btn secondary sm" data-lookupadd="${code}">Build my schedule around it</button>`; }
     rows.push(['Status', st]);
-    if(secs.length) rows.push([`${D.termShort} sections`, secs.map(s=>`${s.section} · ${S.dayList(s.days)} ${S.fmt(s.start)}–${S.fmt(s.end)} · ${seatsText(s)}`).join('<br>')]);
     return `<div class="sb-lookup-card"><div class="head"><div><b>${c.course}</b><span>${c.title} · ${c.h} credit hours</span></div>${cta}</div><dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl></div>`;
   }
 
