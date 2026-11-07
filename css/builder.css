@@ -676,3 +676,8 @@ body.has-bottombar{padding-bottom:0}
 .sb-tile2 dt{color:var(--wd-text-muted)}
 .sb-tile2 dd{margin:0;color:var(--wd-text-strong);font-weight:500}
 @media (max-width:640px){.sb-start2{grid-template-columns:1fr}}
+/* ---- footer bar spans the full content width, like the red banner (Mary) ---- */
+.sb-foot{position:fixed;left:calc(var(--wd-nav-w) + var(--wd-rail-w));right:0;bottom:0;margin:0;padding:14px 32px;box-shadow:0 -1px 0 var(--wd-border), 0 -4px 12px rgba(31,38,46,.06);z-index:20}
+.wd-rail.is-collapsed ~ div .sb-foot{left:calc(var(--wd-nav-w) + 64px)}
+.wd-hub-body{padding-bottom:104px}
+@media (max-width:1000px){.sb-foot{left:0;padding:12px 16px}}
