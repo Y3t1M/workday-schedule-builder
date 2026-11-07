@@ -112,7 +112,7 @@
             <h3>Academic Progress</h3>
             <div class="stat"><b>${done}</b><div><span class="l">Credit Hours Completed</span></div></div>
             <div class="stat"><b>${ip}</b><div><span class="l">Credit Hours In Progress</span></div></div>
-            <div class="stat"><b>${Math.max(0,(D.minHours||120)-done-ip)}</b><div><span class="l">Credit Hours Remaining</span></div></div>
+            <div class="stat"><b>${D.minHours||120}</b><div><span class="l">Total Credit Hours to Graduate</span></div></div>
           </section>
           <section class="sb-tile2">
             <h3>Degree of Study</h3>
