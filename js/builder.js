@@ -62,7 +62,7 @@
     const times=Array.from({length:hours},(_,i)=>{const h=start+i;return `<span>${h%12||12}${mini?'':(h<12?' AM':' PM')}</span>`}).join('');
     const cols=S.DAY_ORDER.map(d=>{
       let evs='';
-      blocks.forEach(b=>{ if(b.days.includes(d)) evs+=ev({start:b.start,end:b.end},'block',`<b>${b.label}</b>`); });
+      blocks.forEach(b=>{ if(b.days.includes(d)) evs+=ev({start:b.start,end:b.end},'block'+(b.fromWorkday?' work':''),`<b>${b.label}</b>`); });
       (secs||[]).forEach(s=>{ if(S.splitDays(s.days).includes(d)){ const cls=(opts.grey?'grey':(COLORS[s.course]||'c1'))+(opts.hl===s.id?' hl':''); evs+=ev(s,cls,`<b>${s.course}${opts.grey?'-'+s.section:''}</b><i>${s.room}</i>`,s.id); } });
       if(opts.editable){ const slots=hours*2; const eM=state.prefs.earliest?S.mins(state.prefs.earliest):-1, lM=state.prefs.latest?S.mins(state.prefs.latest):1e9; const w=D.student.work; const wTitle=`${w.label} · ${w.days.map(x=>S.DAY[x]).join('/')} ${S.fmt(w.start)}–${S.fmt(w.end)} · from Workday Time Tracking`; for(let i=0;i<slots;i++){ const m=start*60+i*30; const own=(state.prefs.blocks||[]).some(b=>b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const work=blocks.some(b=>b.fromWorkday&&b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const out=false; const title=work?wTitle:own?'Blocked · press and drag to clear':''; evs+=`<span class="cell ${own?'blk':''} ${work?'wk':''} ${out?'out':''} ${i%2?'half':''}" data-cellday="${d}" data-min="${m}" style="top:${i*100/slots}%;height:${100/slots}%" role="button" ${title?`title="${title}"`:''} aria-label="${S.DAY[d]} ${S.fmt(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'))}"></span>`; } }
       return `<div class="col ${off.includes(d)?'off':''}">${evs}</div>`;
@@ -512,11 +512,11 @@
     if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
     if(c.classList.contains('out')){ toast('Outside your preferred start and end time. Move the nodes above to open it up.'); return; }
     e.preventDefault();
-    paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false};
+    paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; c.closest('.sb-week').classList.add('painting');
     paintCell(c);
   });
   document.addEventListener('pointermove',e=>{ if(!paint) return; paint.moved=true; paintCell(cellAt(e.clientX,e.clientY)); });
-  function endPaint(){ if(!paint) return; const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
+  function endPaint(){ if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
   document.addEventListener('pointerup',endPaint); document.addEventListener('pointercancel',endPaint);
 
   // ---------- boot ----------
