@@ -14,7 +14,7 @@ window.SB_DATA = {
     name: 'Hudson Tinch', year: 'Sophomore', program: 'BSBA',
     degree: 'Bachelor of Science in Business Administration',
     majors: [{name:'Finance', conc:'Management & Investments'},{name:'Information Systems', conc:'Enterprise Resource Planning'}],
-    minor: 'Strategy, Entrepreneurship & Venture Innovation (SEVI)',
+    minor: 'Strategy, Entrepreneurship & Venture Innovation (SEVI)', minorShort:'SEVI',
     catalog: '2025-26', expectedGrad: 'May 2029', college: 'Sam M. Walton College of Business',
     advisor: {name:'Blaise M. Simecek', first:'Blaise', title:'Assistant Director, Walton Honors Program', office:'WCOB 335', email:'bsimecek@walton.uark.edu'},
     // Work schedule on file in Workday (Time Tracking) for the student job
@@ -22,7 +22,7 @@ window.SB_DATA = {
   },
   // Degree worksheet. status: done | inprogress | open (eligible now) | later (prerequisite or standing not met)
   requirements: [
-    {group:'Pre-Business Core', hours:37, note:'Must be complete before any 30000/40000-level business course.', items:[
+    {group:'Pre-Business Core', hours:41, note:'Must be complete before any 30000/40000-level business course.', items:[
       {course:'ENGL 10103', title:'Composition I', h:3, status:'done'},
       {course:'ENGL 10203', title:'Composition II', h:3, status:'inprogress', term:'Fall 2026'},
       {course:'MATH 20503', title:'Finite Mathematics', h:3, status:'done'},
@@ -32,6 +32,8 @@ window.SB_DATA = {
       {course:'STAT 20203', title:'Business Statistics', h:3, status:'open', pathway:'Year 2 · Spring'},
       {course:'SPCH 10003', title:'Public Speaking', h:3, status:'done'},
       {course:'ISYS 11203', title:'Business Application Knowledge', h:3, status:'done'},
+      {course:'ISYS 10303', title:'Data Analysis and Interpretation', h:3, status:'done'},
+      {course:'PLSC 20003', title:'American National Government', h:1, status:'done'},
       {course:'BUSI 11101', title:'Freshman Business Connection', h:1, status:'done'},
       {course:'ISYS 20303', title:'Foundations of Business Analytics', h:3, status:'inprogress', term:'Fall 2026'},
       {course:'ACCT 20103', title:'Accounting Principles I', h:3, status:'done'},
@@ -135,7 +137,8 @@ window.SB_DATA = {
   D.student.inProgress=flat.filter(i=>i.status==='inprogress').map(i=>i.course);
   D.student.creditsDone=flat.filter(i=>i.status==='done').reduce((a,i)=>a+i.h,0);
   D.student.creditsInProgress=flat.filter(i=>i.status==='inprogress').reduce((a,i)=>a+i.h,0);
-  D.totalHours=D.requirements.reduce((a,g)=>a+g.hours,0);
+  D.totalHours=150; // double major total; 120 is the BSBA minimum
+  D.minHours=120;
   const seen=new Set();
   D.needs=flat.filter(i=>(i.status==='open'||i.status==='later')&&!i.nosections&&D.sections.some(s=>s.course===i.course)&&!seen.has(i.course)&&seen.add(i.course))
     .map(i=>({course:i.course,title:i.title,req:i.group,prereq:i.prereq||null,later:i.status==='later',after:i.after||null,pathway:i.pathway||null,elective:!/Core|General|Professional/.test(i.group)}));

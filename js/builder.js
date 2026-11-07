@@ -2,7 +2,7 @@
    #start #prefs #needs #options #swap #review #errors (#done after registering) */
 (function(){
   const D=SB_DATA, S=SB;
-  const STEPS=[['start','Start'],['prefs','Preferences'],['needs','Spring plan'],['options','Options'],['review','Review']];
+  const STEPS=[['start','Start'],['prefs','Preferences'],['needs','Deg. Requirements'],['options','Schedules'],['review','Review']];
   const COLORS={}; D.needs.forEach((n,i)=>COLORS[n.course]='c'+((i%6)+1));
   const STUDENT_KEY=(window.DEMO_STUDENT&&DEMO_STUDENT.id)||D.student.name;
 
@@ -37,7 +37,7 @@
   const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
     const at=stepIndex(cur); const max=Math.max(state.maxStep||0,at);
-    return `<ol class="sb-steps2" aria-label="Progress">${STEPS.map((s,i)=>{
+    return `<div class="sb-prog-meta sb-meta2"><b>Let's Build Your Schedule</b><span>step ${at+1} of ${STEPS.length}</span></div><ol class="sb-steps2" aria-label="Progress">${STEPS.map((s,i)=>{
       const k=i<at?'done':i===at?'now':'todo'; const can=i<=max&&i!==at;
       const mark=i<at?icon('check-small'):`<span>${i+1}</span>`;
       const inner=`<span class="dot">${mark}</span><span class="lbl">${s[1]}</span>`;
@@ -46,8 +46,10 @@
   }
   // page title above the steps, then the steps, then the content
   function pageHead(title, sub, cur){
-    return `<div class="sb-pagehead"><h1 class="wd-page-title">${title}</h1>${sub?`<p class="sb-pagesub">${sub}</p>`:''}</div>${stepsBar(cur)}`;
+    return `${stepsBar(cur)}<div class="sb-pagehead-in" data-title="${title.replace(/"/g,'&quot;')}" data-sub="${(sub||'').replace(/"/g,'&quot;')}"></div>`;
   }
+  // after render: move each page title into the top of its first card (sketch: steps first, title inside the card)
+  function placeTitles(){ const h=document.querySelector('.sb-pagehead-in'); if(!h) return; const card=document.querySelector('.sb-card, .sb-wide .wd-kvrow'); const html=`<h2 class="sb-cardtitle">${h.dataset.title}</h2>${h.dataset.sub?`<p class="sub">${h.dataset.sub}</p>`:''}`; if(card&&card.classList.contains('sb-card')) card.insertAdjacentHTML('afterbegin',html); else if(card) card.insertAdjacentHTML('beforebegin',`<div class="sb-card" style="padding:16px 20px;margin-bottom:16px">${html}</div>`); h.remove(); }
   function foot(back,next,nextLabel,hint,extra){
     return `<div class="sb-foot">${back?`<button class="wd-btn secondary" data-go="${back}">Back</button>`:''}${hint?`<span class="hint">${hint}</span>`:''}<div class="right">${extra||''}${next?`<button class="wd-btn primary" data-go="${next}" id="nextBtn">${nextLabel||'Next'}</button>`:''}</div></div>`;
   }
@@ -98,36 +100,21 @@
   // ---------- screens ----------
   const V={};
   V.start=()=>{
-    const st=D.student; const tot=D.totalHours; const done=st.creditsDone, ip=st.creditsInProgress, left=tot-done-ip;
-    const rows=D.requirements.map((g,gi)=>{const s=groupStats(g);return `<details class="r"><summary><span class="n">${g.group}</span><span class="v">${s.done}</span><span class="v">${s.ip||'–'}</span><span class="v ${s.left?'left':''}">${s.left||icon('check-small')}</span>${icon('chevron-down-small','chev')}</summary><ul>${g.items.map(i=>`<li class="${i.status}"><span class="ck">${i.status==='done'?icon('check-small'):i.status==='inprogress'?icon('clock'):''}</span><span class="c">${i.course}</span><span class="t">${i.title}</span><span class="h">${i.h}</span></li>`).join('')}</ul></details>`}).join('');
+    const st=D.student; const done=st.creditsDone, ip=st.creditsInProgress; const left=Math.max(0,(D.minHours||120)-done);
     return `
-    ${pageHead('Registration for '+D.termShort,'Set from your registration appointment. Opens '+D.registrationOpens+'.','start')}
+    ${pageHead('Registration for '+D.termShort,'Your registration appointment opens '+D.registrationOpens+'.','start')}
     <div class="sb">
       <div class="sb-card">
-        <p class="sb-lead" style="margin-top:0">Reads your degree audit, takes the times you want, and gives you three schedules that fit. Nothing registers until you confirm.</p>
-        <div class="sb-two-cards">
-          <section class="sb-pcard">
-            <h3>Academic Progress</h3>
-            <p class="sub">${done} hours complete · ${ip} in progress · ${left} left of ${tot}</p>
-            <div class="sb-pbar"><span style="width:${done/tot*100}%"></span><span class="ip" style="width:${ip/tot*100}%"></span></div>
-            <div class="sb-ptable"><div class="hd"><span class="n">Category</span><span class="v">Done</span><span class="v">In prog.</span><span class="v">Left</span><span></span></div>${rows}</div>
-          </section>
-          <section class="sb-pcard">
-            <h3>Degree of Study</h3>
-            <dl class="sb-degree">
-              <dt>Degree</dt><dd>${st.degree}</dd>
-              <dt>Majors</dt><dd>${st.majors.map(m=>`<b>${m.name}</b><span>${m.conc} concentration</span>`).join('')}</dd>
-              <dt>Minor</dt><dd>${st.minor}</dd>
-              <dt>College</dt><dd>${st.college}</dd>
-              <dt>Standing</dt><dd>${st.year} · catalog ${st.catalog} · expected ${st.expectedGrad}</dd>
-              <dt>Advisor</dt><dd>${st.advisor.name}<span>${st.advisor.title}</span></dd>
-            </dl>
-            <p class="sb-muted" style="font-size:12px;margin:10px 0 0">From your Student Profile in Workday. Wrong? <a href="#">Request a change</a>.</p>
-          </section>
+        <span class="sb-dates">${D.term.replace(/^.*\((.*)\)$/,'$1').replace('-',' – ')}</span>
+        <p class="sb-lead">Get three personalized schedules based on your degree requirements and availability. Compare your options, swap classes, and confirm your selection.</p>
+        <div class="sb-grid2">
+          <div class="sb-fact"><span class="k">Academic Progress</span><b>${done}</b><span>credit hours completed${ip?` · ${ip} in progress`:''}</span></div>
+          <div class="sb-fact"><span class="k">Minimum Credit Hours Left</span><b>${left}</b><span>required to graduate · ${D.minHours||120} minimum</span></div>
+          <div class="sb-fact"><span class="k">Degree of Study</span><b class="t">${st.degree.replace('Bachelor of Science in Business Administration','B.S.B.A.')} ${st.majors.map(m=>m.name).join(', ')}</b><span>Minor: ${st.minorShort||st.minor}</span></div>
+          <div class="sb-fact"><span class="k">Concentration</span><b class="t">${st.majors[1]?st.majors[1].conc:st.majors[0].conc}</b><span>${st.majors[1]?st.majors[0].conc+' (Finance)':''}</span></div>
         </div>
-        <div class="sb-note">${icon('lock')}<span>Uses your own record only: degree audit, completed courses, this term's sections. Never financial data.</span></div>
       </div>
-      ${foot(null,'prefs','Build my schedule','About 2 minutes')}
+      ${foot(null,'prefs','Next')}
     </div>`;
   };
 
@@ -167,7 +154,7 @@
     const g=gen(); const rec=new Set((g.options[0]?g.options[0].sections:[]).map(s=>s.course));
     const anyFit=c=>D.sections.filter(s=>s.course===c).some(s=>!S.problems(s,state.prefs,D.student,D).length);
     const open=D.flatReqs.filter(i=>i.status==='open');
-    const required=open.filter(i=>/Core|General/.test(i.group)&&!i.nosections);
+    const required=open.filter(i=>i.pathway&&!i.nosections);
     const fill=open.filter(i=>!required.includes(i));
     const later=D.flatReqs.filter(i=>i.status==='later'&&i.after&&(reqOf(i.after)||D.requirements.some(gr=>gr.group===i.after)));
     const unlockSoon=later.filter(i=>open.some(o=>o.course===i.after)||i.after==='Pre-Business Core');
@@ -185,9 +172,9 @@
     ${pageHead('Your '+D.termShort+' Plan','From your degree audit (evaluated 10/21/2026) and the Walton eight-semester pathway. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
     <div class="sb">
       <div class="sb-card">
-        <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${required.length}</b><span>required next · ${reqHrs} hrs</span></div><div class="sb-fact"><b>${fill.length}</b><span>electives you could add</span></div><div class="sb-fact"><b>${unlockSoon.length}</b><span>unlock after this term</span></div><div class="sb-fact"><b>${D.totalHours-D.student.creditsDone-D.student.creditsInProgress}</b><span>hours left of ${D.totalHours}</span></div></div>
+        <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${required.length}</b><span>required next · ${reqHrs} credit hours</span></div><div class="sb-fact"><b>${fill.length}</b><span>electives you could add</span></div><div class="sb-fact"><b>${unlockSoon.length}</b><span>unlock after this term</span></div><div class="sb-fact"><b>${D.totalHours-D.student.creditsDone-D.student.creditsInProgress}</b><span>credit hours left of ${D.totalHours}</span></div></div>
         <h3 class="wd-section-h">Required next</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Core classes the pathway puts in this semester. All prerequisites met.</p>
+        <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">What the Walton pathway puts in Year 2 Spring. All prerequisites met.</p>
         ${required.map(row).join('')}
         <h3 class="wd-section-h">Fill in with</h3>
         <p class="sb-muted" style="font-size:13px;margin:-4px 0 8px">Electives you can take now. Pick any to reach your credit hours.</p>
@@ -422,7 +409,7 @@
     if(r==='swap-list'){ state.swapping=null; save(); r='swap'; }
     if(['swap','review','done'].includes(r) && !state.schedule){ const g=gen(); if(!g.options.length){ r='options'; } else { state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); } }
     state.maxStep=Math.max(state.maxStep||0, stepIndex(r)); save();
-    body.innerHTML=(V[r]||V.start)();
+    body.innerHTML=(V[r]||V.start)(); placeTitles();
     document.getElementById('aiToggle').classList.toggle('on',!!state.ai);
     document.getElementById('aiState').textContent=state.ai?'On':'Off';
     if(r==='prefs'&&state.ai) showParsed();
