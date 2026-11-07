@@ -110,16 +110,16 @@
         <div class="sb-start2">
           <section class="sb-tile2">
             <h3>Academic Progress</h3>
-            <div class="stat"><b>${done}</b><div><span class="l">Hours Completed</span>${ip?`<span class="s">${ip} more in progress this fall</span>`:''}</div></div>
-            <div class="stat"><b>${left}</b><div><span class="l">Minimum Hours Left</span><span class="s">required to graduate · ${D.minHours||120} minimum</span></div></div>
+            <div class="stat"><b>${done}</b><div><span class="l">Credit Hours Completed</span>${ip?`<span class="s">In progress credit hours: ${ip}</span>`:''}</div></div>
+            <div class="stat"><b>${left}</b><div><span class="l">Minimum Credit Hours Left</span><span class="s">required to graduate · ${D.minHours||120} minimum</span></div></div>
           </section>
           <section class="sb-tile2">
             <h3>Degree of Study</h3>
             <dl>
               <dt>Degree</dt><dd>${st.degree.replace('Bachelor of Science in Business Administration','B.S.B.A.')}</dd>
-              <dt>Majors</dt><dd>${st.majors.map(m=>m.name).join(', ')}</dd>
-              <dt>Minor</dt><dd>${st.minorShort||st.minor}</dd>
-              <dt>Concentration</dt><dd>${st.majors.map(m=>m.conc).join('; ')}</dd>
+              <dt>Major(s)</dt><dd>${st.majors.map(m=>m.name).join(', ')}</dd>
+              <dt>Minor(s)</dt><dd>${st.minorShort||st.minor}</dd>
+              <dt>Concentration(s)</dt><dd>${st.majors.map(m=>m.conc).join('; ')}</dd>
             </dl>
           </section>
         </div>

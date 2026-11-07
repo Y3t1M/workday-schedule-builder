@@ -724,3 +724,8 @@ body.has-bottombar{padding-bottom:0}
 .sb-steps2 .fill{background:var(--wd-ok)}
 .sb-steps2 li.done .lbl{color:var(--wd-text-strong)}
 .sb-steps2 li.done button:hover .dot{box-shadow:0 0 0 4px #e9f5ec}
+
+/* notes: red progress line, no divider lines in Academic Progress */
+.sb-steps2 .fill{background:var(--wd-brand)}
+.sb-tile2 .stat{border-top:0;padding:12px 0}
+.sb-tile2 .stat:first-of-type{padding-top:4px}
