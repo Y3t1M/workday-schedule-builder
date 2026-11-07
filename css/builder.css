@@ -815,3 +815,19 @@ body.has-bottombar{padding-bottom:0}
 .sb-wstable td.note .sb-status{font-size:12px;font-weight:400}
 .sb-wstable td.note .sb-status .wd-icon{width:16px;height:16px}
 @media (max-width:720px){.sb-wstable th.req,.sb-wstable td.req{display:none}.sb-wstable td.note{white-space:normal}}
+/* degree worksheet accordion */
+.sb-ws{border-top:1px solid var(--wd-border-strong)}
+.sb-ws-g{border-bottom:1px solid var(--wd-border-strong)}
+.sb-ws-g summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 4px;cursor:pointer;font-size:14px;line-height:20px;color:var(--wd-text-strong)}
+.sb-ws-g summary::-webkit-details-marker{display:none}
+.sb-ws-g summary .n{flex:1;min-width:0;font-weight:500}
+.sb-ws-g summary .hrs{font-size:13px;color:var(--wd-text);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.sb-ws-g summary .hrs b{font-weight:700;color:var(--wd-text-strong)}
+.sb-ws-g summary .hrs em{font-style:normal;color:var(--wd-text-muted)}
+.sb-ws-g summary .hrs .wd-icon{width:16px;height:16px;color:var(--wd-ok)}
+.sb-ws-g summary .chev{width:20px;height:20px;color:var(--wd-icon);flex:none;transition:transform .15s}
+.sb-ws-g[open] summary .chev{transform:rotate(180deg)}
+.sb-ws-g summary:hover{background:#f6f7f8}
+.sb-ws-g .note{margin:0 4px 8px;font-size:12px;line-height:16px;color:var(--wd-text-muted)}
+.sb-ws-g ul{padding:0 4px 6px}
+@media (max-width:520px){.sb-ws-g summary{flex-wrap:wrap}.sb-ws-g summary .n{flex-basis:calc(100% - 32px)}.sb-ws-g summary .hrs{order:3;flex-basis:100%;padding-left:0}}
