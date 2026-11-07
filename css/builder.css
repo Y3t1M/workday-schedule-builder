@@ -718,3 +718,9 @@ body.has-bottombar{padding-bottom:0}
 
 .sb-steps2{max-width:760px}
 .sb-wide .sb-steps2,.sb-wide .sb-meta2{max-width:760px}
+
+/* Mary: a green check means the step is done; you can tap it to go back */
+.sb-steps2 li.done .dot{background:var(--wd-ok);border-color:var(--wd-ok);color:#fff}
+.sb-steps2 .fill{background:var(--wd-ok)}
+.sb-steps2 li.done .lbl{color:var(--wd-text-strong)}
+.sb-steps2 li.done button:hover .dot{box-shadow:0 0 0 4px #e9f5ec}
