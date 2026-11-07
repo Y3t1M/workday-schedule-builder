@@ -2,7 +2,7 @@
    #start #prefs #needs #options #swap #review #errors (#done after registering) */
 (function(){
   const D=SB_DATA, S=SB;
-  const STEPS=[['start','Start'],['audit','Degree Audit'],['prefs','Preferences'],['needs','Deg. Requirements'],['options','Schedules'],['review','Review']];
+  const STEPS=[['start','Start'],['audit','Degree Audit'],['prefs','Availability Selection'],['needs','Deg. Requirements'],['options','Schedules'],['review','Review']];
   const COLORS={}; D.needs.forEach((n,i)=>COLORS[n.course]='c'+((i%6)+1));
   const STUDENT_KEY=(window.DEMO_STUDENT&&DEMO_STUDENT.id)||D.student.name;
 
@@ -154,7 +154,7 @@
     const earlyPresets=['08:00','09:00','10:00','11:00'], latePresets=['14:00','15:00','16:00','17:00','18:00'];
     const parsed=p.parsed||{};
     return `
-    ${pageHead('Preferences','Only sections that break these get dropped.','prefs')}
+    ${pageHead('Availability Selection','Set your preferred credit hours and class availability to help identify course sections that align with your scheduling preferences.','prefs')}
     <div class="sb">
       <div class="sb-card">
         ${state.ai?`<div class="sb-ai-box"><label class="sb-label" for="sentence">${icon('sparkle')}Describe it <small>optional · spelling doesn't matter</small></label><div class="row"><textarea class="sb-textarea" id="sentence" placeholder="e.g. nothing before 10, fridays off, I work tues and thurs 1 to 5, 16 hours">${p.sentence||''}</textarea><button class="wd-btn secondary sm" id="applySentence">Apply</button></div><div class="sb-parsed" id="parsed"></div></div>`:''}
