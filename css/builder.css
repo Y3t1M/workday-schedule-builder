@@ -749,3 +749,5 @@ body.has-bottombar{padding-bottom:0}
 .sb-tile2 .stat:last-child{padding-bottom:2px}
 .sb-tile2 dl{gap:10px 16px;padding-top:2px}
 .sb-tile2 h3{margin-bottom:10px}
+
+.sb-start2{align-items:stretch}
