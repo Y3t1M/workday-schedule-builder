@@ -110,8 +110,9 @@
         <div class="sb-start2">
           <section class="sb-tile2">
             <h3>Academic Progress</h3>
-            <div class="stat"><b>${done}</b><div><span class="l">Credit Hours Completed</span>${ip?`<span class="s">In progress credit hours: ${ip}</span>`:''}</div></div>
-            <div class="stat"><b>${left}</b><div><span class="l">Minimum Credit Hours Left</span><span class="s">required to graduate · ${D.minHours||120} minimum</span></div></div>
+            <div class="stat"><b>${done}</b><div><span class="l">Credit Hours Completed</span></div></div>
+            <div class="stat"><b>${ip}</b><div><span class="l">Credit Hours In Progress</span></div></div>
+            <div class="stat"><b>${Math.max(0,(D.minHours||120)-done-ip)}</b><div><span class="l">Credit Hours Remaining</span></div></div>
           </section>
           <section class="sb-tile2">
             <h3>Degree of Study</h3>

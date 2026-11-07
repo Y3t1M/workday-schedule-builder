@@ -729,3 +729,6 @@ body.has-bottombar{padding-bottom:0}
 .sb-steps2 .fill{background:var(--wd-brand)}
 .sb-tile2 .stat{border-top:0;padding:12px 0}
 .sb-tile2 .stat:first-of-type{padding-top:4px}
+
+.sb-tile2 .stat{padding:10px 0}
+.sb-tile2 .stat b{font-size:30px;line-height:34px}
