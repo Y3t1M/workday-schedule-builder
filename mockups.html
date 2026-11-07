@@ -66,13 +66,13 @@
 
 <script>
 const SCREENS=[
-  ['1','Registration home','Term set from the appointment, Academic Progress by category, Degree of Study.','builder.html?demo=1#start'],
+  ['1','Registration home','Term already set to Spring 2027. One button.','builder.html?demo=1#start'],
   ['2','Preferences','Credits, earliest class, days off, blocked hours on the week grid, must-take.','builder.html?demo=1#prefs'],
   ['2b','Preferences, AI on','Same form with the optional "Describe it" box; one sentence fills the form.','builder.html?demo=1&ai=on#prefs'],
   ['3','What you still need','Six requirements from the degree audit, prerequisites met or missing, five fit this term.','builder.html?demo=1#needs'],
   ['4','Schedule options','Three schedules side by side with a week grid, credits, a why tag on each class, seats left.','builder.html?demo=1#options'],
   ['5','Swap a class','Other sections of FINN 3043 and other Finance courses; the rest of the schedule stays put.','builder.html?demo=1&swap=FINN%203043-002#swap'],
-  ['6','Review and confirm','What\'s left after this term, the checks, then Register, Send to my advisor, or Save.','builder.html?demo=1#review'],
+  ['6','Preview and confirm','What will change, the checks, then Register, Send to my advisor, or Save.','builder.html?demo=1#review'],
   ['7','Plain-words errors','A full section offers the waitlist and the next open section; a missing prerequisite names what to take first.','builder.html?demo=1#errors'],
 ];
 document.getElementById('phones').innerHTML=SCREENS.map(s=>`<div class="phone"><div class="frame"><iframe src="${s[3]}" title="${s[1]}" loading="lazy"></iframe></div><div class="cap"><b><span class="n">${s[0]}</span>${s[1]}</b><span>${s[2]}</span></div></div>`).join('');
