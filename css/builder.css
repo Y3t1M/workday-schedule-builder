@@ -798,3 +798,6 @@ body.has-bottombar{padding-bottom:0}
 .sb-el-g li .h{color:var(--wd-text-muted)}
 .sb-ws summary .el{font-style:normal;color:var(--wd-brand);font-weight:700}
 @media (max-width:720px){.sb-el{grid-template-columns:1fr}}
+.sb-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.sb-label-row .sb-label{margin-bottom:0}
+.sb-label-row .wd-btn[disabled]{opacity:.45;cursor:default}
