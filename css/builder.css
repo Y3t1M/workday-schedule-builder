@@ -740,3 +740,12 @@ body.has-bottombar{padding-bottom:0}
 .sb-tile2 .stat:first-of-type{padding-top:0}
 .sb-tile2 .stat:last-child{padding-bottom:0}
 .sb-tile2 dl{align-content:space-evenly;flex:1}
+
+/* vertical rhythm: tiles hug their content, rows 8px apart in both tiles */
+.sb-start2{align-items:start}
+.sb-tile2{display:block}
+.sb-tile2 .stat{flex:none;padding:8px 0}
+.sb-tile2 .stat:first-of-type{padding-top:2px}
+.sb-tile2 .stat:last-child{padding-bottom:2px}
+.sb-tile2 dl{gap:10px 16px;padding-top:2px}
+.sb-tile2 h3{margin-bottom:10px}
