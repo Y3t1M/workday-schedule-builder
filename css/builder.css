@@ -755,3 +755,13 @@ body.has-bottombar{padding-bottom:0}
 /* Step 2: time preset pills removed; the time fields stand alone */
 .sb-time .presets{display:none}
 .sb-time input[type=time]{width:180px}
+/* drag-to-paint blocked times, half-hour cells */
+.sb-week .col{touch-action:none}
+.sb-week .cell{user-select:none;-webkit-user-select:none}
+.sb-week .cell.half{border-top:1px dashed #eef0f2}
+.sb-week .cell.blk{background:repeating-linear-gradient(135deg,#dfe2e6 0 5px,#f0f1f2 5px 10px)}
+.sb-week .cell.wk{background:repeating-linear-gradient(135deg,#e8ebed 0 5px,#f6f7f8 5px 10px);cursor:not-allowed}
+.sb-week .cell:hover{background:rgba(157,34,53,.08)}
+.sb-week .cell.blk:hover{background:repeating-linear-gradient(135deg,#d0d4d9 0 5px,#e8ebed 5px 10px)}
+/* rail collapsed: let the builder use the whole width */
+.wd-rail.is-collapsed ~ div .sb,.wd-rail.is-collapsed ~ div .sb-prog,.wd-rail.is-collapsed ~ div .sb-pagesub,.wd-rail.is-collapsed ~ div .sb-steps2{max-width:none}

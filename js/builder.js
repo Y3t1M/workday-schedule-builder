@@ -64,7 +64,7 @@
       let evs='';
       blocks.forEach(b=>{ if(b.days.includes(d)) evs+=ev({start:b.start,end:b.end},'block',`<b>${b.label}</b>`); });
       (secs||[]).forEach(s=>{ if(S.splitDays(s.days).includes(d)){ const cls=(opts.grey?'grey':(COLORS[s.course]||'c1'))+(opts.hl===s.id?' hl':''); evs+=ev(s,cls,`<b>${s.course}${opts.grey?'-'+s.section:''}</b><i>${s.room}</i>`,s.id); } });
-      if(opts.editable){ for(let i=0;i<hours;i++){ const h=start+i; const blk=blocks.some(b=>b.days.includes(d)&&S.mins(b.start)<=h*60&&S.mins(b.end)>h*60); evs+=`<span class="cell ${blk?'blk':''}" data-cellday="${d}" data-hour="${h}" style="top:${i*100/hours}%;height:${100/hours}%" role="button" aria-label="${S.DAY[d]} ${h%12||12} ${h<12?'AM':'PM'}"></span>`; } }
+      if(opts.editable){ const slots=hours*2; for(let i=0;i<slots;i++){ const m=start*60+i*30; const own=(state.prefs.blocks||[]).some(b=>b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); const work=blocks.some(b=>b.fromWorkday&&b.days.includes(d)&&S.mins(b.start)<=m&&S.mins(b.end)>m); evs+=`<span class="cell ${own?'blk':''} ${work?'wk':''} ${i%2?'half':''}" data-cellday="${d}" data-min="${m}" style="top:${i*100/slots}%;height:${100/slots}%" role="button" aria-label="${S.DAY[d]} ${S.fmt(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'))}"></span>`; } }
       return `<div class="col ${off.includes(d)?'off':''}">${evs}</div>`;
     }).join('');
     function ev(s,cls,inner,id){ const top=(S.mins(s.start)-start*60)/(hours*60)*100, h=(S.mins(s.end)-S.mins(s.start))/(hours*60)*100; return `<div class="ev ${cls}" ${id?`data-sec="${id}"`:''} style="top:${top}%;height:${h}%">${inner}</div>`; }
@@ -148,7 +148,7 @@
         </div>
         <div class="sb-field"><label class="sb-label">Days available <small>tap a day to remove it</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div>
         <div class="sb-field">
-          <label class="sb-label">Blocked times <small>tap an hour you can't take class</small></label>
+          <label class="sb-label">Blocked times <small>press and drag over the times you can't take class · drag again to clear</small></label>
           ${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Block my work hours from Workday"></button><div><b>Block my work hours from Workday</b><span>${w.label} · ${w.days.map(d=>S.DAY[d]).join('/')} ${S.fmt(w.start)}–${S.fmt(w.end)} · ${w.source}</span></div></div>
           ${(p.blocks||[]).length?`<div class="sb-blocks">${p.blocks.map((b,i)=>`<span class="sb-token">${b.label} · ${b.days.map(d=>S.DAY[d]).join('/')} ${S.fmt(b.start)}–${S.fmt(b.end)}<button data-unblock="${i}" aria-label="Remove">${icon('x-small')}</button></span>`).join('')}</div>`:''}
@@ -447,7 +447,7 @@
     const t=e.target.closest('.cell,[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
     if(!t) { if(e.target.id==='scrim') closeSheet(); return; }
     const p=state.prefs;
-    if(t.classList.contains('cell')){ toggleBlock(t.dataset.cellday,+t.dataset.hour); return; }
+    if(t.classList.contains('cell')){ return; } // handled by the drag painter
     if(t.dataset.cal!==undefined){ e.preventDefault(); const g=gen(); if(t.dataset.cal==='cur'){ openCalendar(schedule(),'Selected schedule'); } else { const o=g.options[+t.dataset.cal]; openCalendar(o.sections,o.label); } return; }
     if(t.id==='calClose'){ closeSheet(); return; }
     if(t.dataset.flag!==undefined){ const l=document.getElementById('flag'+t.dataset.flag); l.hidden=!l.hidden; t.setAttribute('aria-expanded',String(!l.hidden)); t.classList.toggle('open',!l.hidden); return; }
@@ -486,21 +486,23 @@
     if(e.target.id==='creditsNum'){ setCredits(+e.target.value); }
   });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); if(e.key==='Enter'&&e.target.id==='creditsNum'){ setCredits(+e.target.value); } if(e.key==='Enter'&&e.target.id==='sentence'&&!e.shiftKey){ e.preventDefault(); document.getElementById('applySentence')?.click(); } });
-  function toggleBlock(day,hour){
-    const p=state.prefs; const h0=String(hour).padStart(2,'0')+':00', h1=String(hour+1).padStart(2,'0')+':00';
-    // the Workday work block is managed by its toggle, not by taps
-    const w=D.student.work; if(p.workSync!==false && w.days.includes(day) && S.mins(w.start)<=hour*60 && S.mins(w.end)>hour*60){ toast('That hour comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
-    const hit=p.blocks.findIndex(b=>b.days.includes(day)&&S.mins(b.start)<=hour*60&&S.mins(b.end)>hour*60);
-    if(hit>=0){
-      const b=p.blocks[hit]; const before={label:b.label,days:[day],start:b.start,end:h0}, after={label:b.label,days:[day],start:h1,end:b.end};
-      b.days=b.days.filter(d=>d!==day); const out=[]; if(S.mins(before.end)>S.mins(before.start)) out.push(before); if(S.mins(after.end)>S.mins(after.start)) out.push(after);
-      p.blocks=[...p.blocks.filter(x=>x.days.length),...out];
-    } else {
-      const adj=p.blocks.find(b=>b.days.length===1&&b.days[0]===day&&(b.end===h0||b.start===h1));
-      if(adj){ if(adj.end===h0) adj.end=h1; else adj.start=h0; } else p.blocks.push({label:'Blocked',days:[day],start:h0,end:h1});
-    }
-    resetPicks(); save(); render(true);
-  }
+  // ---------- blocked-time painter: press and drag over half-hour cells ----------
+  const slotKey=(d,m)=>d+':'+m;
+  function ownSlots(){ const set=new Set(); (state.prefs.blocks||[]).forEach(b=>{ for(let m=S.mins(b.start); m<S.mins(b.end); m+=30) b.days.forEach(d=>set.add(slotKey(d,m))); }); return set; }
+  function slotsToBlocks(set){ const out=[]; S.DAY_ORDER.forEach(d=>{ const ms=[...set].filter(k=>k.startsWith(d+':')).map(k=>+k.split(':')[1]).sort((a,b)=>a-b); let i=0; while(i<ms.length){ let j=i; while(j+1<ms.length&&ms[j+1]===ms[j]+30) j++; const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); out.push({label:'Blocked',days:[d],start:hm(ms[i]),end:hm(ms[j]+30)}); i=j+1; } }); return out; }
+  let paint=null;
+  function cellAt(x,y){ const el=document.elementFromPoint(x,y); return el&&el.classList&&el.classList.contains('cell')?el:null; }
+  function paintCell(c){ if(!paint||!c||c.classList.contains('wk')) return; const k=slotKey(c.dataset.cellday,+c.dataset.min); if(paint.mode==='add'){ paint.set.add(k); c.classList.add('blk'); } else { paint.set.delete(k); c.classList.remove('blk'); } }
+  document.addEventListener('pointerdown',e=>{
+    const c=e.target.closest('.sb-week .cell'); if(!c) return;
+    if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
+    e.preventDefault();
+    paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false};
+    paintCell(c);
+  });
+  document.addEventListener('pointermove',e=>{ if(!paint) return; paint.moved=true; paintCell(cellAt(e.clientX,e.clientY)); });
+  function endPaint(){ if(!paint) return; const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
+  document.addEventListener('pointerup',endPaint); document.addEventListener('pointercancel',endPaint);
 
   // ---------- boot ----------
   renderShell({active:'student',footer:false});
