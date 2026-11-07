@@ -17,10 +17,10 @@
       <h1 class="wd-page-title">View My Saved Schedules</h1>
       <div class="wd-toolbar" style="margin:12px 0 24px"><span data-ic-inline="export"></span><span data-ic-inline="pdf"></span><span data-ic-inline="bookmark"></span></div>
       <div class="wd-btn-row">
-        <a class="wd-btn primary" href="#">Create Saved Schedule</a>
+        <a class="wd-btn primary" href="builder.html#start">Create Saved Schedule</a>
         <a class="wd-btn secondary" href="builder.html">Build My Schedule</a>
       </div>
-      <div class="wd-tabs"><a class="wd-tab is-active" href="#">Upcoming Saved Schedules</a><a class="wd-tab" href="#">Past Saved Schedules</a></div>
+      <div class="wd-tabs"><button class="wd-tab is-active" data-tab="up">Upcoming Saved Schedules</button><button class="wd-tab" data-tab="past">Past Saved Schedules</button></div><div id="pastPane" hidden class="wd-empty"><b>No past saved schedules</b>Schedules from terms that have ended show here.</div><div id="upPane">
       <div class="wd-prog-h"><span data-ic-inline="chevron-down-small"></span><span>University of Arkansas, Fayetteville - Finance Bachelor of Science in Business Administration (BSBA)</span></div>
 
       <h3 class="wd-section-h">UAF Fall 2026 (08/17/2026-12/11/2026)</h3>
@@ -28,9 +28,9 @@
       <table class="wd-table">
         <thead><tr><th style="width:22%">Saved Schedule</th><th>Course Sections</th><th style="width:70px">Alerts</th><th style="width:170px">Actions</th></tr></thead>
         <tbody><tr>
-          <td><a href="#">Fall 2026</a></td>
-          <td><a href="#">ACCT 20103-008 - ACCT PRINCIPLES I</a><a href="#">ECON 20103-002 - PRIN OF MACROECONOMICS</a><a href="#">ENGL 10203-058 - COMPOSITION II</a><a href="#">ISYS 20303-015 - FOUNDATIONS OF BA</a></td>
-          <td><a href="#">2</a></td>
+          <td><a href="#" data-wd="View Student Registration Saved Schedule">Fall 2026</a></td>
+          <td><a href="#" data-wd="the course section page">ACCT 20103-008 - ACCT PRINCIPLES I</a><a href="#" data-wd="the course section page">ECON 20103-002 - PRIN OF MACROECONOMICS</a><a href="#" data-wd="the course section page">ENGL 10203-058 - COMPOSITION II</a><a href="#" data-wd="the course section page">ISYS 20303-015 - FOUNDATIONS OF BA</a></td>
+          <td><a href="#" data-wd="the alerts list">2</a></td>
           <td><button class="wd-select">Actions <span data-ic-inline="caret-down-small"></span></button></td>
         </tr></tbody>
       </table>
@@ -43,6 +43,7 @@
           <tr><td colspan="4" style="padding:24px;color:var(--wd-text-muted);font-size:14px">No saved schedules yet. <a href="builder.html">Build one from your degree audit</a> in about two minutes.</td></tr>
         </tbody>
       </table>
+      </div>
     </div>
   </div>
 </main>
@@ -53,6 +54,8 @@
 renderShell({active:'student'});
 document.getElementById('rail').outerHTML=renderRail('saved');
 document.querySelectorAll('[data-ic-inline]').forEach(el=>el.outerHTML=icon(el.dataset.icInline));
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{ document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('is-active',x===b)); document.getElementById('upPane').hidden=b.dataset.tab!=='up'; document.getElementById('pastPane').hidden=b.dataset.tab!=='past'; }));
+document.addEventListener('click',e=>{ const b=e.target.closest('.wd-select'); document.querySelectorAll('.wd-menu.actions').forEach(m=>m.remove()); if(!b) return; e.stopPropagation(); const m=document.createElement('div'); m.className='wd-menu actions'; const r=b.getBoundingClientRect(); m.style.position='fixed'; m.style.top=(r.bottom+6)+'px'; m.style.left=Math.min(r.left, innerWidth-236)+'px'; m.innerHTML='<a href="builder.html#review">Register from Saved Schedule</a><a href="builder.html#options">Edit</a><a href="#" data-wd="Copy Saved Schedule">Copy</a><a href="#" data-wd="Delete Saved Schedule">Delete</a>'; document.body.appendChild(m); });
 // If the builder saved or registered a schedule, show it here like Workday would.
 try{
   const q=new URLSearchParams(location.search);

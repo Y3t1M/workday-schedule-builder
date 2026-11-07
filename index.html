@@ -17,19 +17,19 @@
       <div class="wd-date" id="today"></div>
     </div>
     <div class="wd-chips">
-      <a class="wd-chip" href="#">My Payslips</a>
-      <a class="wd-chip" href="#">Required Learning</a>
-      <a class="wd-chip" href="#">View My Grades</a>
-      <a class="wd-chip" href="#">View My Interim Grades</a>
+      <a class="wd-chip" href="#" data-wd="My Payslips">My Payslips</a>
+      <a class="wd-chip" href="#" data-wd="Required Learning">Required Learning</a>
+      <a class="wd-chip" href="academics.html#courses">View My Grades</a>
+      <a class="wd-chip" href="#" data-wd="View My Interim Grades (none posted yet)">View My Interim Grades</a>
       <a class="wd-chip" href="academics.html#progress">View My Academic Progress</a>
       <a class="wd-chip" href="builder.html">Build My Schedule</a>
-      <button class="wd-chip round" aria-label="More actions">⋮</button>
+      <button class="wd-chip round" aria-label="More actions" id="moreChips">⋮</button><div class="wd-menu" id="chipMenu" hidden style="top:0"><a href="academics.html#appointments">View My Registration Appointments</a><a href="saved-schedules.html">View My Saved Schedules</a><a href="find-course-sections.html">Find Course Sections</a><a href="academics.html#notes">Note History</a></div>
     </div>
 
     <div class="wd-grid">
       <div class="col">
         <section class="wd-card">
-          <div class="wd-card-head"><h2>Awaiting Your Action</h2><button class="more" aria-label="More">⋯</button></div>
+          <div class="wd-card-head"><h2>Awaiting Your Action</h2><button class="more" aria-label="More" id="cardMore">⋯</button><div class="wd-menu" id="cardMenu" hidden><button data-wd="Hide this card">Hide this card</button><a href="#" data-wd="card settings">Settings</a></div></div>
           <div class="wd-row">
             <span class="wd-roundicon blue" id="ic-journey"></span>
             <div><h4>You Have 2 Assigned Journeys</h4><p>Prepare for Registration, Complete Student Onboarding Tasks</p></div>
@@ -49,12 +49,12 @@
           <div class="wd-inner">
             <span class="wd-ill" id="ic-time"></span>
             <div><h4>You Have Unsubmitted Time</h4><p>Make sure to submit your time entries</p></div>
-            <a class="act" href="#">My Time</a>
+            <a class="act" href="#" data-wd="My Time">My Time</a>
           </div>
           <div class="wd-inner">
             <span class="wd-ill" id="ic-pay"></span>
             <div><h4>You Have a New Payslip</h4><p>Review your payslip information to ensure accuracy</p></div>
-            <a class="act" href="#">View Payslips</a>
+            <a class="act" href="#" data-wd="View Payslips">View Payslips</a>
           </div>
         </section>
 
@@ -63,11 +63,11 @@
           <div class="wd-two">
             <div class="wd-inner" style="flex-direction:column;align-items:flex-start;gap:8px">
               <h4>Understand Your People Network</h4><p>Based on your role</p>
-              <a class="act" style="margin:16px 0 0" href="#">View Org Chart</a>
+              <a class="act" style="margin:16px 0 0" href="#" data-wd="the Org Chart">View Org Chart</a>
             </div>
             <div class="wd-inner" style="flex-direction:column;align-items:flex-start;gap:8px">
               <h4>Showcase Your Best Self with Your Profile</h4><p>Based on your most popular actions</p>
-              <a class="act" style="margin:16px 0 0" href="#">Manage Profile</a>
+              <a class="act" style="margin:16px 0 0" href="#" data-wd="Manage Profile">Manage Profile</a>
             </div>
           </div>
         </section>
@@ -78,9 +78,13 @@
           <div class="wd-card-head"><h2>Announcements</h2>
             <div class="wd-pager"><span>1 of 2</span><button disabled aria-label="Previous" id="pg-l"></button><button aria-label="Next" id="pg-r"></button></div>
           </div>
-          <div style="display:flex;gap:16px;align-items:flex-start">
+          <div class="ann" id="ann0" style="display:flex;gap:16px;align-items:flex-start">
             <div style="width:144px;height:110px;flex:none;border:1px solid var(--wd-border);border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font:900 18px/1 var(--wd-font);color:#9d2235;letter-spacing:-.3px">WORKDAY<br>RESOURCES</div>
             <div><h4 style="font-size:16px;line-height:24px;font-weight:700">Workday Student Resources</h4><p style="margin:6px 0 0;font-size:14px;line-height:20px">Welcome to Workday! Here you will be able to find class registration guides, how-to videos and&hellip;</p></div>
+          </div>
+          <div class="ann" id="ann1" hidden style="display:flex;gap:16px;align-items:flex-start">
+            <div style="width:144px;height:110px;flex:none;border:1px solid var(--wd-border);border-radius:4px;background:#9d2235;display:flex;align-items:center;justify-content:center;text-align:center;font:900 16px/1.1 var(--wd-font);color:#fff;letter-spacing:-.3px">SPRING 2027<br>REGISTRATION</div>
+            <div><h4 style="font-size:16px;line-height:24px;font-weight:700">Registration opens November 10</h4><p style="margin:6px 0 0;font-size:14px;line-height:20px">Check your appointment time in the Academics Hub and build a schedule ahead of it with <a href="builder.html">Schedule Builder</a>.</p></div>
           </div>
         </section>
       </div>
@@ -100,6 +104,10 @@ document.getElementById('ic-time').innerHTML=icon('clock').replace('width="24" h
 document.getElementById('ic-pay').innerHTML=icon('document').replace('width="24" height="24"','width="48" height="48"');
 document.getElementById('pg-l').innerHTML=icon('chevron-left-small');
 document.getElementById('pg-r').innerHTML=icon('chevron-right-small');
+let ann=0; const showAnn=()=>{ document.getElementById('ann0').hidden=ann!==0; document.getElementById('ann1').hidden=ann!==1; document.querySelector('.wd-pager span').textContent=(ann+1)+' of 2'; document.getElementById('pg-l').disabled=ann===0; document.getElementById('pg-r').disabled=ann===1; };
+document.getElementById('pg-l').addEventListener('click',()=>{ann=0;showAnn();}); document.getElementById('pg-r').addEventListener('click',()=>{ann=1;showAnn();});
+const menuToggle=(btnId,menuId)=>{ const b=document.getElementById(btnId), m=document.getElementById(menuId); b.addEventListener('click',e=>{ e.stopPropagation(); const r=b.getBoundingClientRect(); m.style.position='fixed'; m.style.top=(r.bottom+6)+'px'; m.style.left=Math.min(r.left, innerWidth-240)+'px'; m.hidden=!m.hidden; }); document.addEventListener('click',()=>{ m.hidden=true; }); };
+menuToggle('moreChips','chipMenu'); menuToggle('cardMore','cardMenu');
 </script>
 </body>
 </html>

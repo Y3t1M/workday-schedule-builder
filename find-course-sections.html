@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Course Sections - Workday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/workday.css">
+<link rel="stylesheet" href="css/builder.css">
+<style>
+  .fcs-form{max-width:640px}
+  .fcs-row{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;align-items:center;margin-bottom:14px;font-size:14px}
+  .fcs-row label{font-weight:500;color:var(--wd-text-strong)}
+  .fcs-row label i{color:#de2e21;font-style:normal;margin-left:4px}
+  .fcs-prompt{position:relative}
+  .fcs-prompt select{width:100%;height:40px;border:1px solid var(--wd-input-border);border-radius:4px;padding:0 36px 0 12px;font:500 14px var(--wd-font);color:#333;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24'><path fill='%23494949' d='M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z'/></svg>") no-repeat right 10px center;appearance:none;-webkit-appearance:none}
+  .fcs-foot{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--wd-border);margin:24px -32px -48px;padding:16px 32px;display:flex;gap:16px}
+  @media (max-width:1000px){.fcs-foot{margin:24px -16px -40px;padding:12px 16px}.fcs-row{grid-template-columns:1fr;gap:4px}}
+  .fcs-note{display:flex;gap:10px;align-items:flex-start;background:#eef4fb;border:1px solid #c7dcf6;border-radius:8px;padding:12px 14px;margin:0 0 20px;font-size:13px;line-height:18px;max-width:640px}
+  .fcs-note .wd-icon{color:#0875e1;flex:none}
+</style>
+</head>
+<body>
+<main class="wd-main">
+  <div class="wd-hub">
+    <div id="rail"></div>
+    <div class="wd-hub-body">
+      <h1 class="wd-page-title">Find Course Sections</h1>
+      <div class="fcs-note" id="note">${''}<span data-ic-inline="info"></span><span>This is Workday's section search, one course at a time. To pick from what you still need and get a whole schedule, use <a href="builder.html">Schedule Builder</a>.</span></div>
+      <form class="fcs-form" id="fcs" autocomplete="off">
+        <div class="fcs-row"><label for="inst">Institution<i>*</i></label><div class="fcs-prompt"><select id="inst"><option>University of Arkansas, Fayetteville</option></select></div></div>
+        <div class="fcs-row"><label for="term">Start Date within<i>*</i></label><div class="fcs-prompt"><select id="term"><option>UAF Spring 2027 (01/19/2027-05/14/2027)</option><option>UAF Spring 12 Weeks 2027 (01/19/2027-04/16/2027)</option><option>UAF Spring II 2027 (03/10/2027-05/14/2027)</option></select></div></div>
+        <div class="fcs-row"><label for="level">Academic Level<i>*</i></label><div class="fcs-prompt"><select id="level"><option>Undergraduate</option><option>Graduate</option></select></div></div>
+        <div class="fcs-row"><label for="campus">Campus Locations</label><div class="fcs-prompt"><select id="campus"><option value="">Any</option><option>Fayetteville Main Campus</option><option>Online</option></select></div></div>
+        <div class="fcs-row"><label for="subj">Subject</label><div class="fcs-prompt"><select id="subj"><option value="">All subjects</option></select></div></div>
+      </form>
+      <div id="results" hidden>
+        <div class="wd-toolbar" style="margin-top:28px"><span class="count">Course Sections <small id="rcount"></small></span><span data-ic-inline="export"></span><span data-ic-inline="filter"></span><span data-ic-inline="expand-table"></span></div>
+        <div style="overflow-x:auto"><table class="wd-table"><thead><tr><th>Course Section</th><th style="width:70px">Status</th><th>Meeting Patterns</th><th>Instructor</th><th class="num" style="width:60px">Seats</th><th style="width:200px"></th></tr></thead><tbody id="rbody"></tbody></table></div>
+      </div>
+      <div class="fcs-foot"><button class="wd-btn primary" id="ok">OK</button><a class="wd-btn secondary" href="academics.html">Cancel</a></div>
+    </div>
+  </div>
+</main>
+<script src="js/icons.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/hub.js"></script>
+<script src="data/sections.js"></script>
+<script src="js/engine.js"></script>
+<script>
+renderShell({active:'student'});
+document.getElementById('rail').outerHTML=renderRail('find');
+document.querySelectorAll('[data-ic-inline]').forEach(el=>el.outerHTML=icon(el.dataset.icInline));
+document.getElementById('note').firstChild.textContent='';
+const subj=document.getElementById('subj'); [...new Set(SB_DATA.sections.map(s=>s.course.split(' ')[0]))].sort().forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;subj.appendChild(o);});
+document.getElementById('ok').addEventListener('click',()=>{
+  const p=subj.value; const rows=SB_DATA.sections.filter(s=>!p||s.course.startsWith(p));
+  document.getElementById('rbody').innerHTML=rows.map(s=>`<tr><td><a href="#" data-wd="the course section page">${s.course}-${s.section} - ${s.title.toUpperCase()}</a></td><td>${s.seats===0?'Closed':'Open'}</td><td>${SB.dayList(s.days)} | ${SB.fmt(s.start)} - ${SB.fmt(s.end)} | ${s.room}</td><td><a href="#" data-wd="the instructor profile">${s.instructor}</a></td><td class="num">${s.seats}</td><td><button class="wd-select" data-add="${s.id}">Add to Saved Schedule</button></td></tr>`).join('');
+  document.getElementById('rcount').textContent=rows.length+' items'; document.getElementById('results').hidden=false;
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-add]'); if(b){ toast(`${b.dataset.add} added to saved schedule "Spring 2027 · Builder".`); } });
+</script>
+</body>
+</html>

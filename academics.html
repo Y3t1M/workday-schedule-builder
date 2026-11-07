@@ -15,9 +15,9 @@
     <div class="wd-hub-body">
       <h2 class="wd-section-title">Academics Quick Actions</h2>
       <div class="wd-chips">
-        <a class="wd-chip" href="#">View My Grades</a>
-        <a class="wd-chip" href="#">View My Interim Grades</a>
-        <a class="wd-chip" href="#">View My Registration Appointments</a>
+        <a class="wd-chip" href="academics.html#courses">View My Grades</a>
+        <a class="wd-chip" href="#" data-wd="View My Interim Grades (none posted yet)">View My Interim Grades</a>
+        <a class="wd-chip" href="#appointments">View My Registration Appointments</a>
         <a class="wd-chip" href="builder.html">Build My Schedule</a>
       </div>
       <h2 class="wd-section-title" style="margin-bottom:16px">Academics Overview</h2>
@@ -27,11 +27,11 @@
           <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:200px;color:#c9ced4">
             <svg width="200" height="150" viewBox="0 0 200 150" aria-hidden="true"><path d="M30 120 C 60 60, 70 40, 95 30" stroke="#0875e1" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M85 22 l 28 18 -14 22 -28 -18z" fill="#0875e1"/><path d="M100 45 L 190 130 L 70 135 Z" fill="#fff3b0" opacity=".9"/><ellipse cx="30" cy="122" rx="16" ry="6" fill="#0875e1"/></svg>
           </div>
-          <div class="wd-tile-foot"><a href="#">View Holds</a></div>
+          <div class="wd-tile-foot"><a href="#" data-wd="View Holds (you have none)">View Holds</a></div>
         </section>
         <section class="wd-tile">
           <div class="wd-tile-head" data-ic="users"><div><h3>Important Contacts</h3><p>Request an appointment with contacts in your network</p></div></div>
-          <p class="wd-kv"><b>Taylor Brooks</b><span>UAF Advisor</span></p>
+          <p class="wd-kv"><b>Blaise M. Simecek</b><span>Assistant Director, Walton Honors Program · WCOB 335</span></p>
           <p class="wd-kv"><b>Morgan Lee</b><span>UAF Advisor</span></p>
           <p class="wd-kv"><b>Jordan Patel</b><span>UAF Advisor</span></p>
           <p class="wd-kv"><b>Casey Nguyen</b><span>UAF Advisor</span></p>
@@ -44,12 +44,12 @@
           <div class="wd-class"><div><b>ACCT 2013-009 - ACCT PRINCIPLES I</b>WCOB 202 | Monday/Wednesday | 6:20 PM - 7:35 PM Nate Nantze</div><span class="u">3</span></div>
           <div class="wd-class"><div><b>ECON 2013-002 - PRIN OF MACROECONOMICS</b>KIMP 209 | Tuesday/Thursday | 2:00 PM - 3:15 PM Robert Stapp</div><span class="u">3</span></div>
           <div class="wd-class"><div><b>ENGL 1023-058 - COMPOSITION II</b>KIMP 102 | Tuesday/Thursday | 12:30 PM - 1:45 PM Julie Gall</div><span class="u">3</span></div>
-          <button class="wd-outline-btn"><span data-ic-inline="list"></span> More (1)</button>
+          <div class="wd-class" id="class5" hidden><div><b>FINN 20403-015 - PRINCIPLES OF FINANCE</b>WJWH 403 | Tuesday/Thursday | 12:30 PM - 1:45 PM Julie Gall</div><span class="u">3</span></div><button class="wd-outline-btn" id="moreClasses"><span data-ic-inline="list"></span> More (1)</button>
           <div class="wd-tile-foot"><a href="academics.html#courses">View Details</a></div>
         </section>
         <section class="wd-tile">
           <div class="wd-tile-head" data-ic="grad-cap"><div><h3>Registration Appointments</h3><p>The start date of your registration appointment</p></div></div>
-          <div class="big">11/10/2026<br>8:00AM<small>UAF Spring 2027 (01/19/2027-05/14/2027)</small></div>
+          <div class="big" id="appointments">11/10/2026<br>8:00AM<small>UAF Spring 2027 (01/19/2027-05/14/2027)</small></div>
           <p class="wd-kv" style="margin-top:12px"><b>11/10/2026, 8:00 AM</b><span>UAF Spring 12 Weeks 2027 (01/19/2027-04/16/2027)</span></p>
           <p class="wd-kv"><b>11/10/2026, 8:00 AM</b><span>UAF Spring II 2027 (03/10/2027-05/14/2027)</span></p>
           <a class="wd-btn primary" href="builder.html" style="margin-top:8px;align-self:flex-start">Build My Schedule</a>
@@ -73,10 +73,10 @@
         <div style="overflow-x:auto"><table class="wd-table">
           <thead><tr><th>Course Listing</th><th class="num" style="width:60px">Units</th><th>Section</th><th style="width:110px">Registration Status</th><th>Instructor</th><th>Meeting Patterns</th></tr></thead>
           <tbody>
-            <tr><td><a href="#">ISYS 20303 - FOUNDATIONS OF BA</a></td><td class="num">3</td><td><a href="#">ISYS 20303-020</a></td><td>Registered</td><td><a href="#">Jacob W Yates</a></td><td>Monday/Wednesday | 4:35 PM - 5:50 PM | WCOB 250</td></tr>
-            <tr><td><a href="#">ACCT 20203 - ACCT PRINCIPLES II</a></td><td class="num">3</td><td><a href="#">ACCT 20203-009</a></td><td>Registered</td><td><a href="#">Nate Nantze</a></td><td>Monday/Wednesday | 6:20 PM - 7:35 PM | WCOB 202</td></tr>
-            <tr><td><a href="#">ECON 20103 - PRIN OF MACROECONOMICS</a></td><td class="num">3</td><td><a href="#">ECON 20103-002</a></td><td>Registered</td><td><a href="#">Robert Stapp</a></td><td>Tuesday/Thursday | 2:00 PM - 3:15 PM | KIMP 209</td></tr>
-            <tr><td><a href="#">ENGL 10203 - COMPOSITION II</a></td><td class="num">3</td><td><a href="#">ENGL 10203-058</a></td><td>Registered</td><td><a href="#">Julie Gall</a></td><td>Tuesday/Thursday | 12:30 PM - 1:45 PM | KIMP 102</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ISYS 20303 - FOUNDATIONS OF BA</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ISYS 20303-020</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Jacob W Yates</a></td><td>Monday/Wednesday | 4:35 PM - 5:50 PM | WCOB 250</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ACCT 20203 - ACCT PRINCIPLES II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ACCT 20203-009</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Nate Nantze</a></td><td>Monday/Wednesday | 6:20 PM - 7:35 PM | WCOB 202</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ECON 20103 - PRIN OF MACROECONOMICS</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ECON 20103-002</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Robert Stapp</a></td><td>Tuesday/Thursday | 2:00 PM - 3:15 PM | KIMP 209</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ENGL 10203 - COMPOSITION II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ENGL 10203-058</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Julie Gall</a></td><td>Tuesday/Thursday | 12:30 PM - 1:45 PM | KIMP 102</td></tr>
           </tbody>
         </table></div>
       </section>
@@ -90,26 +90,33 @@
         <div class="wd-toolbar"><span class="count">Overall Academic Progress <small>1 item</small></span></div>
         <table class="wd-table">
           <thead><tr><th class="num">Units Defined</th><th class="num">Units in Progress</th><th class="num">Units Satisfying</th><th>Remaining</th><th>Status</th></tr></thead>
-          <tbody><tr><td class="num">120</td><td class="num"><a href="#">15</a></td><td class="num"><a href="#">45</a></td><td>Minimum 75 Unit(s)</td><td>Not Satisfied</td></tr></tbody>
+          <tbody><tr><td class="num">120</td><td class="num"><a href="#" data-wd="the unit breakdown">15</a></td><td class="num"><a href="#" data-wd="the unit breakdown">45</a></td><td>Minimum 75 Unit(s)</td><td>Not Satisfied</td></tr></tbody>
         </table>
         <div class="wd-toolbar" style="margin-top:28px"><span class="count">Requirements <small>14 items</small></span></div>
         <table class="wd-table" id="reqtable">
           <thead><tr><th>Requirement</th><th>Status</th><th>Remaining</th><th>Registrations Used</th></tr></thead>
           <tbody>
-            <tr><td><a href="#">Minimum 2.00 Cumulative GPA</a></td><td>Satisfied</td><td></td><td></td></tr>
-            <tr><td><a href="#">University Core in English Composition II</a></td><td>In Progress</td><td></td><td><a href="#">ENGL 10203 - COMPOSITION II (In Progress)</a></td></tr>
-            <tr><td><a href="#">Business Core: Accounting Principles</a></td><td>Satisfied</td><td></td><td><a href="#">ACCT 20103 - ACCT PRINCIPLES I</a><a href="#">ACCT 20203 - ACCT PRINCIPLES II</a></td></tr>
-            <tr><td><a href="#">Finance Core: Principles of Finance</a></td><td>Not Satisfied</td><td>FINN 20403</td><td></td></tr>
-            <tr><td><a href="#">Business Core: Business Statistics</a></td><td>Not Satisfied</td><td>STAT 20203</td><td></td></tr>
-            <tr><td><a href="#">Business Core: Information Systems</a></td><td>Not Satisfied</td><td>ISYS 21003</td><td></td></tr>
-            <tr><td><a href="#">Business Core: Microeconomics</a></td><td>Not Satisfied</td><td>ECON 20203</td><td></td></tr>
-            <tr><td><a href="#">Business Core: Business Writing</a></td><td>Not Satisfied</td><td>BUSW 20103</td><td></td></tr>
-            <tr><td><a href="#">University Core in Humanities</a></td><td>Not Satisfied</td><td>Minimum 1 Course(s)</td><td></td></tr>
-            <tr><td><a href="#">Professional Development</a></td><td>Not Satisfied</td><td>WCOB 30101</td><td></td></tr>
-            <tr><td><a href="#">Business Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Unit(s)</td><td></td></tr>
-            <tr><td><a href="#">Finance Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Course(s)</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Minimum 2.00 Cumulative GPA</a></td><td>Satisfied</td><td></td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">University Core in English Composition II</a></td><td>In Progress</td><td></td><td><a href="#" data-wd="the course detail page">ENGL 10203 - COMPOSITION II (In Progress)</a></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Core: Accounting Principles</a></td><td>Satisfied</td><td></td><td><a href="#" data-wd="the course detail page">ACCT 20103 - ACCT PRINCIPLES I</a><a href="#">ACCT 20203 - ACCT PRINCIPLES II</a></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Finance Core: Principles of Finance</a></td><td>Not Satisfied</td><td>FINN 20403</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Core: Business Statistics</a></td><td>Not Satisfied</td><td>STAT 20203</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Core: Information Systems</a></td><td>Not Satisfied</td><td>ISYS 21003</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Core: Microeconomics</a></td><td>Not Satisfied</td><td>ECON 20203</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Core: Business Writing</a></td><td>Not Satisfied</td><td>BUSW 20103</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">University Core in Humanities</a></td><td>Not Satisfied</td><td>Minimum 1 Course(s)</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Professional Development</a></td><td>Not Satisfied</td><td>WCOB 30101</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Business Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Unit(s)</td><td></td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">Finance Elective</a></td><td>Not Satisfied</td><td>Minimum 2 Course(s)</td><td></td></tr>
           </tbody>
         </table>
+      </section>
+
+      <!-- Note History -->
+      <section id="notes" style="margin-top:40px">
+        <h2 class="wd-page-title">Note History</h2>
+        <div class="wd-toolbar" style="margin:8px 0 20px"><span class="count">Notes <small>1 item</small></span></div>
+        <div class="wd-table" style="display:block;padding:16px 20px;font-size:14px;line-height:20px"><b style="color:var(--wd-text-strong)">Advising note · 10/27/2026 · Blaise M. Simecek</b><p style="margin:6px 0 0">Finance-Mgmt/Investment major, considering SEVI as a minor. Spring 2027 course options: ISYS 210H3 or 21003, FINN 30103, FINN 30603, and two of SEVI 39303, MKTG 343H3/34303, a science lecture/lab, or a fine arts course.</p></div>
       </section>
     </div>
   </div>
@@ -121,16 +128,18 @@
 <script src="js/engine.js"></script>
 <script>
 renderShell({active:'student'});
-document.getElementById('rail').outerHTML=renderRail(location.hash==='#progress'?'progress':location.hash==='#courses'?'classes':'overview');
+document.getElementById('rail').outerHTML=renderRail(location.hash==='#progress'?'progress':location.hash==='#courses'?'classes':location.hash==='#notes'?'notes':'overview');
 try{
   const saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); const reg=saved.find(s=>s.registered);
   if(reg && window.SB_DATA){
-    const rows=reg.sections.map(line=>{const id=line.split(' - ')[0]; const s=SB_DATA.sections.find(x=>x.id===id); if(!s) return ''; return `<tr><td><a href="#">${s.course} - ${s.title.toUpperCase()}</a></td><td class="num">${s.credits}</td><td><a href="#">${s.id}</a></td><td>Registered</td><td><a href="#">${s.instructor}</a></td><td>${SB.dayList(s.days).replace(/\//g,'/')} | ${SB.fmt(s.start)} - ${SB.fmt(s.end)} | ${s.room}</td></tr>`;}).join('');
+    const rows=reg.sections.map(line=>{const id=line.split(' - ')[0]; const s=SB_DATA.sections.find(x=>x.id===id); if(!s) return ''; return `<tr><td><a href="#" data-wd="the course detail page">${s.course} - ${s.title.toUpperCase()}</a></td><td class="num">${s.credits}</td><td><a href="#" data-wd="the course detail page">${s.id}</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">${s.instructor}</a></td><td>${SB.dayList(s.days).replace(/\//g,'/')} | ${SB.fmt(s.start)} - ${SB.fmt(s.end)} | ${s.room}</td></tr>`;}).join('');
     document.getElementById('regBody').innerHTML=rows; document.getElementById('regCount').textContent=reg.sections.length+' items';
     document.getElementById('regBanner').innerHTML=`<div class="wd-success" role="status">${icon('check-circle-fill')}<div><b>Registered for UAF Spring 2027.</b> ${reg.sections.length} sections · ${reg.credits||reg.sections.length*3} credit hours. You can swap or drop until 01/26/2027.</div></div>`;
   }
 }catch(e){}
 if(location.hash) setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({block:'start'}),50);
+document.getElementById('moreClasses')?.addEventListener('click',e=>{ const c=document.getElementById('class5'); c.hidden=!c.hidden; e.currentTarget.innerHTML=icon('list')+(c.hidden?' More (1)':' Less'); });
+document.querySelectorAll('.wd-class b, #reqtable a, .wd-kv b').forEach(el=>{});
 document.querySelectorAll('[data-ic]').forEach(el=>el.insertAdjacentHTML('afterbegin',icon(el.dataset.ic)));
 document.querySelectorAll('[data-ic-inline]').forEach(el=>el.outerHTML=icon(el.dataset.icInline));
 </script>
