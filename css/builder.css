@@ -751,3 +751,7 @@ body.has-bottombar{padding-bottom:0}
 .sb-tile2 h3{margin-bottom:10px}
 
 .sb-start2{align-items:stretch}
+
+/* Step 2: time preset pills removed; the time fields stand alone */
+.sb-time .presets{display:none}
+.sb-time input[type=time]{width:180px}
