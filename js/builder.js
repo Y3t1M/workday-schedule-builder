@@ -494,7 +494,7 @@
     if(t.hasAttribute('data-lookupclear')){ state.lookupPick=null; state.lookup=''; save(); render(true); document.getElementById('lookupInput')?.focus(); return; }
     if(t.dataset.lookupadd){ p.mustTake=[t.dataset.lookupadd]; resetPicks(); save(); location.hash='options'; toast(t.dataset.lookupadd+' will be in every option.'); return; }
     if(t.hasAttribute('data-resetblocks')){ p.blocks=[]; resetPicks(); save(); render(true); toast('Blocked times reset.'); return; }
-    if(t.id==='workSync'){ p.workSync=!(p.workSync!==false); resetPicks(); save(); render(true); toast(p.workSync?'Work hours blocked from Workday.':'Work hours no longer blocked. Options rebuilt.'); return; }
+    if(t.id==='workSync'){ p.workSync=!(p.workSync!==false); resetPicks(); save(); render(true); toast(p.workSync?'Work hours blocked from Workday.':'Work hours no longer blocked.'); return; }
     if(t.dataset.unblock!==undefined){ p.blocks.splice(+t.dataset.unblock,1); resetPicks(); save(); render(true); return; }
     if(t.dataset.must){ const c=t.dataset.must; p.mustTake=p.mustTake.includes(c)?p.mustTake.filter(x=>x!==c):[...p.mustTake,c]; resetPicks(); save(); render(true); if(t.dataset.title){ toast(c+' will be in every option.'); } return; }
     if(t.id==='applySentence'){ const txt=document.getElementById('sentence').value; state.prefs=S.parseSentence(txt,p); resetPicks(); save(); render(true); const f=state.prefs.parsed||{}; toast(Object.keys(f).length?'Got it. Check the form below.':'Nothing recognised. Try naming a time, a day, or a work shift.'); return; }
