@@ -2,7 +2,7 @@
    #start #prefs #needs #options #swap #review #errors (#done after registering) */
 (function(){
   const D=SB_DATA, S=SB;
-  const STEPS=[['start','Start'],['audit','Degree Audit'],['prefs','Availability'],['needs','Deg. Requirements'],['options','Schedules'],['review','Review']];
+  const STEPS=[['start','Start'],['prefs','Availability'],['needs','Degree Requirements'],['options','Schedules'],['review','Review']];
   const COLORS={}; D.needs.forEach((n,i)=>COLORS[n.course]='c'+((i%6)+1));
   const STUDENT_KEY=(window.DEMO_STUDENT&&DEMO_STUDENT.id)||D.student.name;
 
@@ -125,26 +125,7 @@
           </section>
         </div>
       </div>
-      ${foot(null,'audit','Next')}
-    </div>`;
-  };
-
-  V.audit=()=>{
-    const flat=D.flatReqs; const n=k=>flat.filter(i=>i.status===k).length;
-    const groups=D.requirements.map(g=>({g, el:g.items.filter(i=>i.status==='open')})).filter(x=>x.el.length);
-    return `
-    ${pageHead('Degree Audit','What you have completed, what is in progress, and what you are eligible to take next. Based on your Walton B.S.B.A. worksheet, evaluated 10/21/2026.','audit')}
-    <div class="sb">
-      <div class="sb-card">
-        <div class="sb-facts four" style="margin-top:0"><div class="sb-fact"><b>${n('done')}</b><span>Completed</span></div><div class="sb-fact"><b>${n('inprogress')}</b><span>In Progress</span></div><div class="sb-fact"><b>${n('open')}</b><span>Eligible Now</span></div><div class="sb-fact"><b>${n('later')}</b><span>After a Prerequisite</span></div></div>
-        <h3 class="wd-section-h">Eligible now</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Requirements you can take next term. Prerequisites are met for every class listed here.</p>
-        <div class="sb-el">${groups.map(x=>`<div class="sb-el-g"><b>${x.g.group}</b><ul>${x.el.map(i=>`<li><span class="c">${i.course}</span><span class="t">${i.title}</span><span class="h">${i.h} cr</span></li>`).join('')}</ul></div>`).join('')}</div>
-        <h3 class="wd-section-h">By category</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Open a category to see every requirement and where it stands.</p>
-        ${worksheet({eligible:true})}
-      </div>
-      ${foot('start','prefs','Next')}
+      ${foot(null,'prefs','Next')}
     </div>`;
   };
 
@@ -168,7 +149,7 @@
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div>
         </div>
       </div>
-      ${foot('audit','needs','Next')}
+      ${foot('start','needs','Next')}
     </div>`;
   };
 
