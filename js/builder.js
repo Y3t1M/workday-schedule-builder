@@ -12,6 +12,7 @@
 
   // ---------- state ----------
   const qs=new URLSearchParams(location.search);
+  if(window.SB_FORCE){ qs.set('demo','1'); if(SB_FORCE.ai) qs.set('ai','on'); if(SB_FORCE.swap) qs.set('swap',SB_FORCE.swap); }
   let state=load();
   function load(){
     try{ const s=JSON.parse(sessionStorage.getItem('sb-state')||'null'); if(s&&s.v===5) return s; }catch(e){}
@@ -32,7 +33,7 @@
   const reqOf=course=>D.flatReqs.find(r=>r.course===course);
 
   // ---------- helpers ----------
-  function route(){ return location.hash.replace('#','')||'start'; }
+  function route(){ return location.hash.replace('#','')||(window.SB_FORCE&&SB_FORCE.step)||'start'; }
   function go(h){ location.hash=h; }
   const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
