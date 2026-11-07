@@ -691,3 +691,27 @@ body.has-bottombar{padding-bottom:0}
 .sb-steps2 li:first-child::after{left:24px;width:calc(100% - 24px)}
 .sb-steps2 li:last-child::before{width:calc(100% - 24px)}
 @media (max-width:720px){.sb-steps2 .dot{width:22px;height:22px}.sb-steps2 li::before,.sb-steps2 li::after{top:13px}}
+
+/* ---- steps spread evenly across the full line ---- */
+.sb-steps2{position:relative;display:flex;justify-content:space-between;align-items:flex-start;min-height:56px;max-width:none}
+.sb-steps2 li{flex:none;width:24px;position:relative;display:block;min-width:0}
+.sb-steps2 li::before,.sb-steps2 li::after{display:none}
+.sb-steps2 .track,.sb-steps2 .fill{position:absolute;top:14px;left:12px;height:2px;background:#dfe2e6;width:calc(100% - 24px);z-index:0}
+.sb-steps2 .fill{background:#333;width:0;max-width:calc(100% - 24px)}
+.sb-steps2 .st,.sb-steps2 button{position:absolute;top:0;left:50%;transform:translateX(-50%);min-width:0;padding:0;white-space:nowrap}
+.sb-steps2 li:first-child .st,.sb-steps2 li:first-child button{left:0;transform:none;align-items:flex-start}
+.sb-steps2 li:last-child .st,.sb-steps2 li:last-child button{left:auto;right:0;transform:none;align-items:flex-end}
+.sb-steps2 .dot{margin:3px 0}
+.sb-steps2 .lbl{white-space:nowrap}
+@media (max-width:720px){.sb-steps2{min-height:70px}.sb-steps2 .lbl{white-space:normal;max-width:72px;text-align:center}.sb-steps2 li:first-child .lbl{text-align:left}.sb-steps2 li:last-child .lbl{text-align:right}.sb-steps2 .track,.sb-steps2 .fill{top:13px}}
+/* ---- Academic Progress tile: more air; appointment line bolder ---- */
+.sb-tile2{padding:20px 22px}
+.sb-tile2 h3{margin-bottom:14px;font-size:16px}
+.sb-tile2 .stat{gap:18px;padding:16px 0}
+.sb-tile2 .stat:last-child{padding-bottom:6px}
+.sb-tile2 .stat b{min-width:64px;font-size:34px;line-height:38px}
+.sb-tile2 .stat .l{font-size:15px}
+.sb-tile2 .stat .s{margin-top:2px}
+.sb-tile2 dl{gap:14px 16px;padding-top:4px}
+.sb-card > .sub{font-size:15px;line-height:22px;color:var(--wd-text);margin-bottom:18px}
+.sb-card > .sub b{color:var(--wd-text-strong);font-weight:700}

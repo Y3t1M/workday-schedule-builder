@@ -38,7 +38,7 @@
   const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
     const at=stepIndex(cur); const max=Math.max(state.maxStep||0,at);
-    return `<div class="sb-prog-meta sb-meta2"><b>Let's Build Your Schedule</b><span>step ${at+1} of ${STEPS.length}</span></div><ol class="sb-steps2" aria-label="Progress">${STEPS.map((s,i)=>{
+    return `<div class="sb-prog-meta sb-meta2"><b>Let's Build Your Schedule</b><span>step ${at+1} of ${STEPS.length}</span></div><ol class="sb-steps2" aria-label="Progress"><span class="track"></span><span class="fill" style="width:${at/(STEPS.length-1)*100}%"></span>${STEPS.map((s,i)=>{
       const k=i<at?'done':i===at?'now':'todo'; const can=i<=max&&i!==at;
       const mark=i<at?icon('check-small'):(i===at?'<span class="sel"></span>':'');
       const inner=`<span class="dot">${mark}</span><span class="lbl">${s[1]}</span>`;
@@ -103,7 +103,7 @@
   V.start=()=>{
     const st=D.student; const done=st.creditsDone, ip=st.creditsInProgress; const left=Math.max(0,(D.minHours||120)-done);
     return `
-    ${pageHead('Registration for '+D.termShort,'Your registration appointment opens '+D.registrationOpens+'.','start')}
+    ${pageHead('Registration for '+D.termShort,'Your registration appointment opens <b>'+D.registrationOpens+'</b>.','start')}
     <div class="sb">
       <div class="sb-card">
         <p class="sb-lead">Get three personalized schedules based on your degree requirements and availability. Compare your options, swap classes, and confirm your selection.</p>
