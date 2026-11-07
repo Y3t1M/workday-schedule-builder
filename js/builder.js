@@ -106,13 +106,22 @@
     ${pageHead('Registration for '+D.termShort,'Your registration appointment opens '+D.registrationOpens+'.','start')}
     <div class="sb">
       <div class="sb-card">
-        <span class="sb-dates">${D.term.replace(/^.*\((.*)\)$/,'$1').replace('-',' – ')}</span>
         <p class="sb-lead">Get three personalized schedules based on your degree requirements and availability. Compare your options, swap classes, and confirm your selection.</p>
-        <div class="sb-grid2">
-          <div class="sb-fact"><span class="k">Academic Progress</span><b>${done}</b><span>credit hours completed${ip?` · ${ip} in progress`:''}</span></div>
-          <div class="sb-fact"><span class="k">Minimum Credit Hours Left</span><b>${left}</b><span>required to graduate · ${D.minHours||120} minimum</span></div>
-          <div class="sb-fact"><span class="k">Degree of Study</span><b class="t">${st.degree.replace('Bachelor of Science in Business Administration','B.S.B.A.')} ${st.majors.map(m=>m.name).join(', ')}</b><span>Minor: ${st.minorShort||st.minor}</span></div>
-          <div class="sb-fact"><span class="k">Concentration</span><b class="t">${st.majors[1]?st.majors[1].conc:st.majors[0].conc}</b><span>${st.majors[1]?st.majors[0].conc+' (Finance)':''}</span></div>
+        <div class="sb-start2">
+          <section class="sb-tile2">
+            <h3>Academic Progress</h3>
+            <div class="stat"><b>${done}</b><div><span class="l">Hours Completed</span>${ip?`<span class="s">${ip} more in progress this fall</span>`:''}</div></div>
+            <div class="stat"><b>${left}</b><div><span class="l">Minimum Hours Left</span><span class="s">required to graduate · ${D.minHours||120} minimum</span></div></div>
+          </section>
+          <section class="sb-tile2">
+            <h3>Degree of Study</h3>
+            <dl>
+              <dt>Degree</dt><dd>${st.degree.replace('Bachelor of Science in Business Administration','B.S.B.A.')}</dd>
+              <dt>Majors</dt><dd>${st.majors.map(m=>m.name).join(', ')}</dd>
+              <dt>Minor</dt><dd>${st.minorShort||st.minor}</dd>
+              <dt>Concentration</dt><dd>${st.majors.map(m=>m.conc).join('; ')}</dd>
+            </dl>
+          </section>
         </div>
       </div>
       ${foot(null,'prefs','Next')}
