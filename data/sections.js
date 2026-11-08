@@ -8,10 +8,11 @@ window.SB_DATA = {
   termShort: 'Spring 2027',
   termStart: '2027-01-19', termEnd: '2027-05-14',
   registrationOpens: '11/10/2026, 8:00 AM',
+  registrationSubmitted: '11/10/2026, 8:02 AM', // the demo always registers inside the appointment window
   addDropUntil: '01/26/2027',
   terms: ['UAF Spring 2027 (01/19/2027-05/14/2027)','UAF Spring 12 Weeks 2027 (01/19/2027-04/16/2027)','UAF Spring II 2027 (03/10/2027-05/14/2027)','UAF Spring January Intersession 2027 (01/04/2027-01/15/2027)'],
   student: {
-    name: 'Hudson Tinch', year: 'Sophomore', program: 'BSBA',
+    name: 'Hudson', year: 'Sophomore', program: 'BSBA',
     degree: 'Bachelor of Science in Business Administration',
     majors: [{name:'Finance', conc:'Management & Investments'},{name:'Information Systems', conc:'Enterprise Resource Planning'}],
     minor: 'Strategy, Entrepreneurship & Venture Innovation (SEVI)', minorShort:'SEVI',
@@ -102,15 +103,15 @@ window.SB_DATA = {
   // course,title,section,days,start,end,credits,seats,prereq,fills,room,instructor
   sections: [
     ['FINN 20403','Principles of Finance','001','MWF','09:40','10:30',3,12,'ACCT 20103','Business Core','WCOB 203','R. Kim'],
-    ['FINN 20403','Principles of Finance','002','TTh','11:00','12:15',3,3,'ACCT 20103','Business Core','WJWH 403','Julie Gall'],
+    ['FINN 20403','Principles of Finance','002','TTh','11:00','12:15',3,3,'ACCT 20103','Business Core','WJWH 403','J. Harper'],
     ['STAT 20203','Business Statistics','001','MW','10:45','12:00',3,5,'','Pre-Business Core','WCOB 250','A. Patel'],
     ['STAT 20203','Business Statistics','003','TTh','09:30','10:45',3,8,'','Pre-Business Core','WCOB 250','A. Patel'],
     ['ISYS 21003','Business Information Systems','001','MW','13:00','14:15',3,20,'','Business Core','RCED 120','Cristy Stamps'],
     ['ISYS 21003','Business Information Systems','002','TTh','11:00','12:15',3,0,'','Business Core','RCED 120','Cristy Stamps'],
-    ['ECON 20203','Principles of Microeconomics','001','TTh','14:00','15:15',3,15,'','Pre-Business Core','KIMP 209','Robert Stapp'],
-    ['ECON 20203','Principles of Microeconomics','002','MW','14:30','15:45',3,6,'','Pre-Business Core','KIMP 209','Robert Stapp'],
-    ['BUSW 20103','Business Writing','001','TTh','12:30','13:45',3,10,'','General Electives','WCOB 202','Nate Nantze'],
-    ['BUSW 20103','Business Writing','002','MW','16:00','17:15',3,9,'','General Electives','WCOB 202','Nate Nantze'],
+    ['ECON 20203','Principles of Microeconomics','001','TTh','14:00','15:15',3,15,'','Pre-Business Core','KIMP 209','R. Delgado'],
+    ['ECON 20203','Principles of Microeconomics','002','MW','14:30','15:45',3,6,'','Pre-Business Core','KIMP 209','R. Delgado'],
+    ['BUSW 20103','Business Writing','001','TTh','12:30','13:45',3,10,'','General Electives','WCOB 202','N. Wallace'],
+    ['BUSW 20103','Business Writing','002','MW','16:00','17:15',3,9,'','General Electives','WCOB 202','N. Wallace'],
     ['HUMN 10103','Introduction to Humanities','001','MW','10:00','10:50',3,25,'','State Minimum Core','KIMP 102','M. Lowe'],
     ['WCOB 30101','Business Career Planning','001','M','12:10','13:00',1,30,'','Professional Development','WCOB 241','Gina Campbell'],
     ['WCOB 30101','Business Career Planning','002','F','12:10','13:00',1,30,'','Professional Development','WCOB 241','Gina Campbell'],

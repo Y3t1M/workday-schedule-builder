@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Home - Workday</title>
+<title>Home · Schedule Builder prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="css/workday.css">
@@ -13,16 +13,26 @@
   <div class="wd-hero" role="img" aria-label="University of Arkansas campus"></div>
   <div class="wd-content">
     <div class="wd-greet">
-      <h1 class="wd-h1" id="greet">Good Afternoon, Hudson Tinch</h1>
+      <h1 class="wd-h1" id="greet">Good Afternoon, Hudson</h1>
       <div class="wd-date" id="today"></div>
     </div>
+    <section class="pt-intro" aria-label="About this prototype">
+      <div>
+        <h2>This is a prototype, not Workday</h2>
+        <p>We rebuilt the University of Arkansas Workday Student home so you can see where one new task would live. The Schedule Builder is the part that works. Everything else is a stand-in.</p>
+      </div>
+      <div class="pt-intro-actions">
+        <a class="wd-btn primary" href="builder.html">Open the Schedule Builder</a>
+        <a class="wd-btn secondary" href="academics.html">Go the student way: Academics Hub</a>
+      </div>
+    </section>
     <div class="wd-chips">
+      <a class="wd-chip" href="builder.html">Build My Schedule</a>
       <a class="wd-chip" href="#" data-wd="My Payslips">My Payslips</a>
       <a class="wd-chip" href="#" data-wd="Required Learning">Required Learning</a>
       <a class="wd-chip" href="academics.html#courses">View My Grades</a>
       <a class="wd-chip" href="#" data-wd="View My Interim Grades (none posted yet)">View My Interim Grades</a>
       <a class="wd-chip" href="academics.html#progress">View My Academic Progress</a>
-      <a class="wd-chip" href="builder.html">Build My Schedule</a>
       <button class="wd-chip round" aria-label="More actions" id="moreChips">⋮</button><div class="wd-menu" id="chipMenu" hidden style="top:0"><a href="academics.html#appointments">View My Registration Appointments</a><a href="saved-schedules.html">View My Saved Schedules</a><a href="find-course-sections.html">Find Course Sections</a><a href="academics.html#notes">Note History</a></div>
     </div>
 

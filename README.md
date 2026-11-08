@@ -1,5 +1,9 @@
 # Schedule Builder inside Workday Student
 
+> **Student prototype, not the real Workday.** Made by the McMillon Innovation Studio Workday team at the
+> University of Arkansas, Fall 2026. Every page carries a notice and a button to the Schedule Builder,
+> and every name, class and number is sample data. Workday is a trademark of Workday, Inc.
+
 A 1:1 recreation of the University of Arkansas Workday Student shell (measured from the live
 tenant on 2026-11-03) with the McMillon x Workday **Schedule Builder** dropped in where it
 would really live: Academics Hub → Planning and Registration.
@@ -27,5 +31,5 @@ AI assist is optional and only does two things: reads the plain-English sentence
 (`SB.parseSentence`) and writes longer explanations (`SB.why(…, 'ai')`). The schedules come from
 the rules engine either way, and it can only show sections that exist in the data.
 
-Privacy: the student ID, advisors and sections are made up. Reference captures of the real tenant
+Privacy: the student ID, advisors (except Blaise M. Simecek, named with permission), current classes, instructors and sections on the clone pages are made up. Reference captures of the real tenant
 stay in a local, git-ignored `reference/` folder and are not part of this repo.

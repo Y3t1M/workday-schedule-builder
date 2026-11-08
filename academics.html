@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Overview - Workday</title>
+<title>Academics · Schedule Builder prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="css/workday.css">
@@ -13,6 +13,7 @@
   <div class="wd-hub">
     <div id="rail"></div>
     <div class="wd-hub-body">
+      <div class="pt-callout"><span><b>Prototype.</b> Build My Schedule is the only task that works on this page. The rest shows where it sits in Workday.</span><a class="wd-btn primary" href="builder.html">Open the Schedule Builder</a></div>
       <h2 class="wd-section-title">Academics Quick Actions</h2>
       <div class="wd-chips">
         <a class="wd-chip" href="academics.html#courses">View My Grades</a>
@@ -40,11 +41,10 @@
       <div class="wd-two">
         <section class="wd-tile">
           <div class="wd-tile-head" data-ic="grad-cap"><div><h3>Current Classes</h3><p>Currently Enrolled Courses</p></div></div>
-          <div class="wd-class"><div><b>ISYS 2103-020 - FOUNDATIONS OF BA</b>WCOB 250 | Monday/Wednesday | 4:35 PM - 5:50 PM Jacob W Yates</div><span class="u">3</span></div>
-          <div class="wd-class"><div><b>ACCT 2013-009 - ACCT PRINCIPLES I</b>WCOB 202 | Monday/Wednesday | 6:20 PM - 7:35 PM Nate Nantze</div><span class="u">3</span></div>
-          <div class="wd-class"><div><b>ECON 2013-002 - PRIN OF MACROECONOMICS</b>KIMP 209 | Tuesday/Thursday | 2:00 PM - 3:15 PM Robert Stapp</div><span class="u">3</span></div>
-          <div class="wd-class"><div><b>ENGL 1023-058 - COMPOSITION II</b>KIMP 102 | Tuesday/Thursday | 12:30 PM - 1:45 PM Julie Gall</div><span class="u">3</span></div>
-          <div class="wd-class" id="class5" hidden><div><b>FINN 20403-015 - PRINCIPLES OF FINANCE</b>WJWH 403 | Tuesday/Thursday | 12:30 PM - 1:45 PM Julie Gall</div><span class="u">3</span></div><button class="wd-outline-btn" id="moreClasses"><span data-ic-inline="list"></span> More (1)</button>
+          <div class="wd-class"><div><b>ISYS 20303-004 - FOUNDATIONS OF BA</b>WCOB 250 | Monday/Wednesday | 9:40 AM - 10:55 AM A. Rivera</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ACCT 20203-006 - ACCT PRINCIPLES II</b>WCOB 202 | Monday/Wednesday | 11:00 AM - 12:15 PM K. Brooks</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ECON 20103-003 - PRIN OF MACROECONOMICS</b>KIMP 209 | Tuesday/Thursday | 9:30 AM - 10:45 AM D. Morales</div><span class="u">3</span></div>
+          <div class="wd-class"><div><b>ENGL 10203-012 - COMPOSITION II</b>KIMP 102 | Tuesday/Thursday | 11:00 AM - 12:15 PM S. Okafor</div><span class="u">3</span></div>
           <div class="wd-tile-foot"><a href="academics.html#courses">View Details</a></div>
         </section>
         <section class="wd-tile">
@@ -73,10 +73,10 @@
         <div style="overflow-x:auto"><table class="wd-table">
           <thead><tr><th>Course Listing</th><th class="num" style="width:60px">Units</th><th>Section</th><th style="width:110px">Registration Status</th><th>Instructor</th><th>Meeting Patterns</th></tr></thead>
           <tbody>
-            <tr><td><a href="#" data-wd="the course detail page">ISYS 20303 - FOUNDATIONS OF BA</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ISYS 20303-020</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Jacob W Yates</a></td><td>Monday/Wednesday | 4:35 PM - 5:50 PM | WCOB 250</td></tr>
-            <tr><td><a href="#" data-wd="the course detail page">ACCT 20203 - ACCT PRINCIPLES II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ACCT 20203-009</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Nate Nantze</a></td><td>Monday/Wednesday | 6:20 PM - 7:35 PM | WCOB 202</td></tr>
-            <tr><td><a href="#" data-wd="the course detail page">ECON 20103 - PRIN OF MACROECONOMICS</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ECON 20103-002</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Robert Stapp</a></td><td>Tuesday/Thursday | 2:00 PM - 3:15 PM | KIMP 209</td></tr>
-            <tr><td><a href="#" data-wd="the course detail page">ENGL 10203 - COMPOSITION II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ENGL 10203-058</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">Julie Gall</a></td><td>Tuesday/Thursday | 12:30 PM - 1:45 PM | KIMP 102</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ISYS 20303 - FOUNDATIONS OF BA</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ISYS 20303-004</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">A. Rivera</a></td><td>Monday/Wednesday | 9:40 AM - 10:55 AM | WCOB 250</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ACCT 20203 - ACCT PRINCIPLES II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ACCT 20203-006</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">K. Brooks</a></td><td>Monday/Wednesday | 11:00 AM - 12:15 PM | WCOB 202</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ECON 20103 - PRIN OF MACROECONOMICS</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ECON 20103-003</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">D. Morales</a></td><td>Tuesday/Thursday | 9:30 AM - 10:45 AM | KIMP 209</td></tr>
+            <tr><td><a href="#" data-wd="the course detail page">ENGL 10203 - COMPOSITION II</a></td><td class="num">3</td><td><a href="#" data-wd="the course detail page">ENGL 10203-012</a></td><td>Registered</td><td><a href="#" data-wd="the course detail page">S. Okafor</a></td><td>Tuesday/Thursday | 11:00 AM - 12:15 PM | KIMP 102</td></tr>
           </tbody>
         </table></div>
       </section>
@@ -86,7 +86,7 @@
         <h2 class="wd-page-title">View My Academic Progress</h2>
         <div class="wd-toolbar" style="margin:8px 0 20px"><span data-ic-inline="export"></span><span data-ic-inline="pdf"></span></div>
         <div class="wd-prog-h"><span data-ic-inline="chevron-down-small"></span><span>University of Arkansas, Fayetteville - UAF | FINN | Department of Finance/Undergraduate (Finance Bachelor of Science in Business Administration/Pre-Business Pending)</span></div>
-        <div class="wd-kvrow" style="max-width:420px"><b>Cumulative GPA</b><span>3.600</span><b>Unused Registrations</b><span>0</span></div>
+        <div class="wd-kvrow" style="max-width:420px"><b>Unused Registrations</b><span>0</span></div>
         <div class="wd-toolbar"><span class="count">Overall Academic Progress <small>1 item</small></span></div>
         <table class="wd-table">
           <thead><tr><th class="num">Units Defined</th><th class="num">Units in Progress</th><th class="num">Units Satisfying</th><th>Remaining</th><th>Status</th></tr></thead>
@@ -116,7 +116,7 @@
       <section id="notes" style="margin-top:40px">
         <h2 class="wd-page-title">Note History</h2>
         <div class="wd-toolbar" style="margin:8px 0 20px"><span class="count">Notes <small>1 item</small></span></div>
-        <div class="wd-table" style="display:block;padding:16px 20px;font-size:14px;line-height:20px"><b style="color:var(--wd-text-strong)">Advising note · 10/27/2026 · Blaise M. Simecek</b><p style="margin:6px 0 0">Finance-Mgmt/Investment major, considering SEVI as a minor. Spring 2027 course options: ISYS 210H3 or 21003, FINN 30103, FINN 30603, and two of SEVI 39303, MKTG 343H3/34303, a science lecture/lab, or a fine arts course.</p></div>
+        <div class="wd-table" style="display:block;padding:16px 20px;font-size:14px;line-height:20px"><b style="color:var(--wd-text-strong)">Advising note · 10/27/2026 · Blaise M. Simecek</b><p style="margin:6px 0 0">Sample note. Reviewed Spring 2027 options against the Walton pathway for Year 2 Spring and suggested building a schedule before the registration appointment.</p></div>
       </section>
     </div>
   </div>
