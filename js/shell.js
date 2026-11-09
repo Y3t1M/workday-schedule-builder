@@ -5,12 +5,19 @@
   const ON_BUILDER = /builder\.html$/.test(location.pathname);
   window.DEMO_STUDENT = STUDENT;
 
-  // Every page opens with this notice so nobody mistakes the clone for the real Workday tenant
+  // A quiet notice at the top of every page: says it's a demo, points to the builder,
+  // and slides away after 15 seconds (or when closed, for the rest of the visit)
   function banner(){
-    const cta = ON_BUILDER
-      ? `<a class="pt-cta" href="builder.html#start">Back to step 1</a>`
-      : `<a class="pt-cta" href="builder.html">Go to the Schedule Builder ${icon('arrow-right').replace(/width="24" height="24"/,'width="18" height="18"')}</a>`;
-    return `<div class="pt-banner" role="note" aria-label="Prototype notice"><p><span class="pt-long"><b>This isn't the real Workday site.</b> It's a student prototype of the Schedule Builder by the McMillon Innovation Studio Workday team, with sample data.</span><span class="pt-short"><b>Not the real Workday.</b> A student prototype with sample data.</span></p>${cta}</div>`;
+    const link = ON_BUILDER ? '' : ` <a class="pt-link" href="builder.html">Try the Schedule Builder</a>`;
+    return `<div class="pt-banner" role="note" aria-label="Demo notice"><p><span class="pt-long">This is a demo with sample data, not the real Workday.</span><span class="pt-short">This is a demo with sample data.</span>${link}</p><button class="pt-x" type="button" aria-label="Hide this notice">${icon('x').replace(/width="24" height="24"/,'width="16" height="16"')}</button></div>`;
+  }
+  function bannerTimer(){
+    const hide=()=>document.body.classList.add('pt-hidden');
+    let closed=false; try{ closed=sessionStorage.getItem('pt-closed')==='1'; }catch(e){}
+    if(closed){ hide(); return; }
+    setTimeout(hide,15000);
+    const x=document.querySelector('.pt-x');
+    if(x) x.addEventListener('click',()=>{ hide(); try{ sessionStorage.setItem('pt-closed','1'); }catch(e){} });
   }
   function header(){
     return `
@@ -86,12 +93,13 @@
   window.renderShell = function(opts){
     opts=opts||{};
     document.body.insertAdjacentHTML('afterbegin', banner()+header()+nav(opts.active||''));
+    bannerTimer();
     if(opts.footer!==false) document.body.insertAdjacentHTML('beforeend', footer());
     document.body.classList.add('has-bottombar');
     // L2 flyouts: position next to the button that opened them
     document.addEventListener('click',e=>{
       const fb=e.target.closest('[data-fly]');
-      if(fb){ e.stopPropagation(); const f=document.getElementById('fly-'+fb.dataset.fly); const was=f&&f.classList.contains('open'); closeAll(); if(f&&!was){ const r=fb.getBoundingClientRect(); const ptH=(document.querySelector('.pt-banner')||{}).offsetHeight||0; f.style.top=Math.max(72+ptH,Math.min(r.top, window.innerHeight-f.offsetHeight-16))+'px'; f.classList.add('open'); fb.setAttribute('aria-expanded','true'); } return; }
+      if(fb){ e.stopPropagation(); const f=document.getElementById('fly-'+fb.dataset.fly); const was=f&&f.classList.contains('open'); closeAll(); if(f&&!was){ const r=fb.getBoundingClientRect(); const ptH=document.body.classList.contains('pt-hidden')?0:((document.querySelector('.pt-banner')||{}).offsetHeight||0); f.style.top=Math.max(72+ptH,Math.min(r.top, window.innerHeight-f.offsetHeight-16))+'px'; f.classList.add('open'); fb.setAttribute('aria-expanded','true'); } return; }
       const pb=e.target.closest('[data-pop]');
       if(pb){ e.preventDefault(); e.stopPropagation(); const p=document.getElementById('pop'+pb.dataset.pop.charAt(0).toUpperCase()+pb.dataset.pop.slice(1)); const was=p&&!p.hidden; closeAll(); if(p&&was===false) p.hidden=false; return; }
       if(!e.target.closest('.wd-flyout,.wd-pop')) closeAll();

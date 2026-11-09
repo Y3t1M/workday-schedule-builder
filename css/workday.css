@@ -339,14 +339,16 @@ h1,h2,h3,h4{margin:0;color:var(--wd-text-strong)}
 
 
 /* ---------- prototype notice (keeps the clone from being mistaken for the real tenant) ---------- */
-:root{--pt-h:44px}
-.pt-banner{position:fixed;top:0;left:0;right:0;height:var(--pt-h);z-index:55;background:#0f2e66;color:#fff;display:flex;align-items:center;gap:16px;padding:0 12px 0 20px;font:400 13px/18px var(--wd-font)}
-.pt-banner p{margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pt-banner b{font-weight:700}
+:root{--pt-h:36px}
+body.pt-hidden{--pt-h:0px}
+.pt-banner{position:fixed;top:0;left:0;right:0;height:36px;z-index:55;background:#eef2fa;border-bottom:1px solid #c9d4ea;color:#2b3a55;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 44px;font:400 13px/18px var(--wd-font);transition:transform .35s ease}
+body.pt-hidden .pt-banner{transform:translateY(-100%);pointer-events:none}
+.pt-banner p{margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
 .pt-banner .pt-short{display:none}
-.pt-banner .pt-cta{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 16px;border-radius:100px;background:#fff;color:#0f2e66;font-weight:700;font-size:13px;line-height:32px;text-decoration:none;white-space:nowrap}
-.pt-banner .pt-cta:hover{background:#e3e9f5;color:#0f2e66;text-decoration:none}
-.pt-banner .pt-cta .wd-icon{color:#0f2e66}
+.pt-banner .pt-link{margin-left:6px;color:#0b5cad;font-weight:500;text-decoration:underline;text-underline-offset:2px}
+.pt-banner .pt-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4b5d82}
+.pt-banner .pt-x:hover{background:#dde5f3}
+.wd-header,.wd-nav,.wd-main,.wd-pop{transition:top .35s ease,padding-top .35s ease}
 .wd-header{top:var(--pt-h)}
 .wd-nav{top:calc(var(--wd-header-h) + var(--pt-h))}
 .wd-main{padding-top:calc(var(--wd-header-h) + var(--pt-h))}
@@ -366,12 +368,9 @@ h1,h2,h3,h4{margin:0;color:var(--wd-text-strong)}
 .wd-toast-act{flex:none;font-weight:700;white-space:nowrap}
 @media (max-width:1000px){ .wd-alert{top:calc(120px + var(--pt-h))} }
 @media (max-width:720px){
-  :root{--pt-h:52px}
-  .pt-banner{padding:0 8px 0 12px;gap:10px}
+  .pt-banner{padding:0 40px 0 12px;font-size:12px}
   .pt-banner .pt-long{display:none}
   .pt-banner .pt-short{display:inline}
-  .pt-banner p{white-space:normal;font-size:12px;line-height:16px}
-  .pt-banner .pt-cta{padding:0 12px;font-size:12px}
   .wd-pop{top:calc(56px + var(--pt-h))}
   .wd-toast{flex-wrap:wrap;width:calc(100vw - 32px)}
 }
