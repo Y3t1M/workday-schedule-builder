@@ -110,6 +110,7 @@ window.SB_DATA = {
     ['ISYS 21003','Business Information Systems','002','TTh','11:00','12:15',3,0,'','Business Core','RCED 120','Cristy Stamps'],
     ['ECON 20203','Principles of Microeconomics','001','TTh','14:00','15:15',3,15,'','Pre-Business Core','KIMP 209','R. Delgado'],
     ['ECON 20203','Principles of Microeconomics','002','MW','14:30','15:45',3,6,'','Pre-Business Core','KIMP 209','R. Delgado'],
+    ['ECON 20203','Principles of Microeconomics','003','MW','14:00','15:15',3,4,'','Pre-Business Core','KIMP 209','R. Delgado'],
     ['BUSW 20103','Business Writing','001','TTh','12:30','13:45',3,10,'','General Electives','WCOB 202','N. Wallace'],
     ['BUSW 20103','Business Writing','002','MW','16:00','17:15',3,9,'','General Electives','WCOB 202','N. Wallace'],
     ['HUMN 10103','Introduction to Humanities','001','MW','10:00','10:50',3,25,'','State Minimum Core','KIMP 102','M. Lowe'],
