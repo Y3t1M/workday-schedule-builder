@@ -150,7 +150,6 @@ h1,h2,h3,h4{margin:0;color:var(--wd-text-strong)}
 .wd-rail-sub{display:flex;align-items:center;height:40px;padding:0 16px 0 68px;font-size:14px;line-height:20px;color:var(--wd-text-strong);border-radius:8px;width:100%;text-align:left}
 .wd-rail-sub:hover{background:#f0f1f2;text-decoration:none}
 .wd-rail-sub.is-active{color:var(--wd-brand)}
-.wd-rail-sub.is-active::after{content:"";margin-left:auto;width:16px;height:9px;border-left:2px solid var(--wd-brand);border-bottom:2px solid var(--wd-brand);transform:rotate(-45deg) translate(2px,-3px)}
 .wd-rail-sub.is-new{position:relative}
 .wd-rail-sub.is-new .new{margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.4px;background:var(--wd-brand);color:#fff;border-radius:3px;padding:1px 5px;line-height:14px}
 .wd-hub-body{flex:1;min-width:0;padding:40px 32px 48px}

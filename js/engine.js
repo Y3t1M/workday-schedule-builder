@@ -45,7 +45,7 @@
     }
     allBlocks(prefs,data).forEach(b=>{
       const hit=days.some(d=>b.days.includes(d)) && Math.min(mins(sec.end),mins(b.end))>Math.max(mins(sec.start),mins(b.start));
-      if(hit) out.push({code:'block', text:`Overlaps ${b.label.toLowerCase()} (${b.days.map(d=>DAY[d]).join('/')} ${fmt(b.start)}–${fmt(b.end)}).`, fix: b.fromWorkday?'Pick a section outside your work hours, or turn off the work-hours block.':'Pick a section outside that time.'});
+      if(hit) out.push({code:'block', text:`Overlaps ${b.fromWorkday?b.label:'a blocked time'} (${b.days.map(d=>DAY[d]).join('/')} ${fmt(b.start)}–${fmt(b.end)}).`, fix: b.fromWorkday?'Pick a section outside your work hours, or turn off the work-hours block.':'Pick a section outside that time.'});
     });
     return out;
   }
@@ -141,19 +141,20 @@
     const options = uniq.map((r,i)=>{
       const names = r.secs.map(s=>s.course);
       const base = uniq[0];
-      let label = i===0 ? (relaxed?'Closest fit':'Recommended') : (r.credits<target&&!relaxed ? 'Lighter load' : (i===1?'Alternative':'Alternative '+i));
+      let label = i===0 ? (relaxed?'Closest fit':'Recommended') : 'Alternative '+i;
       let note='';
       if(relaxed) note = `${r.credits} of ${target} credit hours. ${i===0&&hints.length?hints[0]:''}`.trim();
-      else if(i===0) note = `${r.credits} credit hours. Every core class the pathway puts in this semester that fits your times.`;
+      else if(i===0) note = 'Prioritizes degree progression based on your scheduling preferences.';
       else {
         const added = r.secs.filter(s=>!base.secs.some(b=>b.course===s.course)).map(s=>s.course);
         const removed = base.secs.filter(b=>!r.secs.some(s=>s.course===b.course)).map(b=>b.course);
         const moved = r.secs.filter(s=>base.secs.some(b=>b.course===s.course&&b.id!==s.id)).map(s=>`${s.course} to section ${s.section} (${dayList(s.days)} ${fmt(s.start)})`);
+        const list=a=>a.length<3?a.join(' and '):a.slice(0,-1).join(', ')+', and '+a.at(-1);
         const parts=[];
-        if(added.length) parts.push(`adds ${added.join(', ')}`);
-        if(removed.length) parts.push(`leaves ${removed.join(', ')} for next term`);
-        if(moved.length) parts.push(`moves ${moved.join('; ')}`);
-        note = parts.length ? `Same as Recommended but ${parts.join('; ')}.` : `${r.credits} credit hours.`;
+        if(added.length) parts.push(`Includes ${list(added)}${moved.length?' with adjusted course sections':''}.`);
+        else if(moved.length) parts.push('Same courses with adjusted course sections.');
+        if(removed.length) parts.push(`Defers ${list(removed)} to a future semester.`);
+        note = parts.length ? parts.join(' ') : `${r.credits} credit hours.`;
       }
       return {id:'opt'+(i+1), label, note, credits:r.credits, sections:r.secs};
     });

@@ -104,7 +104,7 @@
       if(pb){ e.preventDefault(); e.stopPropagation(); const p=document.getElementById('pop'+pb.dataset.pop.charAt(0).toUpperCase()+pb.dataset.pop.slice(1)); const was=p&&!p.hidden; closeAll(); if(p&&was===false) p.hidden=false; return; }
       if(!e.target.closest('.wd-flyout,.wd-pop')) closeAll();
       // anything that is only a placeholder in this prototype says so instead of doing nothing
-      const a=e.target.closest('a[href="#"],a[href="#reset"]');
+      const a=e.target.closest('a[href="#"]:not([data-detail]):not([data-course]),a[href="#reset"]');
       if(a){ e.preventDefault(); if(a.getAttribute('href')==='#reset'){ try{ localStorage.removeItem('sb-saved'); localStorage.removeItem('sb-ai'); sessionStorage.clear(); }catch(x){} toast('Demo data reset.'); setTimeout(()=>location.href='index.html',500); return; } const what=a.dataset.wd||a.textContent.trim(); toast(`${what.charAt(0).toUpperCase()+what.slice(1)} is part of the real Workday, not this prototype. The Schedule Builder is the part that works.`, ON_BUILDER?null:{href:'builder.html',label:'Go to the Schedule Builder'}); closeAll(); }
     });
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeAll(); });

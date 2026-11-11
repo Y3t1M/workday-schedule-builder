@@ -846,3 +846,34 @@ body.has-bottombar{padding-bottom:0}
 .sb-lookup-card dd{margin:0;padding:10px 16px 10px 0;font-size:13px;line-height:18px;color:var(--wd-text-strong);border-bottom:1px solid var(--wd-border)}
 .sb-lookup-card dt:last-of-type,.sb-lookup-card dd:last-of-type{border-bottom:0}
 @media (max-width:720px){.sb-lookup-card .head{flex-direction:column;align-items:flex-start}.sb-lookup-card dl{grid-template-columns:1fr}.sb-lookup-card dt{padding-bottom:0;border-bottom:0}.sb-lookup-card dd{padding-left:16px}}
+/* term dates inside the term dropdown */
+.sb-term .dates{font-weight:400;opacity:.9;padding-left:8px;margin-left:2px;border-left:1px solid rgba(255,255,255,.35)}
+@media (max-width:720px){.sb-term .dates{display:none}}
+/* breathing room between an option row and its Excluded panel */
+.sb-opt-table tr.flagrow td{padding-top:12px}
+@media (max-width:1000px){.sb-opt-table tr.flagrow{margin:0 0 12px}}
+/* Degree Requirements: clickable courses, pathway list */
+.sb-wstable td a{color:var(--wd-link)}
+.sb-wstable td a b{color:var(--wd-link)}
+.sb-wstable td .t a{color:var(--wd-text)}
+.sb-wstable td .t a:hover{color:var(--wd-link)}
+.sb-wstable td .k{font-size:11.5px;line-height:16px;color:var(--wd-text-muted);margin-top:2px}
+.sb-more{margin:24px 0 8px;border-top:1px solid var(--wd-border-strong)}
+.sb-more summary .n{font-size:16px;font-weight:700}
+.sb-more .note{font-size:13px;line-height:18px;margin:0 4px 10px}
+.sb-more .note a{display:inline;padding:0;margin:0}
+.sb-more .sb-wstable{margin:0 0 14px}
+.sb-course-sheet .sb-lookup-card{margin-top:4px}
+/* Schedule Options: collapsible "How Schedules Are Recommended" */
+details.sb-spread > summary{list-style:none;cursor:pointer;margin-bottom:0}
+details.sb-spread > summary::-webkit-details-marker{display:none}
+details.sb-spread > summary > div{flex:1}
+details.sb-spread > summary .chev{width:20px;height:20px;color:var(--wd-icon);flex:none;transition:transform .15s;margin-top:2px}
+details.sb-spread[open] > summary{margin-bottom:10px}
+details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
+/* Review: two summary numbers */
+.sb-left .tot.two{grid-template-columns:repeat(2,1fr)}
+.sb-left .tot small{display:block;font-size:11.5px;line-height:15px;color:var(--wd-text-muted);margin-top:2px}
+@media (max-width:720px){.sb-left .tot.two{grid-template-columns:1fr}.sb-left .tot.two div:first-child{grid-column:auto}}
+.sb-spread .hd .wd-icon.chev{color:var(--wd-icon)}
+.sb-wstable td a{display:inline;margin:0;padding:0;min-width:0}
