@@ -992,5 +992,6 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   #advNote{min-height:140px!important}
   .sb-opt-table .sb-hazard{height:44px;padding:0 10px}
 }
-.sb-week.mini .ev b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-week.mini .ev{overflow:hidden}
+.sb-week.mini .ev b{line-height:12px;text-overflow:clip}
 .sb-week.mini .ev .sec{display:none}
