@@ -39,7 +39,6 @@ No build step and no server code. Open `index.html`, or run `python3 -m http.ser
 | `saved-schedules.html` | View My Saved Schedules clone; shows schedules the builder saves |
 | `find-course-sections.html` | Find Course Sections clone, the search the builder replaces |
 | `builder.html` | The Schedule Builder task page; one page, hash-routed per step |
-| `mockups.html` | The builder screens in phone and laptop frames, live |
 | `js/builder.js` | The builder's screens, state and interactions (step bar, drag-to-paint grid, course look-up, swap, review) |
 | `js/engine.js` | Rules engine: filters sections, builds course sets to the credit target, places sections without conflicts, ranks, and explains each pick. Works with no AI |
 | `js/shell.js` | Workday shell: top bar, left navigation, prototype notice |

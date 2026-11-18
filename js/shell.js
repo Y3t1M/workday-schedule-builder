@@ -15,7 +15,6 @@
     const hide=()=>document.body.classList.add('pt-hidden');
     let closed=false; try{ closed=sessionStorage.getItem('pt-closed')==='1'; }catch(e){}
     if(closed){ hide(); return; }
-    setTimeout(hide,15000);
     const x=document.querySelector('.pt-x');
     if(x) x.addEventListener('click',()=>{ hide(); try{ sessionStorage.setItem('pt-closed','1'); }catch(e){} });
   }

@@ -35,7 +35,7 @@
   // ---------- helpers ----------
   function route(){ return location.hash.replace('#','')||(window.SB_FORCE&&SB_FORCE.step)||'start'; }
   function go(h){ location.hash=h; }
-  const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
+  const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:4,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
     const at=cur==='done'?STEPS.length:stepIndex(cur); const max=Math.max(state.maxStep||0,at);
     return `<ol class="sb-steps2" aria-label="Progress, step ${at+1} of ${STEPS.length}"><span class="track"></span><span class="fill" style="width:calc((100% - 24px) * ${Math.min(1,at/(STEPS.length-1))})"></span>${STEPS.map((s,i)=>{
@@ -144,7 +144,7 @@
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Custom Credit Hours</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">Select 1-21 credit hours. Full-time status requires at least 12.</span></div></div>
         <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div>
         <div class="sb-field">
-          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.</small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
+          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone, press and hold, then drag.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
           ${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div>
         </div>
@@ -237,7 +237,7 @@
     const rows=g.options.map((o,i)=>{
       const mine=i===2?minor(o):[];
       const sel=state.chosen===i;
-      return `<tr class="${sel?'is-sel':''}" data-row="${i}">
+      return `<tr class="${sel?'is-sel':''}" data-row="${i}" data-choose="${i}">
         <td class="c"><input type="radio" name="opt" id="opt${i}" ${sel?'checked':''} data-choose="${i}" aria-label="Select ${o.label}"></td>
         <td><label for="opt${i}"><b>${o.label}</b></label><div class="sb-muted">${o.note}</div></td>
         <td class="num">${o.credits}</td>
@@ -245,7 +245,7 @@
         <td class="c">${mine.length?`<button class="sb-hazard" data-flag="${i}" aria-expanded="false" aria-label="${mine.length} section${mine.length===1?'':'s'} ruled out">${icon('exclamation-triangle-fill')}<b>${mine.length}</b></button>`:'<span class="sb-muted">None</span>'}</td>
         <td><button class="wd-select" data-cal="${i}">${icon('calendar')} View Calendar</button></td>
       </tr>
-      <tr class="flagrow" id="flag${i}" hidden><td></td><td colspan="5"><div class="sb-flag-list" style="margin:0"><div class="hd">Excluded for this option</div>${mine.map(c=>`<div class="sb-flag-row"><b>${c.x.course}-${c.x.section}</b> Overlaps ${c.y.course}-${c.y.section} by ${c.m} minutes. <i>Section ${c.s.section} is used instead.</i></div>`).join('')}</div></td></tr>`;
+      ${mine.length?`<tr class="flagrow" id="flag${i}" hidden><td></td><td colspan="5"><div class="sb-flag-list" style="margin:0"><div class="hd">Ruled out for this option</div>${mine.map(c=>`<div class="sb-flag-row"><b>${c.x.course}-${c.x.section}</b> Overlaps ${c.y.course}-${c.y.section} by ${c.m} minutes. <i>Section ${c.s.section} is used instead.</i></div>`).join('')}</div></td></tr>`:''}`;
     }).join('');
     const cur=schedule(); const curOpt=g.options[state.chosen]||null; const credits=cur.reduce((a,s)=>a+s.credits,0);
     const p=state.prefs; const blocks=S.allBlocks(p,D);
@@ -287,7 +287,7 @@
     const cur=schedule();
     const target = state.swapping ? secById(state.swapping) : null;
     if(!target){
-      return `${pageHead('Swap A Course','Pick the course to change. The other '+(cur.length-1)+' stay put.','swap')}<div class="sb"><div class="sb-card">${cur.map(s=>classRow(s)).join('')}</div>${foot('options',null)}</div>`;
+      return `${pageHead('Swap A Course','Pick the course to change. The other '+(cur.length-1)+' stay put.','swap')}<div class="sb"><div class="sb-card">${cur.map(s=>classRow(s)).join('')}</div>${foot('review',null)}</div>`;
     }
     const others=cur.filter(s=>s.id!==target.id);
     const sameCourse=D.sections.filter(s=>s.course===target.course&&s.id!==target.id);
@@ -348,18 +348,19 @@
         ${week(cur)}
         <h3 class="wd-section-h">Degree Progress After This Term</h3>
         <div class="sb-left">
-                    <table class="wd-table sb-lefttable"><thead><tr><th>Category</th><th class="num">Currently Remaining</th><th class="num">Planned This Term</th><th class="num">Remaining After Term</th></tr></thead><tbody>${rows.map(({g,s})=>`<tr class="${s.leftAfter===0?'ok':''}"><td>${g.group}</td><td class="num">${s.left}</td><td class="num">${s.planned||0}</td><td class="num">${s.leftAfter}</td></tr>`).join('')}</tbody></table>
+                    <table class="wd-table sb-lefttable"><thead><tr><th>Category</th><th class="num"><span class="lg">Currently Remaining</span><span class="sh">Now</span></th><th class="num"><span class="lg">Planned This Term</span><span class="sh">This Term</span></th><th class="num"><span class="lg">Remaining After Term</span><span class="sh">After</span></th></tr></thead><tbody>${rows.map(({g,s})=>`<tr class="${s.leftAfter===0?'ok':''}"><td>${g.group}</td><td class="num">${s.left}</td><td class="num">${s.planned||0}</td><td class="num">${s.leftAfter}</td></tr>`).join('')}</tbody></table>
         </div>
         <h3 class="wd-section-h">Registration Checks</h3>
         <div class="sb-checks">${checks(cur).map(c=>`<details class="sb-chk ${c.ok?'ok':c.warn?'warn':'bad'}"><summary>${icon(c.ok?'check-circle-fill':c.warn?'exclamation-triangle-fill':'exclamation-circle-fill')}<span>${c.t}</span>${icon('chevron-down-small','chev')}</summary><p>${c.d}</p></details>`).join('')}</div>
         <div class="sb-actions end">
+          <button class="wd-btn secondary sb-phone-only" data-go="swap-list">Swap A Course</button>
           <button class="wd-btn secondary" id="saveBtn">Save Schedule</button>
           <button class="wd-btn secondary" id="advisorBtn">Send to My Advisor</button>
-          <button class="wd-btn primary" id="registerBtn" ${issues.length?'disabled':''}>Register</button>
+          <button class="wd-btn primary sb-desk-only" id="registerBtn" ${issues.length?'disabled':''}>Register</button>
         </div>
-        <p class="sb-muted" style="font-size:13px;margin:16px 0 0">Registration opens ${D.registrationOpens}. Register saves this as your plan and submits it when your appointment opens, after you confirm.</p>
+        <p class="sb-muted" style="font-size:13px;margin:16px 0 0">Register submits these sections at your registration appointment, ${D.registrationOpens}.</p>
       </div>
-      ${foot('options',null,null,null,`<button class="wd-btn secondary" data-go="swap-list">Swap A Course</button>`)}
+      ${foot('options',null,null,null,`<button class="wd-btn secondary sb-desk-only" data-go="swap-list">Swap A Course</button><button class="wd-btn primary sb-phone-only" id="registerBtn2" ${issues.length?'disabled':''}>Register</button>`)}
     </div>`;
   };
 
@@ -381,7 +382,7 @@
     ${pageHead('Registration Complete',null,'done')}
     <div class="sb">
       <div class="sb-card sb-success">
-        <div class="sb-done-hero">${icon('check-circle-fill')}<div><h2>You're registered for ${D.termShort}.</h2><p>All ${cur.length} course sections went through and your seats are held. Nothing else to do today.</p></div></div>
+        <div class="sb-done-hero">${icon('check-circle-fill')}<div><h2>You're registered for ${D.termShort}.</h2><p>All ${cur.length} course sections went through at your 11/10 appointment and your seats are held.</p></div></div>
         <div class="sb-done-stats">
           <div><span>Confirmation</span><b>${conf}</b></div>
           <div><span>Credit Hours</span><b>${credits}</b></div>
@@ -398,9 +399,9 @@
         <div class="sb-kv"><b>Student</b><span>${D.student.name} (${DEMO_STUDENT.id}) · ${D.student.majors.map(m=>m.name).join(' & ')}</span><b>Academic Period</b><span>${D.term}</span><b>Submitted</b><span>${D.registrationSubmitted}</span><b>Confirmation</b><span>${conf} · a copy is in your Workday inbox and your UARK email</span><b>Add/Drop Until</b><span>${D.addDropUntil} · swap or drop anything before then with no record</span></div>
         <h3 class="wd-section-h">Up Next</h3>
         <div class="sb-upnext">
-          <div class="r"><b>Tuition statement</b><span>Posts to Financials Hub about 01/05/2027, due 01/19/2027. Financial aid is applied first.</span><a class="wd-btn secondary sm" href="index.html">Financials Hub</a></div>
-          <div class="r"><b>Tell your advisor</b><span>Send ${D.student.advisor.name} your registered schedule and the reasons behind each pick.</span><button class="wd-btn secondary sm" id="advisorBtn">Send to My Advisor</button></div>
-          <div class="r"><b>Textbooks and materials</b><span>Listed on each section in View My Registered Classes once instructors post them.</span><a class="wd-btn secondary sm" href="academics.html#courses">View My Registered Classes</a></div>
+          <div class="r"><b>Tuition Statement</b><span>Posts to Financials Hub about 01/05/2027, due 01/19/2027. Financial aid is applied first.</span><a class="wd-btn secondary sm" href="index.html">Financials Hub</a></div>
+          <div class="r"><b>Tell Your Advisor</b><span>Send ${D.student.advisor.name} your registered schedule and the reasons behind each pick.</span><button class="wd-btn secondary sm" id="advisorBtn">Send to My Advisor</button></div>
+          <div class="r"><b>Textbooks and Materials</b><span>Listed on each section in View My Registered Classes once instructors post them.</span><a class="wd-btn secondary sm" href="academics.html#courses">View My Registered Classes</a></div>
         </div>
       </div>
     </div>`;
@@ -493,7 +494,7 @@
   function setTime(which,val){ if(val&&!/^\d{2}:\d{2}$/.test(val)) return; state.prefs[which]=val||''; if(which==='latest'&&val&&state.prefs.earliest&&S.mins(val)<=S.mins(state.prefs.earliest)){ toast('Latest has to be after earliest.'); state.prefs[which]=''; } resetPicks(); save(); render(true); }
 
   document.addEventListener('click',e=>{
-    const t=e.target.closest('.cell,[data-calopt],[data-course],[data-lookup],[data-lookupadd],[data-lookupclear],[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
+    const t=e.target.closest('.cell,[data-calopt],[data-course],[data-lookup],[data-lookupadd],[data-lookupclear],[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#registerBtn2,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
     if(!t) { if(e.target.id==='scrim') closeSheet(); return; }
     const p=state.prefs;
     if(t.classList.contains('cell')){ return; } // handled by the drag painter
@@ -530,7 +531,7 @@
     if(t.id==='saveBtn'){ let saved=[]; try{ saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); }catch(e){} const cur=schedule(); saved.unshift({name:`${D.termShort} · Builder`, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); try{localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3)));}catch(e){} t.textContent='Saving…'; t.disabled=true; setTimeout(()=>{ location.href='saved-schedules.html?saved=1'; },350); return; }
     if(t.id==='advisorBtn'){ openAdvisor(); return; }
     if(t.id==='sendAdvisor'){ closeSheet(); toast(`Sent to ${D.student.advisor.name}. You'll get a notification when they reply.`); return; }
-    if(t.id==='registerBtn'){ const cur=schedule(); const sc=document.getElementById('scrim'); sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><h3>Register ${cur.length} sections for ${D.termShort}?</h3><p class="sub">${cur.map(s=>s.course+'-'+s.section).join(', ')} · ${cur.reduce((a,s)=>a+s.credits,0)} credit hours</p><p style="font-size:14px;line-height:20px;margin:0 0 16px">This is the only step that changes your registration. You can drop or swap until ${D.addDropUntil}.</p><div class="wd-btn-row"><button class="wd-btn primary" id="confirmReg">Confirm and Register</button><button class="wd-btn secondary" id="cancelDlg">Cancel</button></div></div>`; sc.classList.add('open'); return; }
+    if(t.id==='registerBtn'||t.id==='registerBtn2'){ const cur=schedule(); const sc=document.getElementById('scrim'); sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><h3>Register ${cur.length} sections for ${D.termShort}?</h3><p class="sub">${cur.map(s=>s.course+'-'+s.section).join(', ')} · ${cur.reduce((a,s)=>a+s.credits,0)} credit hours</p><p style="font-size:14px;line-height:20px;margin:0 0 16px">This is the only step that changes your registration. You can drop or swap until ${D.addDropUntil}.</p><div class="wd-btn-row"><button class="wd-btn primary" id="confirmReg">Confirm and Register</button><button class="wd-btn secondary" id="cancelDlg">Cancel</button></div></div>`; sc.classList.add('open'); return; }
     if(t.id==='confirmReg'){ closeSheet(); state.confirmation='WD-'+String(Date.now()).slice(-6); state.celebrate=true; save(); const cur=schedule(); try{ let saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); saved=saved.filter(x=>!x.registered); saved.unshift({name:`${D.termShort}`, registered:true, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3))); }catch(e){} go('done'); return; }
   });
   document.addEventListener('focusin',e=>{ if(e.target.id==='mustInput'){ const m=document.getElementById('mustMenu'); if(m) m.hidden=false; } });
@@ -555,15 +556,37 @@
   function cellAt(x,y){ const el=document.elementFromPoint(x,y); return el&&el.classList&&el.classList.contains('cell')?el:null; }
   function paintCell(c){ if(!paint||!c||c.classList.contains('wk')||c.classList.contains('out')) return; const k=slotKey(c.dataset.cellday,+c.dataset.min); if(paint.mode==='add'){ paint.set.add(k); c.classList.add('blk'); } else { paint.set.delete(k); c.classList.remove('blk'); } }
   document.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch') return;
     const c=e.target.closest('.sb-week .cell'); if(!c) return;
     if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
     if(c.classList.contains('out')){ toast('Outside your preferred start and end time. Move the nodes above to open it up.'); return; }
     e.preventDefault();
     paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; c.closest('.sb-week').classList.add('painting');
-    paintCell(c);
+    last=null; paintLine(e.clientX,e.clientY);
   });
-  document.addEventListener('pointermove',e=>{ if(!paint) return; paint.moved=true; paintCell(cellAt(e.clientX,e.clientY)); });
-  function endPaint(){ if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
+  let last=null;
+  function paintLine(x,y){ if(last){ const dx=x-last.x, dy=y-last.y, n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/6)); for(let k=1;k<=n;k++) paintCell(cellAt(last.x+dx*k/n,last.y+dy*k/n)); } else paintCell(cellAt(x,y)); last={x,y}; }
+  document.addEventListener('pointermove',e=>{ if(!paint||e.pointerType==='touch') return; paint.moved=true; paintLine(e.clientX,e.clientY); });
+  // touch: hold to start painting so a normal swipe still scrolls the page
+  let hold=null;
+  document.addEventListener('touchstart',e=>{
+    const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1) return;
+    const p=e.touches[0]; hold={x:p.clientX,y:p.clientY,c,t:setTimeout(()=>{ if(!hold) return; if(hold.c.classList.contains('wk')||hold.c.classList.contains('out')){ hold=null; return; } paint={mode:hold.c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; hold.c.closest('.sb-week').classList.add('painting'); last=null; paintLine(hold.x,hold.y); try{ navigator.vibrate&&navigator.vibrate(8); }catch(x){} hold.started=true; },250)};
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    const p=e.touches[0];
+    if(paint&&hold&&hold.started){ e.preventDefault(); paintLine(p.clientX,p.clientY); return; }
+    if(hold&&Math.hypot(p.clientX-hold.x,p.clientY-hold.y)>10){ clearTimeout(hold.t); hold=null; }
+  },{passive:false});
+  document.addEventListener('touchend',e=>{
+    if(!hold) return; clearTimeout(hold.t);
+    if(hold.started){ hold=null; endPaint(); return; }
+    const c=hold.c; hold=null; // a quick tap toggles one half hour
+    if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
+    paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; last=null; paintCell(c); endPaint();
+  });
+  document.addEventListener('touchcancel',()=>{ if(hold){ clearTimeout(hold.t); if(hold.started) endPaint(); hold=null; } });
+  function endPaint(){ last=null; if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
   document.addEventListener('pointerup',endPaint); document.addEventListener('pointercancel',endPaint);
 
   // ---------- boot ----------

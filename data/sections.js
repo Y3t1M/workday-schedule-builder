@@ -1,7 +1,6 @@
 /* Sample data for the demo. Course codes use UA's Workday format (five digits, the last is
-   credit hours). Requirement groups follow the Walton BSBA degree worksheet; the Finance
-   electives, rooms and instructors come from a real Spring 2027 saved schedule. Times and
-   seats are made up so the demo hits every case: a clean schedule, a time conflict, a full
+   credit hours). Requirement groups follow the Walton BSBA degree worksheet; course codes and
+   titles are UA's. Sections, rooms, instructors, times and seats are made up so the demo hits every case: a clean schedule, a time conflict, a full
    section, a missing prerequisite, 1- and 2-hour classes. */
 window.SB_DATA = {
   term: 'UAF Spring 2027 (01/19/2027-05/14/2027)',
@@ -106,19 +105,19 @@ window.SB_DATA = {
     ['FINN 20403','Principles of Finance','002','TTh','11:00','12:15',3,3,'ACCT 20103','Business Core','WJWH 403','J. Harper'],
     ['STAT 20203','Business Statistics','001','MW','10:45','12:00',3,5,'','Pre-Business Core','WCOB 250','A. Patel'],
     ['STAT 20203','Business Statistics','003','TTh','09:30','10:45',3,8,'','Pre-Business Core','WCOB 250','A. Patel'],
-    ['ISYS 21003','Business Information Systems','001','MW','13:00','14:15',3,20,'','Business Core','RCED 120','Cristy Stamps'],
-    ['ISYS 21003','Business Information Systems','002','TTh','11:00','12:15',3,0,'','Business Core','RCED 120','Cristy Stamps'],
+    ['ISYS 21003','Business Information Systems','001','MW','13:00','14:15',3,20,'','Business Core','RCED 120','C. Morgan'],
+    ['ISYS 21003','Business Information Systems','002','TTh','11:00','12:15',3,0,'','Business Core','RCED 120','C. Morgan'],
     ['ECON 20203','Principles of Microeconomics','001','TTh','14:00','15:15',3,15,'','Pre-Business Core','KIMP 209','R. Delgado'],
     ['ECON 20203','Principles of Microeconomics','002','MW','14:30','15:45',3,6,'','Pre-Business Core','KIMP 209','R. Delgado'],
-    ['ECON 20203','Principles of Microeconomics','003','MW','14:00','15:15',3,4,'','Pre-Business Core','KIMP 209','R. Delgado'],
     ['BUSW 20103','Business Writing','001','TTh','12:30','13:45',3,10,'','General Electives','WCOB 202','N. Wallace'],
     ['BUSW 20103','Business Writing','002','MW','16:00','17:15',3,9,'','General Electives','WCOB 202','N. Wallace'],
     ['HUMN 10103','Introduction to Humanities','001','MW','10:00','10:50',3,25,'','State Minimum Core','KIMP 102','M. Lowe'],
-    ['WCOB 30101','Business Career Planning','001','M','12:10','13:00',1,30,'','Professional Development','WCOB 241','Gina Campbell'],
-    ['WCOB 30101','Business Career Planning','002','F','12:10','13:00',1,30,'','Professional Development','WCOB 241','Gina Campbell'],
-    ['SEVI 20202','New Venture Workshop','001','T','17:30','19:10',2,18,'','SEVI Minor','JBHT 147','Nur Ahmed'],
-    ['FINN 30603','Investments','001','MW','11:00','12:15',3,14,'FINN 20403','Finance Major','WCOB 203','Eric Dubowsky'],
-    ['FINN 30103','Financial Analysis','003','TTh','12:30','13:45',3,7,'FINN 20403','Finance Major','ARKU 424','Xi Li']
+    ['WCOB 30101','Business Career Planning','001','M','12:10','13:00',1,30,'','Professional Development','WCOB 241','G. Ellis'],
+    ['WCOB 30101','Business Career Planning','002','F','12:10','13:00',1,30,'','Professional Development','WCOB 241','G. Ellis'],
+    ['WCOB 30101','Business Career Planning','003','M','11:45','12:35',1,2,'','Professional Development','WCOB 241','G. Ellis'],
+    ['SEVI 20202','New Venture Workshop','001','T','17:30','19:10',2,18,'','SEVI Minor','JBHT 147','N. Park'],
+    ['FINN 30603','Investments','001','MW','11:00','12:15',3,14,'FINN 20403','Finance Major','WCOB 203','E. Grant'],
+    ['FINN 30103','Financial Analysis','003','TTh','12:30','13:45',3,7,'FINN 20403','Finance Major','ARKU 424','L. Chen']
   ].map(r=>({course:r[0],title:r[1],section:r[2],days:r[3],start:r[4],end:r[5],credits:r[6],seats:r[7],prereq:r[8],fills:r[9],room:r[10],instructor:r[11],id:r[0]+'-'+r[2]})),
   defaultPrefs: {
     credits: 15,

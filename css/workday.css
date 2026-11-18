@@ -373,3 +373,20 @@ body.pt-hidden .pt-banner{transform:translateY(-100%);pointer-events:none}
   .wd-pop{top:calc(56px + var(--pt-h))}
   .wd-toast{flex-wrap:wrap;width:calc(100vw - 32px)}
 }
+
+/* ---------- Demo Day mobile pass ---------- */
+.ann{display:flex;gap:16px;align-items:flex-start}
+.ann[hidden]{display:none}
+@media (max-width:700px){
+  .wd-iconbtn{width:44px;height:44px}
+  .wd-header-right{gap:2px}
+  .wd-search{min-width:0}
+  .wd-avatar{margin-left:4px}
+  .pt-banner .pt-x{width:44px;height:44px;right:0}
+  .wd-dialog-head .x{width:44px;height:44px}
+  .wd-chip{height:44px}
+  .wd-btn{min-height:44px}
+  .wd-rail-mobile a{height:44px}
+  .wd-prog-h{font-size:13px;line-height:18px}
+  #regBody td{white-space:normal;min-width:0}
+}
