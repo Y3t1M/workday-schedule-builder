@@ -389,4 +389,14 @@ body.pt-hidden .pt-banner{transform:translateY(-100%);pointer-events:none}
   .wd-rail-mobile a{height:44px}
   .wd-prog-h{font-size:13px;line-height:18px}
   #regBody td{white-space:normal;min-width:0}
+  #regBody:has(td[colspan]){min-width:0!important}
+  .wd-toolbar .count small{font-size:12px}
+  .wd-header .wd-avatar{width:44px;height:44px;padding:6px;background-clip:content-box}
+  .wd-card-head .more,.wd-pager button{min-width:44px;min-height:44px}
+}
+
+.pt-link .s{display:none}
+@media (max-width:380px){
+  .wd-search{padding-right:12px}
+  .pt-link .l{display:none}.pt-link .s{display:inline}
 }

@@ -948,7 +948,8 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-info{padding:12px;margin:-12px -6px -12px 0}
   .sb-tip{position:fixed;left:16px;right:16px;top:auto;bottom:96px;width:auto;max-width:none;z-index:70}
   /* Degree progress: four short columns that fit */
-  .sb-lefttable thead,.sb-lefttable tbody{min-width:0!important}
+  .sb-lefttable thead,.sb-lefttable tbody{min-width:0!important;display:table;table-layout:fixed;width:100%}
+  .sb-lefttable th:not(:first-child),.sb-lefttable td:not(:first-child){width:60px}
   .sb-lefttable .lg{display:none}.sb-lefttable .sh{display:inline}
   .sb-lefttable td,.sb-lefttable th{font-size:13px;padding:8px 6px}
   .sb-lefttable td:first-child{white-space:normal;overflow-wrap:anywhere}
@@ -968,5 +969,7 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-sheet .x{width:44px;height:44px;right:6px;top:6px}
   .sb-term{height:40px}
   .sb-ai{display:none}
+  .sb-seg button,.sb-day{height:44px}
+  .sb-week .times span{font-size:12px}
   .sb-actions .wd-btn,.sb-foot .wd-btn{min-height:44px}
 }

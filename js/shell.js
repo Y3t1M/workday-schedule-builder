@@ -8,7 +8,7 @@
   // A quiet notice at the top of every page: says it's a demo, points to the builder,
   // and slides away after 15 seconds (or when closed, for the rest of the visit)
   function banner(){
-    const link = ON_BUILDER ? '' : ` <a class="pt-link" href="builder.html">Try the Schedule Builder</a>`;
+    const link = ON_BUILDER ? '' : ` <a class="pt-link" href="builder.html"><span class="l">Try the Schedule Builder</span><span class="s">Try the Builder</span></a>`;
     return `<div class="pt-banner" role="note" aria-label="Demo notice"><p><span class="pt-long">This is a demo with sample data, not the real Workday.</span><span class="pt-short">This is a demo with sample data.</span>${link}</p><button class="pt-x" type="button" aria-label="Hide this notice">${icon('x').replace(/width="24" height="24"/,'width="16" height="16"')}</button></div>`;
   }
   function bannerTimer(){

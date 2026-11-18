@@ -568,9 +568,11 @@
   function paintLine(x,y){ if(last){ const dx=x-last.x, dy=y-last.y, n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/6)); for(let k=1;k<=n;k++) paintCell(cellAt(last.x+dx*k/n,last.y+dy*k/n)); } else paintCell(cellAt(x,y)); last={x,y}; }
   document.addEventListener('pointermove',e=>{ if(!paint||e.pointerType==='touch') return; paint.moved=true; paintLine(e.clientX,e.clientY); });
   // touch: hold to start painting so a normal swipe still scrolls the page
-  let hold=null;
+  let hold=null, lastScroll=0;
+  window.addEventListener('scroll',()=>{ lastScroll=performance.now(); },{passive:true});
   document.addEventListener('touchstart',e=>{
     const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1) return;
+    if(performance.now()-lastScroll<300) return; // this tap is stopping a scroll, not choosing a time
     const p=e.touches[0]; hold={x:p.clientX,y:p.clientY,c,t:setTimeout(()=>{ if(!hold) return; if(hold.c.classList.contains('wk')||hold.c.classList.contains('out')){ hold=null; return; } paint={mode:hold.c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; hold.c.closest('.sb-week').classList.add('painting'); last=null; paintLine(hold.x,hold.y); try{ navigator.vibrate&&navigator.vibrate(8); }catch(x){} hold.started=true; },250)};
   },{passive:true});
   document.addEventListener('touchmove',e=>{
