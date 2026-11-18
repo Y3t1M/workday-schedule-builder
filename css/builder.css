@@ -978,3 +978,16 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-week .ev b{overflow-wrap:normal;word-break:keep-all}
 }
 @media (max-width:700px){.sb-week .ev .sec{display:none}}
+/* degree progress: equal number columns at every size */
+.sb-lefttable{table-layout:fixed}
+.sb-lefttable th:not(:first-child),.sb-lefttable td:not(:first-child){width:22%}
+@media (max-width:700px){
+  .sb-lefttable th:not(:first-child),.sb-lefttable td:not(:first-child){width:60px}
+  /* phone calendars: more room per hour so classes aren't crammed */
+  .sb-week:not(.mini){--h:50px}
+  .sb-week .ev{padding:4px 4px}
+  .sb-week .ev b{line-height:15px}
+}
+@media (max-width:720px){.wd-cal-scroll{max-height:none;overflow:visible;padding-right:0}}
+@media (max-width:700px){.sb-week{grid-template-columns:40px repeat(var(--days,5),1fr)}}
+@media (max-width:380px){.sb-week .ev{padding:3px 2px 3px 3px}.sb-week .ev b{letter-spacing:-.1px}}

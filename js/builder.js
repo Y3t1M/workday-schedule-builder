@@ -16,12 +16,12 @@
   let state=load();
   function load(){
     try{ const s=JSON.parse(sessionStorage.getItem('sb-state')||'null'); if(s&&s.v===5) return s; }catch(e){}
-    let ai=false; try{ ai=localStorage.getItem('sb-ai')==='on'; }catch(e){}
+    const ai=false;
     return {v:5, prefs:JSON.parse(JSON.stringify(D.defaultPrefs)), chosen:null, schedule:null, ai, swapping:null, term:D.terms[0], maxStep:0, otherOpen:false};
   }
   function save(){ try{ sessionStorage.setItem('sb-state',JSON.stringify(state)); }catch(e){} }
   if(qs.get('demo')){
-    state.ai = qs.get('ai')==='on'; state.maxStep=4;
+    state.ai=false; state.maxStep=4;
     if(qs.get('fri')!=='on') state.prefs.daysOff=['F'];
     const g=S.generate(state.prefs,D,STUDENT_KEY); if(g.options[0]){ state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); }
     if(qs.get('swap')) state.swapping=qs.get('swap');
@@ -453,8 +453,6 @@
     if(['swap','review','done'].includes(r) && !state.schedule){ const g=gen(); if(!g.options.length){ r='options'; } else { state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); } }
     state.maxStep=Math.max(state.maxStep||0, stepIndex(r)); save();
     body.innerHTML=(V[r]||V.start)(); placeTitles();
-    document.getElementById('aiToggle').classList.toggle('on',!!state.ai);
-    document.getElementById('aiState').textContent=state.ai?'On':'Off';
     if(r==='prefs'&&state.ai) showParsed();
     if(r==='done'&&state.celebrate){ state.celebrate=false; save(); celebrate(); }
     if(keep===true || (keep===undefined && r===lastRoute)) window.scrollTo(0,y); else window.scrollTo(0,0);
@@ -504,7 +502,6 @@
     if(t.dataset.flag!==undefined){ const l=document.getElementById('flag'+t.dataset.flag); l.hidden=!l.hidden; t.setAttribute('aria-expanded',String(!l.hidden)); t.classList.toggle('open',!l.hidden); return; }
     if(t.dataset.newplan){ try{ sessionStorage.removeItem('sb-state'); }catch(e){} return; }
     if(t.dataset.go!==undefined){ go(t.dataset.go); return; }
-    if(t.id==='aiToggle'){ state.ai=!state.ai; try{localStorage.setItem('sb-ai',state.ai?'on':'off');}catch(e){} save(); render(true); return; }
     if(t.dataset.credits){ state.otherOpen=false; setCredits(+t.dataset.credits); return; }
     if(t.dataset.other){ state.otherOpen=true; save(); render(true); setTimeout(()=>document.getElementById('creditsNum')?.focus(),50); return; }
     if(t.dataset.cred){ setCredits(p.credits+(+t.dataset.cred)); return; }

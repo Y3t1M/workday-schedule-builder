@@ -63,13 +63,7 @@ If no week can reach the target, the page says so and suggests what to loosen. I
 ## URL flags
 
 On `builder.html`: `?demo=1` preloads the recommended schedule so any step renders on its own;
-`&ai=on` turns the AI-assist toggle on; `&swap=FINN%2020403-002` opens swap for that section.
-
-## AI assist
-
-Off by default and optional. It reads a plain-English sentence into the same form the controls
-fill (`SB.parseSentence`, forgiving of misspellings) and writes longer explanations. The schedules
-come from the rules engine either way, and it can only show sections that exist in the data.
+`&swap=FINN%2020403-002` opens swap for that section.
 
 ## Privacy
 

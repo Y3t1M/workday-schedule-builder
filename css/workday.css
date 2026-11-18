@@ -401,3 +401,10 @@ body.pt-hidden .pt-banner{transform:translateY(-100%);pointer-events:none}
   .wd-search span{display:none}
   .pt-link .l{display:none}.pt-link .s{display:inline}
 }
+
+/* dialogs: size to the visible screen (Chrome's toolbar included), scroll inside, freeze the page behind */
+.wd-dialog{max-height:calc(100dvh - 48px)}
+.wd-dialog-body{min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+html:has(.wd-scrim.open),html:has(.wd-scrim.open) body{overflow:hidden}
+.wd-scrim{overscroll-behavior:contain}
+@media (max-width:720px){.wd-dialog{max-height:calc(100dvh - 24px)}}
