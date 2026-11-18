@@ -770,7 +770,7 @@ body.has-bottombar{padding-bottom:0}
 .sb-week.edit.painting .ev.block:not(.work){display:none}
 .sb-week.edit.painting .cell.blk{background:rgba(74,74,74,.16)}
 /* rail collapsed: let the builder use the whole width */
-.wd-rail.is-collapsed ~ div .sb,.wd-rail.is-collapsed ~ div .sb-prog,.wd-rail.is-collapsed ~ div .sb-pagesub,.wd-rail.is-collapsed ~ div .sb-steps2{max-width:none}
+.wd-rail.is-collapsed ~ div .sb,.wd-rail.is-collapsed ~ div .sb-wide,.wd-rail.is-collapsed ~ div .sb-prog,.wd-rail.is-collapsed ~ div .sb-pagesub,.wd-rail.is-collapsed ~ div .sb-steps2{max-width:none}
 
 /* preferred start/end timeline */
 .sb-range{position:relative;height:50px;margin:10px 0 2px}
