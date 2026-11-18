@@ -6,11 +6,6 @@ body.has-bottombar{padding-bottom:0}
 .sb-head{display:flex;align-items:center;gap:12px;margin-left:auto}
 .sb-term{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:100px;background:rgba(255,255,255,.14);color:#fff;font-size:13px;font-weight:500;white-space:nowrap}
 .sb-term .wd-icon{width:18px;height:18px}
-.sb-ai{display:inline-flex;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;user-select:none}
-.sb-ai .sw{width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,.35);position:relative;transition:background .15s}
-.sb-ai .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
-.sb-ai.on .sw{background:#fff}
-.sb-ai.on .sw::after{left:18px;background:var(--wd-brand)}
 
 /* step bar (Workday business-process style) */
 .sb-steps{display:flex;align-items:center;gap:0;margin:0 0 28px;padding:0;list-style:none;counter-reset:s}
@@ -203,7 +198,6 @@ body.has-bottombar{padding-bottom:0}
   .sb-head{gap:8px;flex:none}
   .sb-term{height:28px;padding:0 10px;font-size:12px}
   .sb-term .wd-icon{display:none}
-  .sb-ai span:last-child{display:none}
   .sb-facts{grid-template-columns:1fr 1fr}
   .sb-fact b{font-size:20px;line-height:24px}
   .sb-card{padding:20px 16px}
@@ -968,7 +962,6 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-opt-table input[type=radio]{width:24px;height:24px}
   .sb-sheet .x{width:44px;height:44px;right:6px;top:6px}
   .sb-term{height:40px}
-  .sb-ai{display:none}
   .sb-seg button,.sb-day{height:44px}
   .sb-week .times span{font-size:12px}
   .sb-actions .wd-btn,.sb-foot .wd-btn{min-height:44px}
@@ -991,3 +984,13 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
 @media (max-width:720px){.wd-cal-scroll{max-height:none;overflow:visible;padding-right:0}}
 @media (max-width:700px){.sb-week{grid-template-columns:40px repeat(var(--days,5),1fr)}}
 @media (max-width:380px){.sb-week .ev{padding:3px 2px 3px 3px}.sb-week .ev b{letter-spacing:-.1px}}
+/* sheets never taller than the visible screen; they scroll as one piece */
+.sb-sheet{max-height:calc(100dvh - 48px);overflow-y:auto;overscroll-behavior:contain}
+@media (max-width:720px){
+  .sb-sheet{max-height:calc(100dvh - 12px)}
+  .sb-cal-list{max-height:none;overflow:visible}
+  #advNote{min-height:140px!important}
+  .sb-opt-table .sb-hazard{height:44px;padding:0 10px}
+}
+.sb-week.mini .ev b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-week.mini .ev .sec{display:none}

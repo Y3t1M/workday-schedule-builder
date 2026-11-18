@@ -15,9 +15,9 @@
   if(window.SB_FORCE){ qs.set('demo','1'); if(SB_FORCE.ai) qs.set('ai','on'); if(SB_FORCE.swap) qs.set('swap',SB_FORCE.swap); }
   let state=load();
   function load(){
-    try{ const s=JSON.parse(sessionStorage.getItem('sb-state')||'null'); if(s&&s.v===5) return s; }catch(e){}
+    try{ const s=JSON.parse(sessionStorage.getItem('sb-state')||'null'); if(s&&s.v===6){ s.ai=false; return s; } }catch(e){}
     const ai=false;
-    return {v:5, prefs:JSON.parse(JSON.stringify(D.defaultPrefs)), chosen:null, schedule:null, ai, swapping:null, term:D.terms[0], maxStep:0, otherOpen:false};
+    return {v:6, prefs:JSON.parse(JSON.stringify(D.defaultPrefs)), chosen:null, schedule:null, ai, swapping:null, term:D.terms[0], maxStep:0, otherOpen:false};
   }
   function save(){ try{ sessionStorage.setItem('sb-state',JSON.stringify(state)); }catch(e){} }
   if(qs.get('demo')){
@@ -423,7 +423,7 @@
   function openCalendarExport(){
     const cur=schedule(); const sc=document.getElementById('scrim');
     const ics='data:text/calendar;charset=utf-8,'+encodeURIComponent(icsFor(cur));
-    sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><button class="x" id="closeSheet" aria-label="Close">${icon('x')}</button><h3>Add to calendar</h3><p class="sub">Each class repeats on its days from 01/19/2027 to 05/14/2027, Central time.</p>
+    sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><button class="x" id="closeSheet" aria-label="Close">${icon('x')}</button><h3>Add to Calendar</h3><p class="sub">Each class repeats on its days from 01/19/2027 to 05/14/2027, Central time.</p>
       <div class="sb-cal-all"><a class="wd-btn primary" href="${ics}" download="UA-Spring-2027-schedule.ics">${icon('calendar')} Apple Calendar / Outlook (.ics, all ${cur.length})</a><span class="sb-muted">One file with every class.</span></div>
       <h4 class="sb-cal-h">Or one class at a time</h4>
       <div class="sb-cal-list">${cur.map(s=>`<div class="r"><div><b>${s.course}-${s.section}</b><span>${S.dayList(s.days)} ${S.fmt(s.start)}–${S.fmt(s.end)}</span></div><a class="wd-btn secondary sm" target="_blank" rel="noopener" href="${googleUrl(s)}">Google</a><a class="wd-btn secondary sm" target="_blank" rel="noopener" href="${outlookUrl(s)}">Outlook</a></div>`).join('')}</div>
