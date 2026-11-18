@@ -38,7 +38,7 @@
   const stepIndex=r=>{ const i=STEPS.findIndex(s=>s[0]===r); return i>=0?i:({swap:3,errors:3,done:4}[r]??0); };
   function stepsBar(cur){
     const at=cur==='done'?STEPS.length:stepIndex(cur); const max=Math.max(state.maxStep||0,at);
-    return `<ol class="sb-steps2" aria-label="Progress, step ${at+1} of ${STEPS.length}"><span class="track"></span><span class="fill" style="width:${Math.min(1,at/(STEPS.length-1))*100}%"></span>${STEPS.map((s,i)=>{
+    return `<ol class="sb-steps2" aria-label="Progress, step ${at+1} of ${STEPS.length}"><span class="track"></span><span class="fill" style="width:calc((100% - 24px) * ${Math.min(1,at/(STEPS.length-1))})"></span>${STEPS.map((s,i)=>{
       const k=i<at?'done':i===at?'now':'todo'; const can=cur!=='done'&&i<=max&&i!==at;
       const mark=i<at?icon('check-small'):(i===at?'<span class="sel"></span>':'');
       const inner=`<span class="dot">${mark}</span><span class="lbl">${s[1]}</span>`;
