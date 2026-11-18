@@ -397,6 +397,7 @@ body.pt-hidden .pt-banner{transform:translateY(-100%);pointer-events:none}
 
 .pt-link .s{display:none}
 @media (max-width:380px){
-  .wd-search{padding-right:12px}
+  .wd-search{justify-content:center;padding:0}
+  .wd-search span{display:none}
   .pt-link .l{display:none}.pt-link .s{display:inline}
 }

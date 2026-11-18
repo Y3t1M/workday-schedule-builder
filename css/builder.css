@@ -973,3 +973,7 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-week .times span{font-size:12px}
   .sb-actions .wd-btn,.sb-foot .wd-btn{min-height:44px}
 }
+@media (max-width:380px){
+  .sb-week .ev{padding:2px 3px}
+  .sb-week .ev b{overflow-wrap:normal;word-break:keep-all}
+}
