@@ -120,7 +120,7 @@
         <div class="sb-start2">
           <section class="sb-tile2 sb-progtile">
             <h3>Academic Progress</h3>
-            <div class="sb-donut" role="img" aria-label="${done+ip} of ${req} credits: ${done} past, ${ip} current"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="trk"/><circle cx="50" cy="50" r="42" class="past" stroke-dasharray="${arc(done)} ${C.toFixed(1)}"/><circle cx="50" cy="50" r="42" class="cur" stroke-dasharray="${arc(ip)} ${C.toFixed(1)}" stroke-dashoffset="-${arc(done)}"/></svg><div class="mid"><b>${done+ip}/${req}</b><span>credits</span></div></div>
+            <div class="sb-donut" role="img" aria-label="${done+ip} of ${req} credits: ${done} past, ${ip} current"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="trk"/>${ip?`<circle cx="50" cy="50" r="42" class="cur" stroke-dasharray="${arc(done+ip)} ${C.toFixed(1)}"/>`:''}<circle cx="50" cy="50" r="42" class="past" stroke-dasharray="${arc(done)} ${C.toFixed(1)}"/></svg><div class="mid"><b>${done+ip}/${req}</b><span>credits</span></div></div>
             <div class="sb-credbar" aria-hidden="true"><i class="past" style="width:${(done/req*100).toFixed(2)}%"></i><i class="cur" style="width:${(ip/req*100).toFixed(2)}%"></i></div>
             <ul class="sb-credlegend"><li><span class="sq cur"></span>Current Credits <b>${ip}</b></li><li><span class="sq past"></span>Past Credits <b>${done}</b></li></ul>
             <p class="sb-fine">*Assumes you pass the classes you're taking now.</p>

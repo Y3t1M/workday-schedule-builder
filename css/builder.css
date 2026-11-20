@@ -1164,3 +1164,5 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .wd-rail:not(.is-collapsed) ~ div .sb-side{display:none}
   .wd-rail:not(.is-collapsed) ~ div .sb-frame .sb-steps2{display:flex}
 }
+.sb-donut .past,.sb-donut .cur{stroke-linecap:round}
+.sb-credbar .past{border-radius:5px 0 0 5px}.sb-credbar .cur{border-radius:0 5px 5px 0}
