@@ -606,7 +606,7 @@
     m.innerHTML=`<p>Set from your registration appointment, ${D.registrationOpens}.</p>`+D.terms.map(t=>`<button role="menuitemradio" aria-checked="${t===state.term}" data-term="${t}">${t===state.term?icon('check-small'):'<i></i>'}<span>${t}</span></button>`).join('');
     document.getElementById('termPill').after(m);
   });
-  document.addEventListener('click',e=>{ const m=document.getElementById('termMenu'); if(!m) return; const b=e.target.closest('[data-term]'); if(b){ state.term=b.dataset.term; save(); termPill(); toast('Term set to '+b.dataset.term.replace(/\s*\(.*$/,'')+'. Your preferences carry over.'); } if(!m.contains(e.target)||b) m.remove(); });
+  document.addEventListener('click',e=>{ const m=document.getElementById('termMenu'); if(!m) return; const b=e.target.closest('[data-term]'); if(b){ state.term=b.dataset.term; save(); termPill(); document.getElementById('termPill').focus(); toast('Term set to '+b.dataset.term.replace(/\s*\(.*$/,'')+'. Your preferences carry over.'); } if(!m.contains(e.target)||b) m.remove(); });
   window.addEventListener('hashchange',()=>render());
   render();
 })();
