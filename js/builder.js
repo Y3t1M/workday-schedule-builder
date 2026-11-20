@@ -115,7 +115,7 @@
     ${pageHead('Registration for '+D.termShort,'The builder reads your degree audit, takes the times you want, and gives you three schedules that fit. You pick one, swap anything, and confirm. Nothing registers until you say so.','start')}
     <div class="sb">
       <div class="sb-card">
-        <p class="sb-appt-inline">Your registration appointment opens <b>${D.registrationOpens}</b>.</p>
+        <p class="sb-appt-inline"><span>Registration Appointment</span> <b>${D.registrationOpens}</b></p>
         <h3 class="sb-h3">Current Statistics</h3>
         <div class="sb-start2">
           <section class="sb-tile2 sb-progtile">

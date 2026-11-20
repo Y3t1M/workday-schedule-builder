@@ -1115,3 +1115,35 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-page .wd-rail.is-collapsed .wd-rail-item.is-active::after{content:"";position:absolute;left:-5px;top:0;bottom:0;width:4px;background:#ab0831;border-radius:2px}
   .sb-demo-note{position:absolute;left:20px;right:20px;bottom:14px;margin:0;font-size:11px;line-height:15px;color:#8c979f;text-align:center}
 }
+
+/* ---------- phones and tablets: the design's top-bar layout ---------- */
+@media (max-width:1099px){
+  body.sb-page{--wd-brand:#ab0831}
+  .sb-page .wd-hub-body{padding:0 12px 104px}
+  .sb-mainc{background:#fff;border-radius:0 0 16px 16px;padding:20px 16px 12px;min-width:0}
+  .sb-mainc .sb,.sb-mainc .sb-wide{max-width:none!important;margin:0!important}
+  .sb-mainc .sb-card{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 20px!important;border-radius:0!important}
+  .sb-mainc .sb-cardtitle{font-size:20px;line-height:26px;font-weight:600;color:#222;margin:0}
+  .sb-mainc .sb-card>.sub{font-size:14px;line-height:21px;color:#333;margin:8px 0 0}
+  /* step bar as drawn: green finished steps, crimson line, crimson current ring */
+  .sb-steps2{max-width:none!important;margin:4px 0 22px!important}
+  .sb-steps2 .fill{background:#ab0831!important}
+  .sb-steps2 li.done .dot{background:#008537!important;border-color:#008537!important;color:#fff!important;box-shadow:none!important}
+  .sb-steps2 li.now .dot{border-color:#ab0831!important;box-shadow:none!important;background:#fff!important}
+  .sb-steps2 li.now .lbl{color:#ab0831!important;font-weight:700}
+  .sb-steps2 li.done .lbl{color:#333!important}
+  /* appointment as a compact crimson strip */
+  .sb-appt-inline{display:block;background:#ab0831;color:#fff;border-radius:12px;padding:12px 16px;margin:16px 0 0;font-size:14px;line-height:20px}
+  .sb-appt-inline b{display:block;font-size:18px;line-height:24px;letter-spacing:.3px}
+  .sb-h3{font-size:18px;line-height:24px;margin:24px 0 14px}
+  .sb-start2 .sb-tile2{border:1px solid #b7b8ba!important;border-radius:8px!important;padding:18px 18px 16px!important}
+  .sb-start2 .sb-tile2 h3{font-size:18px;line-height:24px;font-weight:600;color:#222;margin:0}
+  .sb-donut{margin-top:18px}.sb-credbar{margin-top:24px}.sb-fine{padding-top:14px}
+  .sb-start2 .sb-tile2 dl{margin-top:14px}
+  .sb-prefrow .sb-label,.sb-blocked .sb-label{font-size:18px;line-height:24px;font-weight:600;color:#222}
+  .sb-mainc .sb-foot .wd-btn.primary{background:#ab0831;border-color:#ab0831}
+  .sb-boxh{font-size:18px;line-height:24px}
+}
+@media (max-width:1000px){.wd-rail.is-collapsed ~ div .sb-foot{left:0}}
+.sb-week .times span{white-space:nowrap}
+@media (max-width:1099px){.sb-prefrow{margin-top:20px}}
