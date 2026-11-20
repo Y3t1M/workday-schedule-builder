@@ -1068,7 +1068,7 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-mainc .sb,.sb-mainc .sb-wide{max-width:none!important;margin:0!important}
   .sb-mainc .sb-card{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 24px!important;border-radius:0!important}
   .sb-mainc .sb-cardtitle{font-size:20px;line-height:28px;font-weight:600;color:#222;margin:0}
-  .sb-mainc .sb-card>.sub{font-size:15px;line-height:24px;color:#333;margin:14px 0 0;max-width:820px}
+  .sb-mainc .sb-card>.sub{font-size:15px;line-height:24px;color:#333;margin:14px 0 18px;max-width:820px}
   .sb-mainc .sb-foot{padding-right:17px!important;position:static!important;left:auto!important;margin:15px 0 0!important;background:none!important;box-shadow:none!important;border:0!important;padding-top:0!important;padding-bottom:0!important;padding-left:0!important}
   .sb-mainc .sb-foot .wd-btn.primary{height:39px;min-width:118px;border-radius:20px;font-size:15px;font-weight:700;background:#ab0831;border-color:#ab0831}
   .sb-page .wd-hub-body{padding-bottom:48px}
@@ -1113,7 +1113,7 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-page .wd-rail.is-collapsed .wd-rail-item[data-group="plan"]{margin-top:63px;position:relative;overflow:visible}
   .sb-page .wd-rail.is-collapsed .wd-rail-item.is-active{background:#ffe7ec}
   .sb-page .wd-rail.is-collapsed .wd-rail-item.is-active::after{content:"";position:absolute;left:-5px;top:0;bottom:0;width:4px;background:#ab0831;border-radius:2px}
-  .sb-demo-note{position:absolute;left:20px;right:20px;bottom:14px;margin:0;font-size:11px;line-height:15px;color:#8c979f;text-align:center}
+  .sb-demo-note{position:absolute;left:20px;right:20px;bottom:14px;margin:0;font-size:12px;line-height:16px;color:#5e6a75;text-align:center}
 }
 
 /* ---------- phones and tablets: the design's top-bar layout ---------- */
@@ -1124,7 +1124,7 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-mainc .sb,.sb-mainc .sb-wide{max-width:none!important;margin:0!important}
   .sb-mainc .sb-card{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 20px!important;border-radius:0!important}
   .sb-mainc .sb-cardtitle{font-size:20px;line-height:26px;font-weight:600;color:#222;margin:0}
-  .sb-mainc .sb-card>.sub{font-size:14px;line-height:21px;color:#333;margin:8px 0 0}
+  .sb-mainc .sb-card>.sub{font-size:14px;line-height:21px;color:#333;margin:8px 0 18px}
   /* step bar as drawn: green finished steps, crimson line, crimson current ring */
   .sb-steps2{max-width:none!important;margin:4px 0 22px!important}
   .sb-steps2 .fill{background:#ab0831!important}
@@ -1147,3 +1147,20 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
 @media (max-width:1000px){.wd-rail.is-collapsed ~ div .sb-foot{left:0}}
 .sb-week .times span{white-space:nowrap}
 @media (max-width:1099px){.sb-prefrow{margin-top:20px}}
+/* phones: worksheet rows as name + hours/pill/chevron, then a full-width bar */
+@media (max-width:700px){
+  .sb-ws-g>summary{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto 20px;align-items:center;gap:6px 8px!important}
+  .sb-ws-g>summary .n{grid-column:1;grid-row:1}
+  .sb-ws-g>summary .hrs{grid-column:2;grid-row:1;min-width:0}
+  .sb-ws-g>summary .left{grid-column:3;grid-row:1}
+  .sb-ws-g>summary .chev{grid-column:4;grid-row:1}
+  .sb-ws-g>summary .el{grid-column:1/-1;grid-row:3}
+  .sb-ws-g>summary .bar{display:block!important;grid-column:1/-1;grid-row:2;flex:none}
+  .sb-ws-g summary .n small,.sb-ws-g summary .hrs,.sb-ws-g summary .left{font-size:12px!important;line-height:16px}
+}
+/* laptops with the Academics rail opened: one card, step bar on top, no right column */
+@media (min-width:1100px) and (max-width:1399px){
+  .wd-rail:not(.is-collapsed) ~ div .sb-frame{grid-template-columns:minmax(0,1fr)}
+  .wd-rail:not(.is-collapsed) ~ div .sb-side{display:none}
+  .wd-rail:not(.is-collapsed) ~ div .sb-frame .sb-steps2{display:flex}
+}

@@ -597,6 +597,7 @@
   document.getElementById('rail').outerHTML=renderRail('builder',true);
   function termPill(){ const t=state.term||D.terms[0]; const dates=((t.match(/\(([^)]*)\)/)||[])[1]||'').replace('-',' - '); document.getElementById('termPill').innerHTML=icon('calendar')+'<span>'+t.replace(/\s*\(.*$/,'').replace('UAF ','')+'</span>'+(dates?'<span class="dates">'+dates+'</span>':'')+icon('caret-down-small'); }
   termPill();
+  document.getElementById('termPill').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.currentTarget.click(); } });
   document.getElementById('termPill').addEventListener('click',e=>{
     e.stopPropagation();
     let m=document.getElementById('termMenu');
