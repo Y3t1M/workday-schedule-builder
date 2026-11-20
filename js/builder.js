@@ -2,7 +2,7 @@
    #start #prefs #needs #options #swap #review #errors (#done after registering) */
 (function(){
   const D=SB_DATA, S=SB;
-  const STEPS=[['start','Start'],['prefs','Availability'],['needs','Degree Requirements'],['options','Schedules'],['review','Review']];
+  const STEPS=[['start','Start'],['prefs','Preferences'],['needs','Degree Requirements'],['options','Options'],['review','Review']];
   const COLORS={}; D.needs.forEach((n,i)=>COLORS[n.course]='c'+((i%6)+1));
   const STUDENT_KEY=(window.DEMO_STUDENT&&DEMO_STUDENT.id)||D.student.name;
 
@@ -51,6 +51,14 @@
   }
   // after render: move each page title into the top of its first card (sketch: steps first, title inside the card)
   function placeTitles(){ const h=document.querySelector('.sb-pagehead-in'); if(!h) return; const card=document.querySelector('.sb-card, .sb-wide .wd-kvrow'); const html=`<h2 class="sb-cardtitle">${h.dataset.title}</h2>${h.dataset.sub?`<p class="sub">${h.dataset.sub}</p>`:''}`; if(card&&card.classList.contains('sb-card')) card.insertAdjacentHTML('afterbegin',html); else if(card) card.insertAdjacentHTML('beforebegin',`<div class="sb-card" style="padding:16px 20px;margin-bottom:16px">${html}</div>`); h.remove(); }
+  function sideRail(cur){
+    const at=cur==='done'?STEPS.length:stepIndex(cur); const max=Math.max(state.maxStep||0,at);
+    const parts=D.registrationOpens.split(', '); const term=state.term||D.terms[0];
+    const tn=term.replace(/\s*\(.*$/,''), td=(term.match(/\(([^)]*)\)/)||[])[1]||'';
+    return `<aside class="sb-side" aria-label="Registration appointment and progress"><div class="sb-appt"><span>Registration Appointments</span><b>${parts[0]}<br>${parts[1]||''}</b></div><p class="sb-appt-term">${tn}<br>(${td})</p>
+    <ol class="sb-vsteps" aria-label="Progress, step ${Math.min(at+1,STEPS.length)} of ${STEPS.length}">${STEPS.map((s,i)=>{ const k=i<at?'done':i===at?'now':'todo'; const can=cur!=='done'&&i<=max&&i!==at; const inner=`<span class="dot">${i<at?icon('check-small'):''}</span><span class="lbl">${s[1]}</span>`; return `<li class="${k}">${can?`<button data-go="${s[0]}">${inner}</button>`:`<span class="st" ${i===at?'aria-current="step"':''}>${inner}</span>`}</li>`; }).join('')}</ol>
+    <p class="sb-demo-note">Demo with sample data, not the real Workday.</p></aside>`;
+  }
   function foot(back,next,nextLabel,hint,extra){
     return `<div class="sb-foot">${back?`<button class="wd-btn secondary" data-go="${back}">Back</button>`:''}${hint?`<span class="hint">${hint}</span>`:''}<div class="right">${extra||''}${next?`<button class="wd-btn primary" data-go="${next}" id="nextBtn">${nextLabel||'Next'}</button>`:''}</div></div>`;
   }
@@ -95,27 +103,30 @@
   }
   function worksheet(opts){ // degree worksheet accordion
     opts=opts||{}; const sched=new Set(opts.scheduled||[]);
-    return `<div class="sb-ws">${D.requirements.map((g,gi)=>{const st=groupStats(g,opts.scheduled);return `<details class="sb-ws-g" ${opts.open&&opts.open.includes(gi)?'open':''}><summary><span class="n">${g.group}</span><span class="hrs"><b>${st.done+st.ip}</b> of ${g.hours} hrs${st.left?` · <em>${st.left} remaining</em>`:` · ${icon('check-small')} complete`}${opts.eligible&&st.open?` · <i class="el">${st.open} eligible now</i>`:''}</span>${icon('chevron-down-small','chev')}</summary>${g.note?`<p class="note">${g.note}</p>`:''}<ul>${g.items.map(i=>{const k=sched.has(i.course)?'plan':i.status;return `<li class="${k}"><span class="ck" aria-hidden="true">${k==='done'?icon('check-circle-fill'):k==='inprogress'?icon('clock'):k==='plan'?icon('calendar'):''}</span><span class="c">${i.course}</span><span class="t">${i.title}</span><span class="h">${i.h}</span><span class="s">${k==='done'?'Complete':k==='inprogress'?'In progress · '+i.term:k==='plan'?'In this schedule':k==='open'?(i.nosections?'Open · pick in Find Course Sections':'Open'):'After '+(i.after||'prerequisite')}</span></li>`}).join('')}</ul></details>`}).join('')}</div>`;
+    return `<div class="sb-ws">${D.requirements.map((g,gi)=>{const st=groupStats(g,opts.scheduled);return `<details class="sb-ws-g" ${opts.open&&opts.open.includes(gi)?'open':''}><summary><span class="n">${g.group}<small>${st.done+st.ip?Math.round((st.done+st.ip)/g.hours*100)+'% complete':'Not started'}</small></span><span class="bar" aria-hidden="true"><i style="width:${Math.min(100,Math.round((st.done+st.ip)/g.hours*100))}%"></i></span><span class="hrs"><b>${st.done+st.ip}/${g.hours} hrs</b>${opts.eligible&&st.open?` · <i class="el">${st.open} eligible now</i>`:''}</span>${st.left?`<span class="left">${st.left} left</span>`:`<span class="left ok">Complete</span>`}${icon('chevron-down-small','chev')}</summary>${g.note?`<p class="note">${g.note}</p>`:''}<ul><li class="hd" aria-hidden="true"><span class="ck"></span><span class="c">Class Name</span><span class="t"></span><span class="h">Hours</span><span class="s">Completion Status</span></li>${g.items.map(i=>{const k=sched.has(i.course)?'plan':i.status;return `<li class="${k}"><span class="ck" aria-hidden="true">${k==='done'?icon('check-circle-fill'):k==='inprogress'?icon('clock'):k==='plan'?icon('calendar'):''}</span><span class="c">${i.course}</span><span class="t">${i.title}</span><span class="h">${i.h}</span><span class="s">${k==='done'?'Complete':k==='inprogress'?'In progress · '+i.term:k==='plan'?'In this schedule':k==='open'?(i.nosections?'Open · pick in Find Course Sections':'Open'):'After '+(i.after||'prerequisite')}</span></li>`}).join('')}</ul></details>`}).join('')}</div>`;
   }
 
   // ---------- screens ----------
   const V={};
   V.start=()=>{
-    const st=D.student; const done=st.creditsDone, ip=st.creditsInProgress; const left=Math.max(0,(D.minHours||120)-done);
+    const st=D.student; const done=st.creditsDone, ip=st.creditsInProgress, req=D.minHours||120;
+    const C=2*Math.PI*42, arc=x=>(x/req*C).toFixed(1);
     return `
-    ${pageHead(D.termShort+' Registration','Your registration appointment opens <b>'+D.registrationOpens+'</b>.','start')}
+    ${pageHead('Registration for '+D.termShort,'The builder reads your degree audit, takes the times you want, and gives you three schedules that fit. You pick one, swap anything, and confirm. Nothing registers until you say so.','start')}
     <div class="sb">
       <div class="sb-card">
-        <p class="sb-lead">Generate recommended schedules based on your degree requirements and availability. Review your options and make adjustments before confirming your selection.</p>
+        <p class="sb-appt-inline">Your registration appointment opens <b>${D.registrationOpens}</b>.</p>
+        <h3 class="sb-h3">Current Statistics</h3>
         <div class="sb-start2">
-          <section class="sb-tile2">
+          <section class="sb-tile2 sb-progtile">
             <h3>Academic Progress</h3>
-            <div class="stat"><b>${done}</b><div><span class="l">Credit Hours Completed</span></div></div>
-            <div class="stat"><b>${ip}</b><div><span class="l">Credit Hours In Progress</span></div></div>
-            <div class="stat"><b>${D.minHours||120}</b><div><span class="l">Total Credit Hours Required for Graduation</span></div></div>
+            <div class="sb-donut" role="img" aria-label="${done+ip} of ${req} credits: ${done} past, ${ip} current"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="trk"/><circle cx="50" cy="50" r="42" class="past" stroke-dasharray="${arc(done)} ${C.toFixed(1)}"/><circle cx="50" cy="50" r="42" class="cur" stroke-dasharray="${arc(ip)} ${C.toFixed(1)}" stroke-dashoffset="-${arc(done)}"/></svg><div class="mid"><b>${done+ip}/${req}</b><span>credits</span></div></div>
+            <div class="sb-credbar" aria-hidden="true"><i class="past" style="width:${(done/req*100).toFixed(2)}%"></i><i class="cur" style="width:${(ip/req*100).toFixed(2)}%"></i></div>
+            <ul class="sb-credlegend"><li><span class="sq cur"></span>Current Credits <b>${ip}</b></li><li><span class="sq past"></span>Past Credits <b>${done}</b></li></ul>
+            <p class="sb-fine">*Assumes you pass the classes you're taking now.</p>
           </section>
           <section class="sb-tile2">
-            <h3>Degree Information</h3>
+            <h3>Degree of Study</h3>
             <dl>
               <dt>Degree</dt><dd>${st.degree.replace('Bachelor of Science in Business Administration','B.S.B.A.')}</dd>
               <dt>Major(s)</dt><dd>${st.majors.map(m=>m.name).join(', ')}</dd>
@@ -135,18 +146,18 @@
     const earlyPresets=['08:00','09:00','10:00','11:00'], latePresets=['14:00','15:00','16:00','17:00','18:00'];
     const parsed=p.parsed||{};
     return `
-    ${pageHead('Availability Selection','Set your preferred credit hours and class availability.','prefs')}
+    ${pageHead('Availability','Set your preferred credit hours and class availability.','prefs')}
     <div class="sb">
       <div class="sb-card">
         ${state.ai?`<div class="sb-ai-box"><label class="sb-label" for="sentence">${icon('sparkle')}Describe It <small>optional · spelling doesn't matter</small></label><div class="row"><textarea class="sb-textarea" id="sentence" placeholder="e.g. nothing before 10, fridays off, I work tues and thurs 1 to 5, 16 hours">${p.sentence||''}</textarea><button class="wd-btn secondary sm" id="applySentence">Apply</button></div><div class="sb-parsed" id="parsed"></div></div>`:''}
-        <div class="sb-field"><label class="sb-label">Preferred Credit Hours</label>
+        <div class="sb-prefrow"><div class="sb-field"><label class="sb-label">Preferred Credit Hours</label>
           <div class="sb-seg" id="credits">${[12,15,18].map(c=>`<button class="${p.credits===c?'on':''}" data-credits="${c}">${c}</button>`).join('')}<button class="${![12,15,18].includes(p.credits)?'on':''}" data-other="1">${![12,15,18].includes(p.credits)?p.credits:'Other'}</button></div>
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Custom Credit Hours</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">Select 1-21 credit hours. Full-time status requires at least 12.</span></div></div>
-        <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div>
-        <div class="sb-field">
+        <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div></div>
+        <div class="sb-field sb-blocked">
           <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone, press and hold, then drag.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
-          ${week([], {editable:true})}
-          <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div>
+          <div class="sb-blockbox">${week([], {editable:true})}
+          <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div></div>
         </div>
       </div>
       ${foot('start','needs','Next')}
@@ -165,7 +176,7 @@
     const ql=q.toLowerCase().replace(/\s+/g,' ');
     const hits=q&&!pick?cat.filter(c=>(c.course+' '+c.title).toLowerCase().includes(ql)).slice(0,8):[];
     return `<div class="sb-lookup">
-      <div class="sb-prompt"><div class="sb-prompt-box"><input id="lookupInput" type="text" placeholder="Search by course code or name, e.g. FINN 30603" autocomplete="off" value="${q.replace(/"/g,'&quot;')}">${pick?`<button class="clr" data-lookupclear aria-label="Clear">${icon('x-small')}</button>`:`<span class="pr">${icon('search')}</span>`}</div>
+      <div class="sb-prompt"><div class="sb-prompt-box"><input id="lookupInput" type="text" placeholder="e.g. FINN 30603" autocomplete="off" value="${q.replace(/"/g,'&quot;')}">${pick?`<button class="clr" data-lookupclear aria-label="Clear">${icon('x-small')}</button>`:`<span class="pr">${icon('search')}</span>`}</div>
       <div class="sb-prompt-menu" id="lookupMenu" ${hits.length?'':'hidden'}>${hits.map(c=>`<button data-lookup="${c.course}"><b>${c.course}</b> ${c.title}${c.req?` <span>· ${c.req.group}</span>`:''}</button>`).join('')}</div></div>
       ${pick?lookupCard(pick):''}
     </div>`;
@@ -205,20 +216,13 @@
     ${pageHead('Degree Requirements Overview','From your degree audit, evaluated 10/21/2026 at 2:00 AM. <a href="academics.html#progress">View My Academic Progress</a>','needs')}
     <div class="sb">
       <div class="sb-card">
-        <h3 class="wd-section-h">Recommended Next Courses</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Courses prioritized based on your academic progress and prerequisite requirements.</p>
-        ${table(required)}
-        <details class="sb-ws-g sb-more"${state.moreOpen?' open':''}>
-          <summary><span class="n">Additional Pathway Recommendations</span><span class="hrs"><b>${more.length}</b> courses</span>${icon('chevron-down-small','chev')}</summary>
-          <p class="note">Additional courses suggested by your degree pathway. See the <a href="${FINN}" target="_blank" rel="noopener">Finance Degree Pathway</a> and the <a href="${ISYS}" target="_blank" rel="noopener">Information Systems Degree Pathway</a>.</p>
-          ${table(more,true)}
-        </details>
-        <h3 class="wd-section-h">Course Lookup</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">Search University of Arkansas courses to view course details, requirements, and enrollment eligibility.</p>
-        ${lookup()}
-        <h3 class="wd-section-h">Degree Worksheet</h3>
-        <p class="sb-muted" style="font-size:13px;margin:-4px 0 10px">View your degree requirements and track degree pathway.</p>
-        ${worksheet()}
+        <section class="sb-box"><h3 class="sb-boxh">Recommended Next Courses</h3><p class="sb-boxsub">Courses prioritized based on your academic progress and prerequisite requirements.</p>${table(required)}</section>
+        <div class="sb-box2">
+          <section class="sb-box"><h3 class="sb-boxh">Course Lookup</h3><p class="sb-boxsub">Search University of Arkansas courses to view course details, requirements, and enrollment eligibility.</p><label class="sb-boxlbl" for="lookupInput">Course code or name</label>${lookup()}</section>
+          <section class="sb-box"><h3 class="sb-boxh">Additional Pathway Recommendations</h3><p class="sb-boxsub">${more.length} courses that fit your majors and minors, from the <a href="${FINN}" target="_blank" rel="noopener">Finance</a> and <a href="${ISYS}" target="_blank" rel="noopener">Information Systems</a> degree pathways.</p>
+            <ul class="sb-pathlist">${more.map(i=>`<li>${/^[A-Z]{3,4} \d{5}$/.test(i.course)?`<a href="#" data-course="${i.course}">${i.course}</a>`:`<b>${i.course}</b>`}<span>${i.title}</span><em>${i.h} hrs</em></li>`).join('')}</ul></section>
+        </div>
+        <section class="sb-box"><h3 class="sb-boxh">Degree Worksheet</h3><p class="sb-boxsub">Every requirement group, with the hours done and what's left.</p>${worksheet()}</section>
       </div>
       ${foot('prefs','options','View Schedule Options')}
     </div>`;
@@ -452,7 +456,7 @@
     if(r==='swap-list'){ state.swapping=null; save(); r='swap'; }
     if(['swap','review','done'].includes(r) && !state.schedule){ const g=gen(); if(!g.options.length){ r='options'; } else { state.chosen=0; state.schedule=g.options[0].sections.map(s=>s.id); save(); } }
     state.maxStep=Math.max(state.maxStep||0, stepIndex(r)); save();
-    body.innerHTML=(V[r]||V.start)(); placeTitles();
+    body.innerHTML=`<div class="sb-frame"><div class="sb-mainc">${(V[r]||V.start)()}</div>${sideRail(r)}</div>`; placeTitles();
     if(r==='prefs'&&state.ai) showParsed();
     if(r==='done'&&state.celebrate){ state.celebrate=false; save(); celebrate(); }
     if(keep===true || (keep===undefined && r===lastRoute)) window.scrollTo(0,y); else window.scrollTo(0,0);
@@ -590,7 +594,7 @@
 
   // ---------- boot ----------
   renderShell({active:'student',footer:false});
-  document.getElementById('rail').outerHTML=renderRail('builder');
+  document.getElementById('rail').outerHTML=renderRail('builder',true);
   function termPill(){ const t=state.term||D.terms[0]; const dates=((t.match(/\(([^)]*)\)/)||[])[1]||'').replace('-',' - '); document.getElementById('termPill').innerHTML=icon('calendar')+'<span>'+t.replace(/\s*\(.*$/,'').replace('UAF ','')+'</span>'+(dates?'<span class="dates">'+dates+'</span>':'')+icon('caret-down-small'); }
   termPill();
   document.getElementById('termPill').addEventListener('click',e=>{

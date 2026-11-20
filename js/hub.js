@@ -1,7 +1,7 @@
 /* Academics Hub secondary rail (clone of Workday's hub navigation). */
-window.renderRail = function(active){
+window.renderRail = function(active, defCollapsed){
   let collapsed=false, hist=true, plan=true;
-  try{ collapsed=localStorage.getItem('wd-rail')==='collapsed'; hist=localStorage.getItem('wd-rail-hist')!=='closed'; plan=localStorage.getItem('wd-rail-plan')!=='closed'; }catch(e){}
+  try{ const rv=localStorage.getItem('wd-rail'); collapsed=rv?rv==='collapsed':!!defCollapsed; hist=localStorage.getItem('wd-rail-hist')!=='closed'; plan=localStorage.getItem('wd-rail-plan')!=='closed'; }catch(e){}
   const sub=(key,label,href,isNew)=>`<a class="wd-rail-sub ${active===key?'is-active':''} ${isNew?'is-new':''}" href="${href}">${label}${isNew?'<span class="new">NEW</span>':''}</a>`;
   return `
   <aside class="wd-rail ${collapsed?'is-collapsed':''}" aria-label="Academics">
