@@ -93,6 +93,18 @@
           {course:'MATH 30103', title:'Linear Algebra', h:3, status:'open'},
           {course:'MATH 30603', title:'Introduction to Proofs', h:3, status:'done'},
           {course:'Math electives', title:'30000/40000-level MATH courses', h:9, status:'later', after:'MATH 30103'}]},
+        {group:'University Core', hours:33, items:[
+          {course:'ENGL 10103', title:'Composition I', h:3, status:'done'},
+          {course:'ENGL 10203', title:'Composition II', h:3, status:'done'},
+          {course:'HIST 20003', title:'History of the American People to 1877', h:3, status:'done'},
+          {course:'PSYC 20003', title:'General Psychology', h:3, status:'done'},
+          {course:'ECON 20103', title:'Principles of Macroeconomics', h:3, status:'done'},
+          {course:'HUMN 10103', title:'Introduction to Humanities', h:3, status:'done'},
+          {course:'MUSC 10103', title:'Music Appreciation', h:3, status:'done'},
+          {course:'GNEG 11103', title:'Introduction to Engineering I', h:3, status:'done'},
+          {course:'GNEG 11203', title:'Introduction to Engineering II', h:3, status:'done'},
+          {course:'CHEM 14203', title:'University Chemistry II', h:3, status:'done'},
+          {course:'COMM 10003', title:'Communication in a Diverse World', h:3, status:'done'}]},
         {group:'Technical Electives', hours:9, items:[
           {course:'Technical electives', title:'Approved 40000-level MEEG courses', h:9, status:'later', after:'Senior standing'}]}
       ],
