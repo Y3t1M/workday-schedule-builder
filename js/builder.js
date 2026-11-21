@@ -155,7 +155,7 @@
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Custom Credit Hours</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">Select 1-21 credit hours. Full-time status requires at least 12.</span></div></div>
         <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div></div>
         <div class="sb-field sb-blocked">
-          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone: tap a start time, then an end time. Tap a blocked time to clear it.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
+          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone: drag slowly to block times, flick to scroll, or tap a start and an end time. Tap a block to clear it.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
           <div class="sb-blockbox">${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div></div>
         </div>
@@ -572,23 +572,36 @@
   let last=null;
   function paintLine(x,y){ if(last){ const dx=x-last.x, dy=y-last.y, n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/6)); for(let k=1;k<=n;k++) paintCell(cellAt(last.x+dx*k/n,last.y+dy*k/n)); } else paintCell(cellAt(x,y)); last={x,y}; }
   document.addEventListener('pointermove',e=>{ if(!paint||e.pointerType==='touch') return; paint.moved=true; paintLine(e.clientX,e.clientY); });
-  // touch: hold to start painting so a normal swipe still scrolls the page
-  let hold=null, lastScroll=0, anchor=null;
+  // touch: read the finger's speed like iOS does. A quick flick scrolls the page (with momentum),
+  // a slower drag paints right away, holding still then dragging paints, and a tap uses tap-start-then-end.
+  let g=null, anchor=null, coast=0, coasting=false, lastScroll=0;
+  const FLICK=0.35; // px per ms over the first few pixels
   window.addEventListener('scroll',()=>{ lastScroll=performance.now(); },{passive:true});
+  function startPaintAt(c,x,y){ paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; c.closest('.sb-week').classList.add('painting'); last=null; paintLine(x,y); try{ navigator.vibrate&&navigator.vibrate(8); }catch(x){} }
   document.addEventListener('touchstart',e=>{
-    const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1) return;
-    if(performance.now()-lastScroll<300) return; // this tap is stopping a scroll, not choosing a time
-    const p=e.touches[0]; hold={x:p.clientX,y:p.clientY,c,t:setTimeout(()=>{ if(!hold) return; if(hold.c.classList.contains('wk')||hold.c.classList.contains('out')){ hold=null; return; } paint={mode:hold.c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; hold.c.closest('.sb-week').classList.add('painting'); last=null; paintLine(hold.x,hold.y); try{ navigator.vibrate&&navigator.vibrate(8); }catch(x){} hold.started=true; },250)};
+    const wasCoasting=coasting; cancelAnimationFrame(coast); coasting=false;
+    const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1){ g=null; return; }
+    const p=e.touches[0], now=performance.now();
+    g={c,x0:p.clientX,y0:p.clientY,t0:now,x:p.clientX,y:p.clientY,t:now,mode:null,vs:[],usable:!c.classList.contains('wk')&&!c.classList.contains('out'),stopper:wasCoasting||now-lastScroll<250};
+    g.hold=setTimeout(()=>{ if(g&&!g.mode&&g.usable&&!g.stopper){ g.mode='paint'; startPaintAt(g.c,g.x,g.y); } },320);
   },{passive:true});
   document.addEventListener('touchmove',e=>{
-    const p=e.touches[0];
-    if(paint&&hold&&hold.started){ e.preventDefault(); paintLine(p.clientX,p.clientY); return; }
-    if(hold&&Math.hypot(p.clientX-hold.x,p.clientY-hold.y)>10){ clearTimeout(hold.t); hold=null; }
+    if(!g) return; const p=e.touches[0], now=performance.now();
+    if(e.cancelable) e.preventDefault(); // the grid is touch-action:none, so this gesture is ours
+    const dist=Math.hypot(p.clientX-g.x0,p.clientY-g.y0);
+    if(!g.mode&&dist>8){ clearTimeout(g.hold); const speed=dist/Math.max(1,now-g.t0); g.mode=(speed>=FLICK||!g.usable)?'scroll':'paint'; if(g.mode==='paint') startPaintAt(g.c,g.x0,g.y0); }
+    if(g.mode==='scroll'){ const step=g.y-p.clientY; window.scrollBy(0,step); g.vs.push({v:step/Math.max(1,now-g.t),t:now}); if(g.vs.length>6) g.vs.shift(); }
+    else if(g.mode==='paint') paintLine(p.clientX,p.clientY);
+    g.x=p.clientX; g.y=p.clientY; g.t=now;
   },{passive:false});
   document.addEventListener('touchend',e=>{
-    if(!hold) return; clearTimeout(hold.t);
-    if(hold.started){ hold=null; endPaint(); return; }
-    const c=hold.c; hold=null; // tap a start time, then an end time; tap a block to clear it
+    if(!g) return; clearTimeout(g.hold); const G=g; g=null;
+    if(G.mode==='paint'){ endPaint(); return; }
+    if(G.mode==='scroll'){ const now=performance.now(), rec=G.vs.filter(s=>now-s.t<100); let v=rec.length?rec.reduce((a,s)=>a+s.v,0)/rec.length:0, lt=now;
+      const step=t=>{ const dt=Math.min(32,t-lt); lt=t; window.scrollBy(0,v*dt); v*=Math.pow(0.95,dt/16); if(Math.abs(v)>0.02) coast=requestAnimationFrame(step); else coasting=false; };
+      if(Math.abs(v)>0.05){ coasting=true; coast=requestAnimationFrame(step); } return; }
+    const c=G.c; // a tap: tap a start time, then an end time; tap a block to clear it
+    if(G.stopper) return; // this tap stopped a scroll
     if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
     if(c.classList.contains('out')){ toast('Outside your preferred start and end time.'); return; }
     const d=c.dataset.cellday, m=+c.dataset.min, set=ownSlots(), k=slotKey(d,m);
@@ -599,9 +612,11 @@
     anchor={d,m}; c.classList.add('anchor'); toast(`Now tap where this block ends on ${S.DAY[d]}. Tap the same spot again for 30 minutes.`);
   });
   document.addEventListener('click',e=>{ const r=e.target.closest('.sb-sync'); if(r&&!e.target.closest('#workSync')){ const w=document.getElementById('workSync'); if(w) w.click(); } });
-  document.addEventListener('touchcancel',()=>{ if(hold){ clearTimeout(hold.t); if(hold.started) endPaint(); hold=null; } });
+  document.addEventListener('touchcancel',()=>{ if(g){ clearTimeout(g.hold); if(g.mode==='paint') endPaint(); g=null; } });
+  document.addEventListener('contextmenu',e=>{ if(e.target.closest&&e.target.closest('.sb-week.edit')) e.preventDefault(); });
   function endPaint(){ last=null; if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
-  document.addEventListener('pointerup',endPaint); document.addEventListener('pointercancel',endPaint);
+  // mouse and pen only: touch gestures finish in the touch handlers above
+  document.addEventListener('pointerup',e=>{ if(e.pointerType!=='touch') endPaint(); }); document.addEventListener('pointercancel',e=>{ if(e.pointerType!=='touch') endPaint(); });
 
   // ---------- boot ----------
   renderShell({active:'student',footer:false});

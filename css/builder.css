@@ -1258,3 +1258,5 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-page .wd-hub-body{padding-left:8px;padding-right:8px}
   .sb-mainc{padding-left:14px;padding-right:14px}
 }
+.sb-week.edit,.sb-week.edit .col,.sb-week.edit .cell{touch-action:none}
+.sb-week.edit{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
