@@ -1258,5 +1258,13 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-page .wd-hub-body{padding-left:8px;padding-right:8px}
   .sb-mainc{padding-left:14px;padding-right:14px}
 }
-.sb-week.edit,.sb-week.edit .col,.sb-week.edit .cell{touch-action:none}
 .sb-week.edit{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.sb-bsdays{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.sb-bsdays .sb-day{width:56px;height:44px}
+.sb-bstimes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sb-bstimes label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:#333}
+.sb-bstimes select{height:44px;font-size:16px;border:1px solid #8c979f;border-radius:6px;padding:0 10px;background:#fff}
+.sb-bsact{display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
+.sb-bsact .wd-btn{min-height:44px;min-width:120px}
+.sb-bsdays .sb-day{text-decoration:none!important;color:#333!important;background:#fff!important;box-shadow:inset 0 0 0 1px #8c979f!important}
+.sb-bsdays .sb-day.on{background:#333!important;color:#fff!important;box-shadow:none!important}

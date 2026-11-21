@@ -155,7 +155,7 @@
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Custom Credit Hours</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">Select 1-21 credit hours. Full-time status requires at least 12.</span></div></div>
         <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div></div>
         <div class="sb-field sb-blocked">
-          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone: drag slowly to block times, flick to scroll, or tap a start and an end time. Tap a block to clear it.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
+          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone: tap a time to block it, or tap a block to change it. Press and hold, then drag, to paint.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
           <div class="sb-blockbox">${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div></div>
         </div>
@@ -572,48 +572,62 @@
   let last=null;
   function paintLine(x,y){ if(last){ const dx=x-last.x, dy=y-last.y, n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/6)); for(let k=1;k<=n;k++) paintCell(cellAt(last.x+dx*k/n,last.y+dy*k/n)); } else paintCell(cellAt(x,y)); last={x,y}; }
   document.addEventListener('pointermove',e=>{ if(!paint||e.pointerType==='touch') return; paint.moved=true; paintLine(e.clientX,e.clientY); });
-  // touch: read the finger's speed like iOS does. A quick flick scrolls the page (with momentum),
-  // a slower drag paints right away, holding still then dragging paints, and a tap uses tap-start-then-end.
-  let g=null, anchor=null, coast=0, coasting=false, lastScroll=0;
-  const FLICK=0.35; // px per ms over the first few pixels
+  // touch: the page scrolls natively. Tap a time to open a "Block a time" sheet (or edit a block);
+  // press and hold, then drag, to paint quickly.
+  let g=null, lastScroll=0;
   window.addEventListener('scroll',()=>{ lastScroll=performance.now(); },{passive:true});
-  function startPaintAt(c,x,y){ paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; c.closest('.sb-week').classList.add('painting'); last=null; paintLine(x,y); try{ navigator.vibrate&&navigator.vibrate(8); }catch(x){} }
   document.addEventListener('touchstart',e=>{
-    const wasCoasting=coasting; cancelAnimationFrame(coast); coasting=false;
     const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1){ g=null; return; }
-    const p=e.touches[0], now=performance.now();
-    g={c,x0:p.clientX,y0:p.clientY,t0:now,x:p.clientX,y:p.clientY,t:now,mode:null,vs:[],usable:!c.classList.contains('wk')&&!c.classList.contains('out'),stopper:wasCoasting||now-lastScroll<250};
-    g.hold=setTimeout(()=>{ if(g&&!g.mode&&g.usable&&!g.stopper){ g.mode='paint'; startPaintAt(g.c,g.x,g.y); } },320);
+    const p=e.touches[0];
+    g={c,x:p.clientX,y:p.clientY,moved:false,painting:false,stopper:performance.now()-lastScroll<250};
+    g.hold=setTimeout(()=>{ if(!g||g.moved||g.stopper||c.classList.contains('wk')||c.classList.contains('out')) return; g.painting=true;
+      paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; c.closest('.sb-week').classList.add('painting'); last=null; paintLine(g.x,g.y); try{ navigator.vibrate&&navigator.vibrate(10); }catch(x){} },300);
   },{passive:true});
   document.addEventListener('touchmove',e=>{
-    if(!g) return; const p=e.touches[0], now=performance.now();
-    if(e.cancelable) e.preventDefault(); // the grid is touch-action:none, so this gesture is ours
-    const dist=Math.hypot(p.clientX-g.x0,p.clientY-g.y0);
-    if(!g.mode&&dist>8){ clearTimeout(g.hold); const speed=dist/Math.max(1,now-g.t0); g.mode=(speed>=FLICK||!g.usable)?'scroll':'paint'; if(g.mode==='paint') startPaintAt(g.c,g.x0,g.y0); }
-    if(g.mode==='scroll'){ const step=g.y-p.clientY; window.scrollBy(0,step); g.vs.push({v:step/Math.max(1,now-g.t),t:now}); if(g.vs.length>6) g.vs.shift(); }
-    else if(g.mode==='paint') paintLine(p.clientX,p.clientY);
-    g.x=p.clientX; g.y=p.clientY; g.t=now;
+    if(!g) return; const p=e.touches[0];
+    if(g.painting){ if(e.cancelable) e.preventDefault(); paintLine(p.clientX,p.clientY); return; }
+    if(Math.hypot(p.clientX-g.x,p.clientY-g.y)>10){ g.moved=true; clearTimeout(g.hold); }
   },{passive:false});
   document.addEventListener('touchend',e=>{
     if(!g) return; clearTimeout(g.hold); const G=g; g=null;
-    if(G.mode==='paint'){ endPaint(); return; }
-    if(G.mode==='scroll'){ const now=performance.now(), rec=G.vs.filter(s=>now-s.t<100); let v=rec.length?rec.reduce((a,s)=>a+s.v,0)/rec.length:0, lt=now;
-      const step=t=>{ const dt=Math.min(32,t-lt); lt=t; window.scrollBy(0,v*dt); v*=Math.pow(0.95,dt/16); if(Math.abs(v)>0.02) coast=requestAnimationFrame(step); else coasting=false; };
-      if(Math.abs(v)>0.05){ coasting=true; coast=requestAnimationFrame(step); } return; }
-    const c=G.c; // a tap: tap a start time, then an end time; tap a block to clear it
-    if(G.stopper) return; // this tap stopped a scroll
+    if(G.painting){ endPaint(); return; }
+    if(G.moved||G.stopper) return;
+    e.preventDefault(); // no ghost click; the sheet handles it
+    const c=G.c;
     if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
     if(c.classList.contains('out')){ toast('Outside your preferred start and end time.'); return; }
-    const d=c.dataset.cellday, m=+c.dataset.min, set=ownSlots(), k=slotKey(d,m);
-    const hm=x=>S.fmt(String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0'));
-    document.querySelectorAll('.sb-week .cell.anchor').forEach(x=>x.classList.remove('anchor'));
-    if(set.has(k)){ let a=m,b=m; while(set.has(slotKey(d,a-30))) a-=30; while(set.has(slotKey(d,b+30))) b+=30; for(let x=a;x<=b;x+=30) set.delete(slotKey(d,x)); anchor=null; paint={mode:'remove',set,moved:true}; endPaint(); toast(`Unblocked ${S.DAY[d]} ${hm(a)}–${hm(b+30)}.`); return; }
-    if(anchor&&anchor.d===d){ const a=Math.min(anchor.m,m), b=Math.max(anchor.m,m); for(let x=a;x<=b;x+=30){ const cc=document.querySelector(`.sb-week.edit .cell[data-cellday="${d}"][data-min="${x}"]`); if(cc&&!cc.classList.contains('wk')&&!cc.classList.contains('out')) set.add(slotKey(d,x)); } anchor=null; paint={mode:'add',set,moved:true}; endPaint(); toast(`Blocked ${S.DAY[d]} ${hm(a)}–${hm(b+30)}. Tap it to unblock.`); return; }
-    anchor={d,m}; c.classList.add('anchor'); toast(`Now tap where this block ends on ${S.DAY[d]}. Tap the same spot again for 30 minutes.`);
-  });
+    openBlockSheet(c.dataset.cellday,+c.dataset.min);
+  },{passive:false});
   document.addEventListener('click',e=>{ const r=e.target.closest('.sb-sync'); if(r&&!e.target.closest('#workSync')){ const w=document.getElementById('workSync'); if(w) w.click(); } });
-  document.addEventListener('touchcancel',()=>{ if(g){ clearTimeout(g.hold); if(g.mode==='paint') endPaint(); g=null; } });
+  document.addEventListener('touchcancel',()=>{ if(g){ clearTimeout(g.hold); if(g.painting) endPaint(); g=null; } });
   document.addEventListener('contextmenu',e=>{ if(e.target.closest&&e.target.closest('.sb-week.edit')) e.preventDefault(); });
+  // "Block a time" sheet
+  const hmOf=x=>String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0');
+  let bs=null;
+  function openBlockSheet(day,min){
+    const set=ownSlots(); let a=min,b=min+30, edit=false;
+    if(set.has(slotKey(day,min))){ edit=true; a=min; b=min; while(set.has(slotKey(day,a-30))) a-=30; while(set.has(slotKey(day,b+30))) b+=30; b+=30; }
+    else b=Math.min(20*60,min+60);
+    bs={day,a,b,edit,days:new Set([day])};
+    const opts=(sel,from,to)=>{ let h=''; for(let m=from;m<=to;m+=30) h+=`<option value="${m}" ${m===sel?'selected':''}>${S.fmt(hmOf(m))}</option>`; return h; };
+    const sc=document.getElementById('scrim');
+    sc.innerHTML=`<div class="sb-sheet sb-bsheet" role="dialog" aria-modal="true" aria-label="${edit?'Edit blocked time':'Block a time'}"><button class="x" id="closeSheet" aria-label="Close">${icon('x')}</button>
+      <h3>${edit?'Edit blocked time':'Block a time'}</h3><p class="sub">No classes will be scheduled during this time.</p>
+      <div class="sb-bsdays" role="group" aria-label="Days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${d===day?'on':''}" data-bsday="${d}" aria-pressed="${d===day}" ${edit?'disabled':''}>${S.DAY[d]}</button>`).join('')}</div>
+      <div class="sb-bstimes"><label>Start<select id="bsStart" class="wd-select">${opts(a,8*60,19*60+30)}</select></label><label>End<select id="bsEnd" class="wd-select">${opts(b,8*60+30,20*60)}</select></label></div>
+      <div class="sb-bsact">${edit?'<button class="wd-btn secondary" id="bsDelete">Remove</button>':''}<button class="wd-btn primary" id="bsSave">${edit?'Save':'Block time'}</button></div></div>`;
+    sc.classList.add('open');
+  }
+  document.addEventListener('click',e=>{
+    if(!bs) return; const t=e.target.closest('[data-bsday],#bsSave,#bsDelete'); if(!t) return;
+    if(t.dataset.bsday){ const d=t.dataset.bsday; bs.days.has(d)?bs.days.delete(d):bs.days.add(d); t.classList.toggle('on',bs.days.has(d)); t.setAttribute('aria-pressed',bs.days.has(d)); return; }
+    const set=ownSlots(); if(bs.edit) for(let m=bs.a;m<bs.b;m+=30) set.delete(slotKey(bs.day,m));
+    if(t.id==='bsSave'){ const a=+document.getElementById('bsStart').value, b=+document.getElementById('bsEnd').value;
+      if(b<=a){ toast('Pick an end time after the start time.'); return; } if(!bs.days.size){ toast('Pick at least one day.'); return; }
+      bs.days.forEach(d=>{ for(let m=a;m<b;m+=30) set.add(slotKey(d,m)); });
+      const msg=`Blocked ${[...bs.days].map(d=>S.DAY[d]).join(', ')} ${S.fmt(hmOf(a))}–${S.fmt(hmOf(b))}.`; bs=null; closeSheet(); paint={mode:'add',set,moved:true}; endPaint(); toast(msg); return; }
+    if(t.id==='bsDelete'){ const msg=`Removed ${S.DAY[bs.day]} ${S.fmt(hmOf(bs.a))}–${S.fmt(hmOf(bs.b))}.`; bs=null; closeSheet(); paint={mode:'remove',set,moved:true}; endPaint(); toast(msg); }
+  });
   function endPaint(){ last=null; if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
   // mouse and pen only: touch gestures finish in the touch handlers above
   document.addEventListener('pointerup',e=>{ if(e.pointerType!=='touch') endPaint(); }); document.addEventListener('pointercancel',e=>{ if(e.pointerType!=='touch') endPaint(); });

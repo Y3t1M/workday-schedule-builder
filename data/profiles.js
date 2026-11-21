@@ -1,5 +1,5 @@
 /* Sample students for the phone demo (Demo Day QR code). On phones, each visitor gets one at random,
-   remembered on that device; ?student=hudson|ava|diego forces one. Desktop always shows Hudson.
+   remembered on that device; ?student=hudson|ava|diego|priya|marcus forces one. Desktop always shows Hudson.
    Every profile is made up. Course codes follow UA's style; sections, times, people and seats are invented. */
 (function(){
   const D=window.SB_DATA;
@@ -124,14 +124,132 @@
         ['MATH 30103','Linear Algebra','001','MWF','12:00','12:50',3,16,'','Mathematics Minor','SCEN 322','H. Roy'],
         ['MATH 30103','Linear Algebra','004','TTh','12:30','13:45',3,7,'','Mathematics Minor','SCEN 322','H. Roy'],
         ['MEEG 31003','Machine Design','001','MW','11:00','12:15',3,10,'MEEG 23003','Mechanical Engineering Core','MECE 202','T. Walsh']
+      ], credits:15},
+    priya:{
+      id:'010529473', initials:'P', example:'CSCE 31203', minHours:120, totalHours:120, registrationOpens:'11/12/2026, 10:00 AM',
+      student:{name:'Priya', year:'Sophomore', program:'BSCS', degree:'Bachelor of Science in Computer Science',
+        majors:[{name:'Computer Science', conc:'Software Engineering'}], minor:'Data Science', minorShort:'Data Science',
+        catalog:'2025-26', expectedGrad:'May 2029', college:'College of Engineering',
+        advisor:{name:'Morgan Reyes', first:'Morgan', title:'Academic Advisor, Computer Science and Computer Engineering', office:'JBHT 504', email:'mreyes@example.edu'},
+        work:{label:'Library Desk', job:'Mullins Library Help Desk', source:'Workday Time Tracking · Library student worker', days:['M','W'], start:'18:00', end:'21:00'}},
+      requirements:[
+        {group:'Computer Science Core', hours:24, note:'Data Structures opens up the 30000-level courses.', items:[
+          {course:'CSCE 13103', title:'Programming Foundations I', h:3, status:'done'},
+          {course:'CSCE 13203', title:'Programming Foundations II', h:3, status:'inprogress', term:'Fall 2026'},
+          {course:'CSCE 23003', title:'Data Structures', h:3, status:'open', pathway:'Year 2 · Spring', prereq:'CSCE 13203'},
+          {course:'CSCE 21003', title:'Discrete Structures', h:3, status:'open', pathway:'Year 2 · Spring'},
+          {course:'CSCE 24103', title:'Digital Design', h:3, status:'open', pathway:'Year 2 · Spring'},
+          {course:'CSCE 31203', title:'Algorithms', h:3, status:'later', after:'CSCE 23003'},
+          {course:'CSCE 33503', title:'Software Engineering', h:3, status:'later', after:'CSCE 23003'},
+          {course:'CSCE 36103', title:'Operating Systems', h:3, status:'later', after:'CSCE 23003'}]},
+        {group:'University Core', hours:36, items:[
+          {course:'ENGL 10103', title:'Composition I', h:3, status:'done'},
+          {course:'ENGL 10203', title:'Composition II', h:3, status:'done'},
+          {course:'PSYC 20003', title:'General Psychology', h:3, status:'done'},
+          {course:'ECON 20103', title:'Principles of Macroeconomics', h:3, status:'done'},
+          {course:'HIST 20003', title:'History of the American People to 1877', h:3, status:'inprogress', term:'Fall 2026'},
+          {course:'MUSC 10103', title:'Music Appreciation', h:3, status:'done'},
+          {course:'COMM 10003', title:'Communication in a Diverse World', h:3, status:'open'},
+          {course:'HUMN 10103', title:'Introduction to Humanities', h:3, status:'open'},
+          {course:'PHIL 20003', title:'Introduction to Ethics', h:3, status:'open'},
+          {course:'BIOL 10103', title:'Principles of Biology', h:3, status:'done'},
+          {course:'PLSC 20003', title:'American National Government', h:3, status:'done'},
+          {course:'CSCE 10003', title:'Introduction to Computing', h:3, status:'done'}]},
+        {group:'Math and Science', hours:20, items:[
+          {course:'MATH 24004', title:'Calculus I', h:4, status:'done'},
+          {course:'MATH 25004', title:'Calculus II', h:4, status:'inprogress', term:'Fall 2026'},
+          {course:'MATH 26004', title:'Calculus III', h:4, status:'open', prereq:'MATH 25004'},
+          {course:'PHYS 20304', title:'University Physics I', h:4, status:'open'},
+          {course:'STAT 30103', title:'Probability and Statistics', h:4, status:'later', after:'MATH 26004'}]},
+        {group:'Data Science Minor', hours:15, items:[
+          {course:'DASC 10003', title:'Introduction to Data Science', h:3, status:'done'},
+          {course:'Data Science courses', title:'DASC 20000/30000-level courses', h:12, status:'later', after:'CSCE 23003'}]}
+      ],
+      sections:[
+        ['CSCE 23003','Data Structures','001','MWF','09:00','09:50',3,14,'CSCE 13203','Computer Science Core','JBHT 239','A. Wu'],
+        ['CSCE 23003','Data Structures','002','TTh','11:00','12:15',3,6,'CSCE 13203','Computer Science Core','JBHT 239','A. Wu'],
+        ['CSCE 21003','Discrete Structures','001','MWF','10:00','10:50',3,20,'','Computer Science Core','JBHT 216','S. Patel'],
+        ['CSCE 21003','Discrete Structures','003','TTh','09:30','10:45',3,9,'','Computer Science Core','JBHT 216','S. Patel'],
+        ['CSCE 24103','Digital Design','001','MW','13:00','14:15',3,12,'','Computer Science Core','JBHT 140','L. Novak'],
+        ['CSCE 24103','Digital Design','002','TTh','14:00','15:15',3,5,'','Computer Science Core','JBHT 140','L. Novak'],
+        ['MATH 26004','Calculus III','002','MTWF','11:00','11:50',4,18,'MATH 25004','Math and Science','SCEN 402','B. Carter'],
+        ['MATH 26004','Calculus III','005','MWF','14:30','15:45',4,7,'MATH 25004','Math and Science','SCEN 406','B. Carter'],
+        ['PHYS 20304','University Physics I','001','MWF','12:00','12:50',4,30,'','Math and Science','PHYS 133','K. Lin'],
+        ['PHYS 20304','University Physics I','004','TTh','15:30','17:15',4,11,'','Math and Science','PHYS 133','K. Lin'],
+        ['COMM 10003','Communication in a Diverse World','006','MW','16:00','17:15',3,16,'','University Core','KIMP 203','J. Reyes'],
+        ['COMM 10003','Communication in a Diverse World','011','TTh','12:30','13:45',3,8,'','University Core','KIMP 205','J. Reyes'],
+        ['HUMN 10103','Introduction to Humanities','001','MW','10:00','10:50',3,25,'','University Core','KIMP 102','M. Lowe'],
+        ['HUMN 10103','Introduction to Humanities','004','TTh','08:00','09:15',3,15,'','University Core','KIMP 102','M. Lowe'],
+        ['PHIL 20003','Introduction to Ethics','002','MWF','08:00','08:50',3,24,'','University Core','MAIN 318','E. Ford'],
+        ['PHIL 20003','Introduction to Ethics','005','TTh','15:30','16:45',3,11,'','University Core','MAIN 318','E. Ford'],
+        ['CSCE 31203','Algorithms','001','TTh','09:30','10:45',3,10,'CSCE 23003','Computer Science Core','JBHT 239','A. Wu']
+      ], credits:15},
+    marcus:{
+      id:'010173659', initials:'M', example:'PSYC 40103', minHours:120, totalHours:120, registrationOpens:'11/02/2026, 8:00 AM',
+      student:{name:'Marcus', year:'Senior', program:'BA', degree:'Bachelor of Arts in Psychology',
+        majors:[{name:'Psychology', conc:'Clinical and Counseling'}], minor:'Sociology', minorShort:'Sociology',
+        catalog:'2023-24', expectedGrad:'May 2027', college:'Fulbright College of Arts and Sciences',
+        advisor:{name:'Casey Moran', first:'Casey', title:'Academic Advisor, Fulbright College', office:'OLDM 525', email:'cmoran@example.edu'},
+        work:{label:'Lab Shift', job:'Psychology Research Lab', source:'Workday Time Tracking · Research assistant', days:['T','Th'], start:'13:00', end:'16:00'}},
+      requirements:[
+        {group:'Psychology Major', hours:33, note:'Senior Seminar is the last course in the major.', items:[
+          {course:'PSYC 20003', title:'General Psychology', h:3, status:'done'},
+          {course:'PSYC 21003', title:'Research Methods', h:3, status:'done'},
+          {course:'PSYC 30103', title:'Statistics for Psychology', h:3, status:'done'},
+          {course:'PSYC 31103', title:'Social Psychology', h:3, status:'done'},
+          {course:'PSYC 32103', title:'Developmental Psychology', h:3, status:'done'},
+          {course:'PSYC 30203', title:'Experimental Methods', h:3, status:'inprogress', term:'Fall 2026'},
+          {course:'PSYC 31203', title:'Cognitive Psychology', h:3, status:'open', pathway:'Year 4 · Spring'},
+          {course:'PSYC 35303', title:'Abnormal Psychology', h:3, status:'open', pathway:'Year 4 · Spring'},
+          {course:'PSYC 40103', title:'Senior Seminar', h:3, status:'open', pathway:'Year 4 · Spring', prereq:'PSYC 30103'},
+          {course:'PSYC 36103', title:'Biological Psychology', h:3, status:'done'},
+          {course:'PSYC 33003', title:'Personality', h:3, status:'done'}]},
+        {group:'Sociology Minor', hours:15, items:[
+          {course:'SOCI 10103', title:'Introduction to Sociology', h:3, status:'done'},
+          {course:'SOCI 20003', title:'Social Problems', h:3, status:'done'},
+          {course:'SOCI 32003', title:'Race and Ethnicity', h:3, status:'inprogress', term:'Fall 2026'},
+          {course:'SOCI 30203', title:'Social Inequality', h:3, status:'open'},
+          {course:'SOCI 31303', title:'Sociology of the Family', h:3, status:'open'}]},
+        {group:'Fulbright Core', hours:42, items:[
+          {course:'ENGL 10103', title:'Composition I', h:3, status:'done'},
+          {course:'ENGL 10203', title:'Composition II', h:3, status:'done'},
+          {course:'MATH 12003', title:'College Algebra', h:3, status:'done'},
+          {course:'BIOL 10103', title:'Principles of Biology', h:3, status:'done'},
+          {course:'CHEM 10103', title:'Chemistry in the Modern World', h:3, status:'done'},
+          {course:'HIST 20003', title:'History of the American People to 1877', h:3, status:'done'},
+          {course:'PLSC 20003', title:'American National Government', h:3, status:'done'},
+          {course:'HUMN 10103', title:'Introduction to Humanities', h:3, status:'done'},
+          {course:'MUSC 10103', title:'Music Appreciation', h:3, status:'done'},
+          {course:'SPAN 10103', title:'Elementary Spanish I', h:3, status:'done'},
+          {course:'SPAN 10203', title:'Elementary Spanish II', h:3, status:'done'},
+          {course:'COMM 10003', title:'Communication in a Diverse World', h:3, status:'done'},
+          {course:'ANTH 10203', title:'Introduction to Cultural Anthropology', h:3, status:'done'},
+          {course:'PHIL 20003', title:'Introduction to Ethics', h:3, status:'open'}]},
+        {group:'General Electives', hours:30, items:[
+          {course:'Electives completed', title:'Courses toward 120 hours', h:21, status:'done'},
+          {course:'Electives in progress', title:'Fall 2026 electives', h:9, status:'inprogress', term:'Fall 2026'}]}
+      ],
+      sections:[
+        ['PSYC 31203','Cognitive Psychology','001','MWF','09:00','09:50',3,15,'','Psychology Major','MEMH 222','R. Hart'],
+        ['PSYC 31203','Cognitive Psychology','002','TTh','09:30','10:45',3,6,'','Psychology Major','MEMH 222','R. Hart'],
+        ['PSYC 35303','Abnormal Psychology','001','MWF','11:00','11:50',3,10,'','Psychology Major','MEMH 201','D. Ruiz'],
+        ['PSYC 35303','Abnormal Psychology','003','TTh','11:00','12:15',3,4,'','Psychology Major','MEMH 201','D. Ruiz'],
+        ['PSYC 40103','Senior Seminar','001','MW','13:00','14:15',3,12,'PSYC 30103','Psychology Major','MEMH 310','S. Grey'],
+        ['PSYC 40103','Senior Seminar','002','TTh','08:00','09:15',3,8,'PSYC 30103','Psychology Major','MEMH 310','S. Grey'],
+        ['SOCI 30203','Social Inequality','001','MWF','10:00','10:50',3,22,'','Sociology Minor','OLDM 302','T. Lane'],
+        ['SOCI 30203','Social Inequality','002','TTh','16:30','17:45',3,9,'','Sociology Minor','OLDM 302','T. Lane'],
+        ['SOCI 31303','Sociology of the Family','001','MW','14:30','15:45',3,14,'','Sociology Minor','OLDM 306','T. Lane'],
+        ['SOCI 31303','Sociology of the Family','002','F','09:00','11:45',3,10,'','Sociology Minor','OLDM 306','N. Shah'],
+        ['PHIL 20003','Introduction to Ethics','001','MWF','12:00','12:50',3,30,'','Fulbright Core','MAIN 318','E. Ford'],
+        ['PHIL 20003','Introduction to Ethics','003','TTh','12:30','13:45',3,12,'','Fulbright Core','MAIN 318','E. Ford']
       ], credits:15}
   };
   // every course any sample student has, so the look-up can explain courses outside a student's plan
   const CAT={}; const addCat=(course,title,h,prereq)=>{ if(/^[A-Z]{3,4} \d{5}$/.test(course)&&!CAT[course]) CAT[course]={course,title,h,prereq:prereq||null}; };
-  [D.requirements,P.ava.requirements,P.diego.requirements].forEach(rs=>rs.forEach(g=>g.items.forEach(i=>addCat(i.course,i.title,i.h,i.prereq||(/^[A-Z]{3,4} \d{5}$/.test(i.after||'')?i.after:null)))));
-  D.sections.forEach(s=>addCat(s.course,s.title,s.credits,s.prereq)); [P.ava,P.diego].forEach(q=>q.sections.forEach(r=>addCat(r[0],r[1],r[6],r[8])));
+  [D.requirements,...Object.values(P).map(q=>q.requirements)].forEach(rs=>rs.forEach(g=>g.items.forEach(i=>addCat(i.course,i.title,i.h,i.prereq||(/^[A-Z]{3,4} \d{5}$/.test(i.after||'')?i.after:null)))));
+  D.sections.forEach(s=>addCat(s.course,s.title,s.credits,s.prereq)); Object.values(P).forEach(q=>q.sections.forEach(r=>addCat(r[0],r[1],r[6],r[8])));
   window.SB_CATALOG=CAT; D.lookupExample='FINN 30603';
-  const KEYS=['hudson','ava','diego'];
+  const KEYS=['hudson','ava','diego','priya','marcus'];
   const phone=window.matchMedia&&matchMedia('(max-width: 700px)').matches;
   let key=new URLSearchParams(location.search).get('student');
   if(!KEYS.includes(key)) key=null;
