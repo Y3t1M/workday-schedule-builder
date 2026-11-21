@@ -1218,3 +1218,34 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-mainc .sb-card>.sb-box:first-of-type{border-top:0;padding-top:0}
   .sb-box2{gap:0;margin-bottom:0}.sb-box2 .sb-box{margin-bottom:18px}
 }
+/* ---- all-device pass ---- */
+.wd-cal-scroll{max-height:none!important;overflow:visible!important;padding-right:0!important}
+@media (max-width:1099px){
+  .sb-ws li .s,.sb-ws li.hd .s{font-size:12px}
+  .sb-ws-g summary .n small,.sb-ws-g summary .hrs,.sb-ws-g summary .hrs b,.sb-ws-g summary .left{font-size:12px!important}
+  .sb-week:not(.mini) .times span,.sb-week:not(.mini) .ev b,.sb-week:not(.mini) .ev i{font-size:12px}
+}
+/* touch screens of any width (phones, landscape phones, tablets, foldables): thumb-sized targets */
+@media (pointer:coarse){
+  .wd-btn{min-height:44px}
+  .sb-term{height:44px}
+  .sb-seg button,.sb-day{height:44px}
+  .wd-iconbtn{width:44px;height:44px}
+  #workSync{position:relative}
+  #workSync::after{content:"";position:absolute;inset:-12px -6px}
+  .sb-sync{min-height:44px}
+  .sb-box .sb-prompt-box input,.sb-box .sb-prompt-box .pr{height:44px!important}
+  .sb-info{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .sb-opt-table input[type=radio]{width:24px;height:24px}
+  .wd-select,select{min-height:44px}
+  .sb-sheet .x,.wd-dialog-head .x,.pt-banner .pt-x{min-width:44px;min-height:44px}
+}
+@media (pointer:coarse){
+  .sb-page .sb-term{height:44px}
+  .wd-rail-item,.wd-rail-head .collapse{min-height:44px;min-width:44px}
+  .sb-opt-table .sb-hazard{height:44px}
+  .wd-toolbar .count small{font-size:12px}
+  .sb-vsteps .lbl,.sb-ws li .s,.sb-ws-g summary .n small,.sb-ws-g summary .hrs,.sb-ws-g summary .hrs b,.sb-ws-g summary .left,.sb-week:not(.mini) .times span,.sb-week:not(.mini) .ev b,.sb-week:not(.mini) .ev i,.sb-appt-term,.sb-credlegend,.sb-start2 dl{font-size:12px!important}
+}
+@media (pointer:coarse){.wd-nav{overflow-y:auto}.wd-nav a,.wd-nav button{flex-shrink:0}}
+@media (pointer:coarse){.sb-vsteps button,.sb-vsteps .st{min-height:44px}}
