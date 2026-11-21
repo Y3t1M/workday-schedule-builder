@@ -115,7 +115,7 @@
     ${pageHead('Registration for '+D.termShort,'The builder reads your degree audit, takes the times you want, and gives you three schedules that fit. You pick one, swap anything, and confirm. Nothing registers until you say so.','start')}
     <div class="sb">
       <div class="sb-card">
-        <p class="sb-appt-inline"><span>Registration Appointment</span> <b>${D.registrationOpens}</b></p>
+        <p class="sb-appt-inline"><span>Registration Appointment</span> <b>${D.registrationOpens}</b></p>${window.SB_PROFILE&&SB_PROFILE.phone?`<p class="sb-try"><span>Sample student: ${D.student.name}, ${D.student.year}</span><button class="wd-btn secondary sm" data-nextstudent>Try another student</button></p>`:''}
         <h3 class="sb-h3">Current Statistics</h3>
         <div class="sb-start2">
           <section class="sb-tile2 sb-progtile">
@@ -219,7 +219,7 @@
         <section class="sb-box"><h3 class="sb-boxh">Recommended Next Courses</h3><p class="sb-boxsub">Courses prioritized based on your academic progress and prerequisite requirements.</p>${table(required)}</section>
         <div class="sb-box2">
           <section class="sb-box"><h3 class="sb-boxh">Course Lookup</h3><p class="sb-boxsub">Search University of Arkansas courses to view course details, requirements, and enrollment eligibility.</p><label class="sb-boxlbl" for="lookupInput">Course code or name</label>${lookup()}</section>
-          <section class="sb-box"><h3 class="sb-boxh">Additional Pathway Recommendations</h3><p class="sb-boxsub">${more.length} courses that fit your majors and minors, from the <a href="${FINN}" target="_blank" rel="noopener">Finance</a> and <a href="${ISYS}" target="_blank" rel="noopener">Information Systems</a> degree pathways.</p>
+          <section class="sb-box"><h3 class="sb-boxh">Additional Pathway Recommendations</h3><p class="sb-boxsub">${D.student.majors.some(m=>m.name==='Finance')?`${more.length} courses that fit your majors and minors, from the <a href="${FINN}" target="_blank" rel="noopener">Finance</a> and <a href="${ISYS}" target="_blank" rel="noopener">Information Systems</a> degree pathways.`:`${more.length} more courses that fit your degree plan.`}</p>
             <ul class="sb-pathlist">${more.map(i=>`<li>${/^[A-Z]{3,4} \d{5}$/.test(i.course)?`<a href="#" data-course="${i.course}">${i.course}</a>`:`<b>${i.course}</b>`}<span>${i.title}</span><em>${i.h} hrs</em></li>`).join('')}</ul></section>
         </div>
         <section class="sb-box"><h3 class="sb-boxh">Degree Worksheet</h3><p class="sb-boxsub">Every requirement group, with the hours done and what's left.</p>${worksheet()}</section>
@@ -496,7 +496,7 @@
   function setTime(which,val){ if(val&&!/^\d{2}:\d{2}$/.test(val)) return; state.prefs[which]=val||''; if(which==='latest'&&val&&state.prefs.earliest&&S.mins(val)<=S.mins(state.prefs.earliest)){ toast('Latest has to be after earliest.'); state.prefs[which]=''; } resetPicks(); save(); render(true); }
 
   document.addEventListener('click',e=>{
-    const t=e.target.closest('.cell,[data-calopt],[data-course],[data-lookup],[data-lookupadd],[data-lookupclear],[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#registerBtn2,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
+    const t=e.target.closest('[data-nextstudent],.cell,[data-calopt],[data-course],[data-lookup],[data-lookupadd],[data-lookupclear],[data-resetblocks],[data-flag],[data-go],[data-credits],[data-other],[data-cred],[data-time],[data-day],[data-must],[data-unblock],#workSync,[data-cal],#calClose,[data-newplan],[data-choose],[data-detail],[data-sec],[data-swapto],[data-swapfor],[data-drop],[data-waitlist],[data-use],#applySentence,#registerBtn,#registerBtn2,#advisorBtn,#saveBtn,#calBtn,#closeSheet,#closeSheet2,#aiToggle,#confirmReg,#cancelDlg,#sendAdvisor');
     if(!t) { if(e.target.id==='scrim') closeSheet(); return; }
     const p=state.prefs;
     if(t.classList.contains('cell')){ return; } // handled by the drag painter
@@ -532,6 +532,7 @@
     if(t.id==='saveBtn'){ let saved=[]; try{ saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); }catch(e){} const cur=schedule(); saved.unshift({name:`${D.termShort} · Builder`, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); try{localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3)));}catch(e){} t.textContent='Saving…'; t.disabled=true; setTimeout(()=>{ location.href='saved-schedules.html?saved=1'; },350); return; }
     if(t.id==='advisorBtn'){ openAdvisor(); return; }
     if(t.id==='sendAdvisor'){ closeSheet(); toast(`Sent to ${D.student.advisor.name}. You'll get a notification when they reply.`); return; }
+    if(t.dataset.nextstudent!==undefined){ SB_PROFILE.next(); return; }
     if(t.id==='registerBtn'||t.id==='registerBtn2'){ const cur=schedule(); const sc=document.getElementById('scrim'); sc.innerHTML=`<div class="sb-sheet" role="dialog" aria-modal="true"><h3>Register ${cur.length} sections for ${D.termShort}?</h3><p class="sub">${cur.map(s=>s.course+'-'+s.section).join(', ')} · ${cur.reduce((a,s)=>a+s.credits,0)} credit hours</p><p style="font-size:14px;line-height:20px;margin:0 0 16px">This is the only step that changes your registration. You can drop or swap until ${D.addDropUntil}.</p><div class="wd-btn-row"><button class="wd-btn primary" id="confirmReg">Confirm and Register</button><button class="wd-btn secondary" id="cancelDlg">Cancel</button></div></div>`; sc.classList.add('open'); return; }
     if(t.id==='confirmReg'){ closeSheet(); state.confirmation='WD-'+String(Date.now()).slice(-6); state.celebrate=true; save(); const cur=schedule(); try{ let saved=JSON.parse(localStorage.getItem('sb-saved')||'[]'); saved=saved.filter(x=>!x.registered); saved.unshift({name:`${D.termShort}`, registered:true, sections:cur.map(s=>`${s.course}-${s.section} - ${s.title.toUpperCase()}`), alerts:0, credits:cur.reduce((a,s)=>a+s.credits,0)}); localStorage.setItem('sb-saved',JSON.stringify(saved.slice(0,3))); }catch(e){} go('done'); return; }
   });

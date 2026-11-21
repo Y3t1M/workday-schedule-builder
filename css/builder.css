@@ -1249,3 +1249,5 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
 }
 @media (pointer:coarse){.wd-nav{overflow-y:auto}.wd-nav a,.wd-nav button{flex-shrink:0}}
 @media (pointer:coarse){.sb-vsteps button,.sb-vsteps .st{min-height:44px}}
+.sb-try{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 0;font-size:13px;color:#5e6a75}
+.sb-try .wd-btn{flex:none}

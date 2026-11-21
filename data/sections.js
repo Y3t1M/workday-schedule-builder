@@ -131,7 +131,7 @@ window.SB_DATA = {
   }
 };
 // Derived: needs list (open + later with a section this term), completed set, in-progress set
-(function(D){
+window.SB_DERIVE=function(D){
   const flat=[]; D.requirements.forEach(g=>g.items.forEach(it=>flat.push(Object.assign({group:g.group},it))));
   D.flatReqs=flat;
   D.student.completed=flat.filter(i=>i.status==='done').map(i=>i.course);
@@ -143,4 +143,5 @@ window.SB_DATA = {
   const seen=new Set();
   D.needs=flat.filter(i=>(i.status==='open'||i.status==='later')&&!i.nosections&&D.sections.some(s=>s.course===i.course)&&!seen.has(i.course)&&seen.add(i.course))
     .map(i=>({course:i.course,title:i.title,req:i.group,prereq:i.prereq||null,later:i.status==='later',after:i.after||null,pathway:i.pathway||null,elective:!/Core|General|Professional/.test(i.group)}));
-})(window.SB_DATA);
+};
+SB_DERIVE(window.SB_DATA);
