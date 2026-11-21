@@ -6,7 +6,7 @@
   const S=r=>r.map(r=>({course:r[0],title:r[1],section:r[2],days:r[3],start:r[4],end:r[5],credits:r[6],seats:r[7],prereq:r[8],fills:r[9],room:r[10],instructor:r[11],id:r[0]+'-'+r[2]}));
   const P={
     ava:{
-      id:'010388214', initials:'A', minHours:120, totalHours:120, registrationOpens:'11/17/2026, 9:00 AM',
+      id:'010388214', initials:'A', example:'MKTG 33503', minHours:120, totalHours:120, registrationOpens:'11/17/2026, 9:00 AM',
       student:{name:'Ava', year:'Freshman', program:'BSBA', degree:'Bachelor of Science in Business Administration',
         majors:[{name:'Marketing', conc:'Digital Marketing'}], minor:'None declared', minorShort:'None declared',
         catalog:'2026-27', expectedGrad:'May 2030', college:'Sam M. Walton College of Business',
@@ -58,7 +58,7 @@
         ['MATH 20403','Calculus I','001','MWF','08:35','09:25',3,16,'MATH 20503','Pre-Business Core','SCEN 322','H. Roy']
       ], credits:15},
     diego:{
-      id:'010451937', initials:'D', minHours:128, totalHours:128, registrationOpens:'11/09/2026, 8:00 AM',
+      id:'010451937', initials:'D', example:'MEEG 31003', minHours:128, totalHours:128, registrationOpens:'11/09/2026, 8:00 AM',
       student:{name:'Diego', year:'Junior', program:'BSME', degree:'Bachelor of Science in Mechanical Engineering',
         majors:[{name:'Mechanical Engineering', conc:'Thermal and Fluid Systems'}], minor:'Mathematics', minorShort:'Mathematics',
         catalog:'2024-25', expectedGrad:'May 2028', college:'College of Engineering',
@@ -126,6 +126,11 @@
         ['MEEG 31003','Machine Design','001','MW','11:00','12:15',3,10,'MEEG 23003','Mechanical Engineering Core','MECE 202','T. Walsh']
       ], credits:15}
   };
+  // every course any sample student has, so the look-up can explain courses outside a student's plan
+  const CAT={}; const addCat=(course,title,h,prereq)=>{ if(/^[A-Z]{3,4} \d{5}$/.test(course)&&!CAT[course]) CAT[course]={course,title,h,prereq:prereq||null}; };
+  [D.requirements,P.ava.requirements,P.diego.requirements].forEach(rs=>rs.forEach(g=>g.items.forEach(i=>addCat(i.course,i.title,i.h,i.prereq||(/^[A-Z]{3,4} \d{5}$/.test(i.after||'')?i.after:null)))));
+  D.sections.forEach(s=>addCat(s.course,s.title,s.credits,s.prereq)); [P.ava,P.diego].forEach(q=>q.sections.forEach(r=>addCat(r[0],r[1],r[6],r[8])));
+  window.SB_CATALOG=CAT; D.lookupExample='FINN 30603';
   const KEYS=['hudson','ava','diego'];
   const phone=window.matchMedia&&matchMedia('(max-width: 700px)').matches;
   let key=new URLSearchParams(location.search).get('student');
@@ -140,7 +145,7 @@
   const p=P[key];
   Object.assign(D,{student:p.student, requirements:p.requirements, sections:S(p.sections), registrationOpens:p.registrationOpens});
   D.defaultPrefs=Object.assign({},D.defaultPrefs,{credits:p.credits, sentence:''});
-  SB_DERIVE(D); D.minHours=p.minHours; D.totalHours=p.totalHours;
+  SB_DERIVE(D); D.minHours=p.minHours; D.totalHours=p.totalHours; D.lookupExample=p.example;
   if(window.DEMO_STUDENT){ DEMO_STUDENT.name=p.student.name; DEMO_STUDENT.initials=p.initials; DEMO_STUDENT.id=p.id; }
   const fix=()=>document.querySelectorAll('.wd-avatar').forEach(a=>{ if(a.textContent.trim().length<=2) a.textContent=p.initials; });
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fix); else fix();

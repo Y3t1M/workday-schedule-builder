@@ -155,7 +155,7 @@
           <div class="sb-other ${(state.otherOpen||![12,15,18].includes(p.credits))?'':'is-hidden'}" id="otherRow"><span>Custom Credit Hours</span><button class="step" data-cred="-1" aria-label="One fewer credit hour">${icon('minus')}</button><input id="creditsNum" type="number" min="1" max="21" inputmode="numeric" value="${p.credits}" aria-label="Credit hours"><button class="step" data-cred="1" aria-label="One more credit hour">${icon('plus')}</button><span class="sb-muted">Select 1-21 credit hours. Full-time status requires at least 12.</span></div></div>
         <div class="sb-field"><label class="sb-label">Days Available <small>Select a day to mark it as unavailable</small></label><div class="sb-days">${S.DAY_ORDER.map(d=>`<button class="sb-day ${p.daysOff.includes(d)?'':'on'}" data-day="${d}" aria-pressed="${!p.daysOff.includes(d)}">${S.DAY[d]}</button>`).join('')}</div></div></div>
         <div class="sb-field sb-blocked">
-          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone, press and hold, then drag.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
+          <div class="sb-label-row"><label class="sb-label">Blocked Times <small>Select and drag to block unavailable times. Repeat to clear.<span class="sb-touch-hint"> On a phone: tap a start time, then an end time. Tap a blocked time to clear it.</span></small></label><button class="wd-btn secondary sm" data-resetblocks ${(p.blocks||[]).length?'':'disabled'}>Reset</button></div>
           <div class="sb-blockbox">${week([], {editable:true})}
           <div class="sb-sync"><button class="sw ${p.workSync!==false?'on':''}" role="switch" aria-checked="${p.workSync!==false}" id="workSync" aria-label="Select scheduled ${w.job} hours as unavailable"></button><div><b>Select scheduled ${w.job} hours as unavailable</b></div></div></div>
         </div>
@@ -168,7 +168,8 @@
   function lookupCatalog(){
     const seen=new Set(); const out=[];
     D.flatReqs.forEach(i=>{ if(/^[A-Z]{3,4} \d{5}$/.test(i.course)&&!seen.has(i.course)){ seen.add(i.course); out.push({course:i.course,title:i.title,h:i.h,req:i}); } });
-    D.sections.forEach(s=>{ if(!seen.has(s.course)){ seen.add(s.course); out.push({course:s.course,title:s.title,h:s.credits,req:null}); } });
+    D.sections.forEach(s=>{ if(!seen.has(s.course)){ seen.add(s.course); out.push({course:s.course,title:s.title,h:s.credits,req:null,prereq:s.prereq||null}); } });
+    Object.values(window.SB_CATALOG||{}).forEach(c=>{ if(!seen.has(c.course)){ seen.add(c.course); out.push({course:c.course,title:c.title,h:c.h,req:null,prereq:c.prereq||null}); } });
     return out.sort((a,b)=>a.course.localeCompare(b.course));
   }
   function lookup(){
@@ -176,7 +177,7 @@
     const ql=q.toLowerCase().replace(/\s+/g,' ');
     const hits=q&&!pick?cat.filter(c=>(c.course+' '+c.title).toLowerCase().includes(ql)).slice(0,8):[];
     return `<div class="sb-lookup">
-      <div class="sb-prompt"><div class="sb-prompt-box"><input id="lookupInput" type="text" placeholder="e.g. FINN 30603" autocomplete="off" value="${q.replace(/"/g,'&quot;')}">${pick?`<button class="clr" data-lookupclear aria-label="Clear">${icon('x-small')}</button>`:`<span class="pr">${icon('search')}</span>`}</div>
+      <div class="sb-prompt"><div class="sb-prompt-box"><input id="lookupInput" type="text" placeholder="e.g. ${D.lookupExample||'FINN 30603'}" autocomplete="off" value="${q.replace(/"/g,'&quot;')}">${pick?`<button class="clr" data-lookupclear aria-label="Clear">${icon('x-small')}</button>`:`<span class="pr">${icon('search')}</span>`}</div>
       <div class="sb-prompt-menu" id="lookupMenu" ${hits.length?'':'hidden'}>${hits.map(c=>`<button data-lookup="${c.course}"><b>${c.course}</b> ${c.title}${c.req?` <span>· ${c.req.group}</span>`:''}</button>`).join('')}</div></div>
       ${pick?lookupCard(pick):''}
     </div>`;
@@ -187,7 +188,8 @@
     const g=gen(); const inPlan=new Set((g.options[0]?g.options[0].sections:[]).map(s=>s.course));
     const planned=D.flatReqs.filter(x=>x.status==='open'&&x.pathway).map(x=>x.course);
     const rows=[];
-    rows.push(['Degree Requirement', i?`${i.group}${i.pathway?` · Pathway ${i.pathway}`:''}`:'Not a listed requirement on your worksheet']);
+    rows.push(['Degree Requirement', i?`${i.group}${i.pathway?` · Pathway ${i.pathway}`:''}`:`Not on your ${D.student.majors.map(m=>m.name).join(' & ')} worksheet. It would count as a general elective.`]);
+    if(!i&&c.prereq) rows.push(['Prerequisite', S.done(D.student,c.prereq)?status('ok',`${c.prereq} · ${(D.student.inProgress||[]).includes(c.prereq)?'in progress':'complete'}`):status('warn',`${c.prereq} · not yet taken`)]);
     if(i&&i.prereq){ const d=S.done(D.student,i.prereq), ip=(D.student.inProgress||[]).includes(i.prereq), pl=planned.includes(i.prereq)||inPlan.has(i.prereq); rows.push(['Prerequisite', d?status('ok',`${i.prereq} · ${ip?'in progress':'complete'}`):pl?status('later',`${i.prereq} · in your ${D.termShort} plan, so this opens up next term`):status('warn',`${i.prereq} · not yet taken`)]); }
     else if(i&&i.status==='later'&&i.after){ const pl=planned.includes(i.after)||D.requirements.some(gr=>gr.group===i.after); rows.push(['Prerequisite', status(pl?'later':'warn',`${i.after}${pl?` · in progress through your ${D.termShort} plan`:''}`)]); }
     else if(i) rows.push(['Prerequisite', status('ok','None')]);
@@ -196,6 +198,7 @@
     if(i&&i.status==='done') st=status('ok','Complete');
     else if(i&&i.status==='inprogress') st=status('ip',`In progress · ${i.term}`);
     else if(i&&i.status==='later'){ const need=i.prereq||i.after; const isGroup=need&&D.requirements.some(gr=>gr.group===need); st=status('later',need?(isGroup?`Not yet eligible · ${need} must be complete first`:`Not yet eligible · needs ${need} first`):'Not yet eligible · prerequisite not met'); }
+    else if(!i&&c.prereq&&!S.done(D.student,c.prereq)) st=status('warn',`Not eligible yet · needs ${c.prereq} first`);
     else if(inPlan.has(code)) st=status('ok',`In your recommended ${D.termShort} schedule`);
     else if(!secs.length) st=status('later',`No ${D.termShort} sections in this demo`);
     else { const fits=secs.some(s=>!S.problems(s,state.prefs,D.student,D).length); st=fits?status('ok',`Eligible · fits your availability`):status('warn','Eligible · no section fits your availability'); cta=`<button class="wd-btn secondary sm" data-lookupadd="${code}">Build My Schedule Around It</button>`; }
@@ -570,7 +573,7 @@
   function paintLine(x,y){ if(last){ const dx=x-last.x, dy=y-last.y, n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/6)); for(let k=1;k<=n;k++) paintCell(cellAt(last.x+dx*k/n,last.y+dy*k/n)); } else paintCell(cellAt(x,y)); last={x,y}; }
   document.addEventListener('pointermove',e=>{ if(!paint||e.pointerType==='touch') return; paint.moved=true; paintLine(e.clientX,e.clientY); });
   // touch: hold to start painting so a normal swipe still scrolls the page
-  let hold=null, lastScroll=0;
+  let hold=null, lastScroll=0, anchor=null;
   window.addEventListener('scroll',()=>{ lastScroll=performance.now(); },{passive:true});
   document.addEventListener('touchstart',e=>{
     const c=e.target.closest&&e.target.closest('.sb-week.edit .cell'); if(!c||e.touches.length!==1) return;
@@ -585,10 +588,17 @@
   document.addEventListener('touchend',e=>{
     if(!hold) return; clearTimeout(hold.t);
     if(hold.started){ hold=null; endPaint(); return; }
-    const c=hold.c; hold=null; // a quick tap toggles one half hour
+    const c=hold.c; hold=null; // tap a start time, then an end time; tap a block to clear it
     if(c.classList.contains('wk')){ toast('That time comes from your Workday work schedule. Use the toggle below the grid to change it.'); return; }
-    paint={mode:c.classList.contains('blk')?'remove':'add', set:ownSlots(), moved:false}; last=null; paintCell(c); endPaint();
+    if(c.classList.contains('out')){ toast('Outside your preferred start and end time.'); return; }
+    const d=c.dataset.cellday, m=+c.dataset.min, set=ownSlots(), k=slotKey(d,m);
+    const hm=x=>S.fmt(String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0'));
+    document.querySelectorAll('.sb-week .cell.anchor').forEach(x=>x.classList.remove('anchor'));
+    if(set.has(k)){ let a=m,b=m; while(set.has(slotKey(d,a-30))) a-=30; while(set.has(slotKey(d,b+30))) b+=30; for(let x=a;x<=b;x+=30) set.delete(slotKey(d,x)); anchor=null; paint={mode:'remove',set,moved:true}; endPaint(); toast(`Unblocked ${S.DAY[d]} ${hm(a)}–${hm(b+30)}.`); return; }
+    if(anchor&&anchor.d===d){ const a=Math.min(anchor.m,m), b=Math.max(anchor.m,m); for(let x=a;x<=b;x+=30){ const cc=document.querySelector(`.sb-week.edit .cell[data-cellday="${d}"][data-min="${x}"]`); if(cc&&!cc.classList.contains('wk')&&!cc.classList.contains('out')) set.add(slotKey(d,x)); } anchor=null; paint={mode:'add',set,moved:true}; endPaint(); toast(`Blocked ${S.DAY[d]} ${hm(a)}–${hm(b+30)}. Tap it to unblock.`); return; }
+    anchor={d,m}; c.classList.add('anchor'); toast(`Now tap where this block ends on ${S.DAY[d]}. Tap the same spot again for 30 minutes.`);
   });
+  document.addEventListener('click',e=>{ const r=e.target.closest('.sb-sync'); if(r&&!e.target.closest('#workSync')){ const w=document.getElementById('workSync'); if(w) w.click(); } });
   document.addEventListener('touchcancel',()=>{ if(hold){ clearTimeout(hold.t); if(hold.started) endPaint(); hold=null; } });
   function endPaint(){ last=null; if(!paint) return; document.querySelectorAll('.sb-week.painting').forEach(g=>g.classList.remove('painting')); const blocks=slotsToBlocks(paint.set); paint=null; state.prefs.blocks=blocks; resetPicks(); save(); render(true); }
   document.addEventListener('pointerup',endPaint); document.addEventListener('pointercancel',endPaint);

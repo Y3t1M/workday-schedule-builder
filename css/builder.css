@@ -1231,8 +1231,6 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
   .sb-term{height:44px}
   .sb-seg button,.sb-day{height:44px}
   .wd-iconbtn{width:44px;height:44px}
-  #workSync{position:relative}
-  #workSync::after{content:"";position:absolute;inset:-12px -6px}
   .sb-sync{min-height:44px}
   .sb-box .sb-prompt-box input,.sb-box .sb-prompt-box .pr{height:44px!important}
   .sb-info{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
@@ -1251,3 +1249,12 @@ details.sb-spread[open] > summary .chev{transform:rotate(180deg)}
 @media (pointer:coarse){.sb-vsteps button,.sb-vsteps .st{min-height:44px}}
 .sb-try{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 0;font-size:13px;color:#5e6a75}
 .sb-try .wd-btn{flex:none}
+.sb-sync{cursor:pointer}
+.sb-week .cell.anchor{background:#ffd6de!important;box-shadow:inset 0 0 0 2px #ab0831}
+@media (max-width:700px){ .sb-week.edit{--h:60px} }
+@media (max-width:700px){
+  .sb-label small{display:block;margin:3px 0 0;line-height:16px}
+  .sb-label-row{align-items:flex-start;gap:12px}
+  .sb-page .wd-hub-body{padding-left:8px;padding-right:8px}
+  .sb-mainc{padding-left:14px;padding-right:14px}
+}
